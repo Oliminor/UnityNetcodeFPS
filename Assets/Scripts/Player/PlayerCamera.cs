@@ -1,25 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlayerCamera : MonoBehaviour
+public class PlayerCamera : NetworkBehaviour
 {
     [SerializeField] float ySensitivity;
     [SerializeField] float xSensitivity;
 
+    public static PlayerCamera instane;
+
     float xRotation;
     float yRotation;
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        instane = this;
+    }
+
     void Start()
     {
+        if (!IsOwner)
+        {
+            gameObject.GetComponent<Camera>().enabled = false;
+            gameObject.GetComponent<AudioListener>().enabled = false;
+        }
         // Lock and switch off cursor
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!IsOwner) return;
         CameraMouseDirection();
     }
 

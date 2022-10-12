@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class PlayerMovement : MonoBehaviour
+using Unity.Netcode;
+public class PlayerMovement : NetworkBehaviour
 {
     public enum PlayerStatus { GROUND, AIR, SHOOT }
 
@@ -25,12 +25,14 @@ public class PlayerMovement : MonoBehaviour
 
     float movementSpeed;
     float lerpMovementSpeed;
+    float movementAnim;
+    float lerpMovementAnim;
 
     bool jumpBool = false;
 
     Rigidbody rb;
 
-    public float GetSpeed() { return lerpMovementSpeed; }
+    public float GetAnimSpeed() { return lerpMovementAnim; }
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!IsOwner) return;
         rb.useGravity = true;
         InputManager();
 
@@ -54,12 +57,13 @@ public class PlayerMovement : MonoBehaviour
             case PlayerStatus.SHOOT:
                 break;
         }
-
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (!IsOwner) return;
+
         Direction();
 
         switch (playerStatus)
@@ -78,6 +82,67 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
+    /// Checks if the character aiming
+    /// </summary>
+    public bool IsAiming()
+    {
+        bool _isAiming = false;
+
+        if (Input.GetMouseButton(1))
+        {
+            _isAiming = true;
+        }
+
+        return _isAiming;
+    }
+
+    /// <summary>
+    /// Checks if the character running
+    /// </summary>
+    public bool IsRunning()
+    {
+        bool _isRunning = false;
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            _isRunning = true;
+        }
+
+        return _isRunning;
+    }
+
+    /// <summary>
+    /// Managing the input more like speed manager
+    /// </summary>
+    private void InputManager()
+    {
+        // Movement SPeed (Jog and Sprint)
+        if (IsAiming())
+        {
+            movementSpeed = aimSpeed;
+        }
+        else if (IsRunning())
+        {
+            movementAnim = 2;
+            movementSpeed = sprintSpeed;
+        }
+        else
+        {
+            movementAnim = 1;
+            movementSpeed = JogSpeed;
+        }
+
+        if (InputVector() == Vector2.zero)
+        {
+            movementAnim = 0;
+            movementSpeed = 0;
+        }
+
+        // Jump
+            if (Input.GetKey(KeyCode.Space) && IsGrounded() && !jumpBool) Jump();
+    }
+
+    /// <summary>
     /// Player direction (based on the camera direction)
     /// </summary>
     private void Direction()
@@ -85,19 +150,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 playerRot = new Vector3(0, playerCamera.rotation.eulerAngles.y, 0);
         transform.rotation = Quaternion.Euler(playerRot);
         playerCamera.position = cameraPos.position;
-    }
-
-    private void InputManager()
-    {
-        // Movement SPeed (Jog and Sprint)
-        if (Input.GetMouseButton(1)) movementSpeed = aimSpeed;
-        else if (Input.GetKey(KeyCode.LeftShift)) movementSpeed = sprintSpeed;
-        else movementSpeed = JogSpeed;
-
-        if (InputVector() == Vector2.zero) movementSpeed = 0;
-
-        // Jump
-            if (Input.GetKey(KeyCode.Space) && IsGrounded() && !jumpBool) Jump();
     }
 
     /// <summary>
@@ -128,6 +180,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
         lerpMovementSpeed = Mathf.Lerp(lerpMovementSpeed, movementSpeed, 0.2f);
+        lerpMovementAnim = Mathf.Lerp(lerpMovementAnim, movementAnim, 0.2f);
 
         if (velocity.magnitude > lerpMovementSpeed)
         {
