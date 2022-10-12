@@ -26,7 +26,7 @@ public class PlayerCamera : NetworkBehaviour
             gameObject.GetComponent<Camera>().enabled = false;
             gameObject.GetComponent<AudioListener>().enabled = false;
         }
-        // Lock and switch off cursor
+        //Lock and switch off cursor
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
     }

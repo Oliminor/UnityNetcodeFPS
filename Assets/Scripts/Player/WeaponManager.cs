@@ -90,7 +90,6 @@ public class WeaponManager : NetworkBehaviour
             anim.SetTrigger("fire");
             fireRateCoolDown = fireRate;
             FireVoidServerRPC();
-            StartCoroutine(Fire()); 
         }
     }
 
