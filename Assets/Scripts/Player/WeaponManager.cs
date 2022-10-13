@@ -7,12 +7,15 @@ using Unity.Netcode;
 public class WeaponManager : NetworkBehaviour
 {
     [SerializeField] PlayerMovement player;
+    [SerializeField] float damage;
     [SerializeField] float fireRate;
+    [SerializeField] GameObject projectile;
     float fireRateCoolDown;
 
     [SerializeField] Transform shotPoint;
     [SerializeField] GameObject muzzleEffect;
     [SerializeField] int objectPoolSize;
+
     List<GameObject> objectPool = new();
 
     Animator anim;
@@ -89,7 +92,12 @@ public class WeaponManager : NetworkBehaviour
         {
             anim.SetTrigger("fire");
             fireRateCoolDown = fireRate;
+            GameObject Proj = Instantiate(projectile, transform.position + (transform.forward * 2), transform.rotation);
+            Proj.GetComponent<NetworkObject>().Spawn();
+            //Proj.GetComponent<ProjectileManager>().SetProperties(damage, 1);
+            
             FireVoidServerRPC();
+            
         }
     }
 

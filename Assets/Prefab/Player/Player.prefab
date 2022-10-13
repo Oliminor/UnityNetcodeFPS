@@ -48,7 +48,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1684849076941075193}
+  damage: 10
   fireRate: 0.3
+  projectile: {fileID: 6751431095911560430, guid: 30cb970065e4e3c488621282e8ccd822,
+    type: 3}
   shotPoint: {fileID: 865001235}
   muzzleEffect: {fileID: 4279155088673816091, guid: 10992e6700505164c8870ebbb000d1a4,
     type: 3}
@@ -357,6 +360,7 @@ GameObject:
   - component: {fileID: 1684849076941075195}
   - component: {fileID: 7034091119290538959}
   - component: {fileID: 2050109340}
+  - component: {fileID: 4288811280461591883}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -480,6 +484,21 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &4288811280461591883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684849076941075191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a6b84d31531ae04f97eee713bc6864e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _HealthMax: 100
+  _HealthRegen: 100
+  _HealthCooldown: 1
 --- !u!1 &1684849078618555623
 GameObject:
   m_ObjectHideFlags: 0
