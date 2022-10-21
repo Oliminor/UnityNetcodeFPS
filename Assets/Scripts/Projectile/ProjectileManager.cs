@@ -14,10 +14,11 @@ public class ProjectileManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _Speed = 3;
-        _Damage = 10;
+        _Speed = 250;
+        _Damage = 33.3f;
         _RigidBody = GetComponent<Rigidbody>();
         _RigidBody.velocity = transform.forward * _Speed;
+        Destroy(gameObject, 100);
     }
 
     public void SetProperties(float Damage, float Speed)
@@ -39,10 +40,9 @@ public class ProjectileManager : NetworkBehaviour
         if (Object.gameObject.tag == "Player")
         {
             Object.GetComponent<HealthManager>().ChangeHealth(-_Damage);
-            Destroy(gameObject);
-            GetComponent<NetworkObject>().Despawn();
         }
-        
+        GetComponent<NetworkObject>().Despawn();
+        Destroy(gameObject);
     }
 
 }

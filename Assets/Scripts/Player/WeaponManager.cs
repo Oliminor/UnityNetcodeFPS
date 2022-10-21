@@ -92,10 +92,8 @@ public class WeaponManager : NetworkBehaviour
         {
             anim.SetTrigger("fire");
             fireRateCoolDown = fireRate;
-            GameObject Proj = Instantiate(projectile, transform.position + (transform.forward * 2), transform.rotation);
-            Proj.GetComponent<NetworkObject>().Spawn();
             //Proj.GetComponent<ProjectileManager>().SetProperties(damage, 1);
-            
+
             FireVoidServerRPC();
             
         }
@@ -105,6 +103,9 @@ public class WeaponManager : NetworkBehaviour
     private void FireVoidServerRPC()
     {
         StartCoroutine(Fire());
+        
+        GameObject Proj = Instantiate(projectile, transform.parent.transform.position + (transform.parent.transform.forward * 2), transform.parent.transform.rotation);
+        Proj.GetComponent<NetworkObject>().Spawn();
         FireVoidClientRPC();
     }
 
