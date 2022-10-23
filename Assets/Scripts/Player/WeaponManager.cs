@@ -6,27 +6,34 @@ using Unity.Netcode;
 
 public class WeaponManager : NetworkBehaviour
 {
-    [SerializeField] PlayerMovement player;
-    [SerializeField] float fireRate;
-    float fireRateCoolDown;
+    [SerializeField] private float fireRate;
 
-    [SerializeField] Transform shotPoint;
-    [SerializeField] GameObject muzzleEffect;
-    [SerializeField] int objectPoolSize;
-    List<GameObject> objectPool = new();
+    [SerializeField] private Transform shotPoint;
+    [SerializeField] private GameObject muzzleEffect;
+    [SerializeField] private int objectPoolSize;
+    [SerializeField] private RuntimeAnimatorController animController;
 
-    Animator anim;
+    private Animator anim;
+    private float fireRateCoolDown;
+
+    private List<GameObject> objectPool = new();
+    private PlayerMovement player;
+
+    bool isWeaponPickedUp = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        anim = gameObject.GetComponent<Animator>();
+        PickedUp();
         GenerateObjectPool();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner) return;
+        if (!isWeaponPickedUp) return;
+
+        if (!player.IsOwner) return;
 
         anim.SetFloat("speed", player.GetAnimSpeed());
         anim.SetBool("isAiming", player.IsAiming());
@@ -93,6 +100,15 @@ public class WeaponManager : NetworkBehaviour
         }
     }
 
+    public void PickedUp()
+    {
+        isWeaponPickedUp = true;
+
+        player = transform.root.GetComponent<PlayerMovement>();
+        player.GetWeaponInventory().SetWeaponAnimatorController(animController);
+        anim = player.GetWeaponInventory().GetAnimator();
+    }
+
     [ServerRpc]
     private void FireVoidServerRPC()
     {
@@ -115,5 +131,4 @@ public class WeaponManager : NetworkBehaviour
         yield return new WaitForSeconds(3);
         go.SetActive(false);
     }
-
 }
