@@ -5,37 +5,33 @@ using Unity.Netcode;
 
 public class WeaponSpawner : NetworkBehaviour
 {
-    [SerializeField] GameObject spwnableWeapon;
-    [SerializeField] GameObject weaponMesh;
-    [SerializeField] Vector3 spawnRotation;
-    Transform parentTransform;
-    // Start is called before the first frame update
+    [SerializeField] GameObject weapon;
+    [SerializeField] NetworkVariable<int> index = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+    public void SetIndex(int _index) { index.Value = _index; }
 
-    [ServerRpc]
-    public void SpawnServerRPC()
+    [ClientRpc]
+    public void SpawnWeaponClientRPC()
     {
-        SpawnWeapon(parentTransform);
-    }
-
-    public void SpawnWeapon(Transform _parent)
-    {
-        weaponMesh.gameObject.SetActive(false);
-
-        GameObject go = Instantiate(spwnableWeapon, Vector3.zero, Quaternion.identity, _parent);
-        go.transform.localPosition = Vector3.zero;
-        go.transform.localRotation = Quaternion.Euler(spawnRotation);
+        GameObject go = Instantiate(this.gameObject, transform.position, Quaternion.identity);
+        go.GetComponent<WeaponSpawner>().SetIndex(weapon.GetComponent<WeaponManager>().GetIndex());
         go.GetComponent<NetworkObject>().Spawn();
+
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (index.Value == 0)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         if (other.tag == "Player")
         {
-            if (other.gameObject == !IsOwner) return;
-            parentTransform = other.GetComponent<PlayerMovement>().GetWeaponInventory().transform.GetChild(0).transform;
-            SpawnServerRPC();
-            gameObject.SetActive(false);
+            Debug.Log("Picked up weapon index: " + index.Value + " Clinet ID " + other.GetComponent<PlayerMovement>().OwnerClientId);
+            other.GetComponent<PlayerMovement>().GetWeaponInventory().AddWeapon(index.Value);
         }
     }
 }

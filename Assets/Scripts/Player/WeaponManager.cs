@@ -2,18 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 
 
 public class WeaponManager : NetworkBehaviour
 {
+    [SerializeField] private int index;
     [SerializeField] private float fireRate;
 
     [SerializeField] private Transform shotPoint;
     [SerializeField] private GameObject muzzleEffect;
     [SerializeField] private int objectPoolSize;
     [SerializeField] private RuntimeAnimatorController animController;
+    [SerializeField] private Vector3 rotation;
 
     private Animator anim;
+    private NetworkAnimator netAnim;
     private float fireRateCoolDown;
 
     private List<GameObject> objectPool = new();
@@ -21,11 +25,13 @@ public class WeaponManager : NetworkBehaviour
 
     bool isWeaponPickedUp = false;
 
+    public int GetIndex() { return index; }
+
     // Start is called before the first frame update
     void Start()
     {
-        PickedUp();
         GenerateObjectPool();
+        PickedUp();
     }
 
     // Update is called once per frame
@@ -94,8 +100,9 @@ public class WeaponManager : NetworkBehaviour
 
         if (fireRateCoolDown <= 0 && IsShooting() && (!player.IsRunning() || player.IsAiming()))
         {
-            anim.SetTrigger("fire");
+            netAnim.SetTrigger("fire");
             fireRateCoolDown = fireRate;
+            StartCoroutine(Fire());
             FireVoidServerRPC();
         }
     }
@@ -104,22 +111,27 @@ public class WeaponManager : NetworkBehaviour
     {
         isWeaponPickedUp = true;
 
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.Euler(rotation);
+
         player = transform.root.GetComponent<PlayerMovement>();
         player.GetWeaponInventory().SetWeaponAnimatorController(animController);
         anim = player.GetWeaponInventory().GetAnimator();
+        netAnim = player.GetWeaponInventory().GetComponent<NetworkAnimator>();
+
+        for (int i = 0; i < objectPool.Count; i++) objectPool[i].SetActive(false);
     }
 
     [ServerRpc]
     private void FireVoidServerRPC()
     {
-        StartCoroutine(Fire());
         FireVoidClientRPC();
     }
 
     [ClientRpc]
     private void FireVoidClientRPC()
     {
-        StartCoroutine(Fire());
+        if(!player.IsOwner) StartCoroutine(Fire());
     }
 
     IEnumerator Fire()
@@ -128,7 +140,7 @@ public class WeaponManager : NetworkBehaviour
         go.transform.position = shotPoint.position;
         go.transform.rotation = shotPoint.rotation;
         go.SetActive(true);
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
         go.SetActive(false);
     }
 }
