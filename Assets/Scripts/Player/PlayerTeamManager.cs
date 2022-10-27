@@ -6,7 +6,7 @@ using Unity.Netcode;
 public class PlayerTeamManager : NetworkBehaviour
 {
 
-    public NetworkVariable<TEAMS> _Team = new NetworkVariable<TEAMS>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<TEAMS> _Team = new NetworkVariable<TEAMS>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private GameObject _NetworkManager;
 
     // Start is called before the first frame update
@@ -37,8 +37,9 @@ public class PlayerTeamManager : NetworkBehaviour
     public void ChangeTeam(int NewTeam)
     {
         if (!IsOwner) return;
-        _Team.Value = (TEAMS)NewTeam;
         _NetworkManager.GetComponent<ObjectiveManager>().SetPlayerToTeamServerRPC(NewTeam);
+        //_Team.Value = (TEAMS)NewTeam;
+        
     }
 
     public TEAMS GetTeam()

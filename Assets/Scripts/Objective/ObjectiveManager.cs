@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using TMPro;
 
 
 public enum TEAMS { RED, BLUE, GREEN, YELLOW };
@@ -9,6 +10,7 @@ public enum TEAMS { RED, BLUE, GREEN, YELLOW };
 [System.Serializable]
 public struct TEAMDATA
 {
+    public string TeamName;
     public Color Colour;
     public List<GameObject> Players;
     public int TeamScore;
@@ -16,8 +18,11 @@ public struct TEAMDATA
 
 public class ObjectiveManager : NetworkBehaviour
 {
+    //public NetworkVariable<TEAMDATA> _Team[4] = new NetworkVariable<TEAMDATA>(NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public TEAMDATA[] _Teams;// = new NetworkVariable<TEAMDATA>(NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    public TEAMDATA[] _Teams;
+    [SerializeField] List<TextMeshProUGUI> _ScoreText;
+
     List<GameObject> _Players;
 
     // Start is called before the first frame update
@@ -28,11 +33,17 @@ public class ObjectiveManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Red team score" + _Teams[0].TeamScore);
-        Debug.Log("Red team has " + _Teams[0].Players.Count);
-
-        Debug.Log("Blue team score" + _Teams[1].TeamScore);
-        Debug.Log("Blue team has " + _Teams[1].Players.Count);
+        int i = 0;
+        string Message = "";
+        foreach(TEAMDATA TeamData in _Teams)
+        {
+            Message = "";
+            Message += string.Format("Team {0}\n", TeamData.TeamName);
+            Message += string.Format("{0} Score \n", TeamData.TeamScore);
+            Message += string.Format("{0} Members \n", TeamData.Players.Count);
+            _ScoreText[i].text = Message;
+            i++;
+        }
     }
 
     public Color GetTeamColour(TEAMS Team)
@@ -40,11 +51,15 @@ public class ObjectiveManager : NetworkBehaviour
         return _Teams[(int)Team].Colour;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void SetPlayerToTeamServerRPC(int Team, ServerRpcParams serverRpcParams = default)
     {
         var ClientID = serverRpcParams.Receive.SenderClientId;
+
+        if (!NetworkManager.ConnectedClients.ContainsKey(ClientID)) return;
+
         GameObject Player = NetworkManager.Singleton.ConnectedClients[ClientID].PlayerObject.transform.gameObject;
+
 
         //Remove player from team
         _Teams[(int)Player.GetComponent<PlayerTeamManager>().GetTeam()].Players.Remove(Player);
@@ -52,14 +67,16 @@ public class ObjectiveManager : NetworkBehaviour
         //Add player to new team
         _Teams[(int)Team].Players.Add(Player);
 
-        //TellClientsAboutTeamShiftClientRPC(Team);
+        Player.GetComponent<PlayerTeamManager>()._Team.Value = (TEAMS)Team;
+
+        //UpdateTeamDataClientRpc(_Teams[0], 0);
+        //UpdateTeamDataClientRpc(_Teams[1], 1);
+
     }
 
-    [ClientRpc]
-    public void TellClientsAboutTeamShiftClientRPC(int Team, ClientRpcParams clientRpcParams = default)
-    {
-        //GameObject Player = NetworkManager.Singleton.ConnectedClients[ClientID].PlayerObject.transform.gameObject;
-        if (IsOwner) return;
-        //gameObject.GetChild(1).GetComponent<Renderer>().material.color = _Teams[(int)Team].Colour;
-    }
+    //[ClientRpc]
+    //public void UpdateTeamDataClientRpc(TEAMDATA TeamData, int i)
+    //{
+    //    _Teams[i] = TeamData;
+    //}
 }
