@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Collections;
 using Unity.Netcode;
 using TMPro;
 
@@ -9,29 +8,18 @@ using TMPro;
 public enum TEAMS { RED, BLUE, GREEN, YELLOW };
 
 [System.Serializable]
-public struct TEAMDATA : INetworkSerializable
+public struct TEAMDATA
 {
-    public FixedString128Bytes TeamName;
+    public string TeamName;
     public Color Colour;
-    //public List<int> Players;
+    public List<GameObject> Players;
     public int TeamScore;
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref Colour);
-        serializer.SerializeValue(ref TeamScore);
-        serializer.SerializeValue(ref TeamName);
-    }
 }
 
 public class ObjectiveManager : NetworkBehaviour
 {
-    //public NetworkVariable<TEAMDATA> _Team[4] = new NetworkVariable<TEAMDATA>(NetworkVariableReadPermission.Everyone, NetwNetworkVariable<TEAMDATA>(NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.ServorkVariableWritePermission.Server);
-    //public TEAMDATA[] _Teams;// = new er);
-
-    private NetworkVariable<TEAMDATA>[4] _Teams = new NetworkVariable<TEAMDATA>[4](TEAMDATA[4] { }, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
-    public NetworkVariable<TEAMDATA> _TeamRed = new NetworkVariable<TEAMDATA>(new TEAMDATA { }, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    //public NetworkVariable<TEAMDATA> _Team[4] = new NetworkVariable<TEAMDATA>(NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public TEAMDATA[] _Teams;// = new NetworkVariable<TEAMDATA>(NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
 
@@ -52,7 +40,7 @@ public class ObjectiveManager : NetworkBehaviour
             Message = "";
             Message += string.Format("Team {0}\n", TeamData.TeamName);
             Message += string.Format("{0} Score \n", TeamData.TeamScore);
-           // Message += string.Format("{0} Members \n", TeamData.Players.Count);
+            Message += string.Format("{0} Members \n", TeamData.Players.Count);
             _ScoreText[i].text = Message;
             i++;
         }
@@ -68,19 +56,16 @@ public class ObjectiveManager : NetworkBehaviour
     {
         var ClientID = serverRpcParams.Receive.SenderClientId;
 
-        Debug.Log(ClientID);
-
         if (!NetworkManager.ConnectedClients.ContainsKey(ClientID)) return;
 
         GameObject Player = NetworkManager.Singleton.ConnectedClients[ClientID].PlayerObject.transform.gameObject;
 
-        int ClientIDint = (int)ClientID;
 
         //Remove player from team
-        //_Teams[(int)Player.GetComponent<PlayerTeamManager>().GetTeam()].Players.Remove(ClientIDint);
+        _Teams[(int)Player.GetComponent<PlayerTeamManager>().GetTeam()].Players.Remove(Player);
 
         //Add player to new team
-       // _Teams[(int)Team].Players.Add(ClientIDint);
+        _Teams[(int)Team].Players.Add(Player);
 
         Player.GetComponent<PlayerTeamManager>()._Team.Value = (TEAMS)Team;
 

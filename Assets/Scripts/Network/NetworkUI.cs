@@ -5,6 +5,12 @@ using Unity.Netcode;
 
 public class NetworkUI : NetworkBehaviour
 {
+
+    void Start()
+    {
+        Application.targetFrameRate = 120;
+    }
+
     public void StartHost()
     {
         NetworkManager.Singleton.StartHost();
