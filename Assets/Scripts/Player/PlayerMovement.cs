@@ -10,6 +10,7 @@ public class PlayerMovement : NetworkBehaviour
 
     [SerializeField] Transform playerCamera;
     [SerializeField] Transform cameraPos;
+    [SerializeField] WeaponInventory weaponInv;
 
     [SerializeField] LayerMask whatIsGround;
 
@@ -32,6 +33,7 @@ public class PlayerMovement : NetworkBehaviour
 
     Rigidbody rb;
 
+    public WeaponInventory GetWeaponInventory() { return weaponInv; }
     public float GetAnimSpeed() { return lerpMovementAnim; }
 
     // Start is called before the first frame update

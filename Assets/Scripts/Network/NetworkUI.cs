@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class NetworkUI : MonoBehaviour
+public class NetworkUI : NetworkBehaviour
 {
 
     void Start()
@@ -14,6 +14,7 @@ public class NetworkUI : MonoBehaviour
     public void StartHost()
     {
         NetworkManager.Singleton.StartHost();
+        SpawnWeapons();
     }
 
     public void StartClient()
@@ -24,10 +25,21 @@ public class NetworkUI : MonoBehaviour
     public void StartServer()
     {
         NetworkManager.Singleton.StartServer();
+        SpawnWeapons();
     }
 
     public void Shutdown()
     {
         NetworkManager.Singleton.Shutdown();
+    }
+
+    private void SpawnWeapons()
+    {
+        WeaponSpawner[] weaponSpawners = WeaponSpawner.FindObjectsOfType<WeaponSpawner>();
+
+        for (int i = 0; i < weaponSpawners.Length; i++)
+        {
+            weaponSpawners[i].SpawnWeaponClientRPC();
+        }
     }
 }
