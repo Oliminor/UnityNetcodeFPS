@@ -20,13 +20,26 @@ public class HillManager : NetworkBehaviour
     void Start()
     {
         _NetworkManager = GameObject.Find("ObjectiveManager");
-        _State = _States.EMPTY;
-        _TEAMSInHill = new List<TEAMS> { };
-        _PointCountdown = 1;
     }
 
     void Awake()
     {
+
+    }
+
+    public void StartGame()
+    {
+        if (_NetworkManager.GetComponent<ObjectiveManager>().GetMode() == MODES.KINGOFTHEHILL)
+        {
+            _State = _States.EMPTY;
+            gameObject.SetActive(true);
+            _TEAMSInHill = new List<TEAMS> { };
+            _PointCountdown = 1;
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     // Update is called once per frame

@@ -6,9 +6,10 @@ using Unity.Netcode;
 public class ProjectileManager : NetworkBehaviour
 {
 
-    private int _Damage;
+    private float _Damage;
     private float _Speed;
     private float _Life;
+    private GameObject _Owner;
 
     private Rigidbody _RigidBody;
     private Vector3 previousPosition;
@@ -17,7 +18,7 @@ public class ProjectileManager : NetworkBehaviour
     void Start()
     {
         previousPosition = transform.position;
-        SetProperties(34, 10, 3);
+        //SetProperties(34, 10, 3);
         _RigidBody = GetComponent<Rigidbody>();
         StartCoroutine(TimeBeforeDestroyed(_Life));
     }
@@ -25,11 +26,12 @@ public class ProjectileManager : NetworkBehaviour
     /// <summary>
     /// Set the projectile variables
     /// </summary>
-    public void SetProperties(int Damage, float Speed, float Life)
+    public void SetProperties(float Damage, float Speed, float Life, GameObject Owner)
     {
         _Damage = Damage;
         _Speed = Speed;
         _Life = Life;
+        _Owner = Owner;
     }
 
     // Update is called once per frame
@@ -65,12 +67,13 @@ public class ProjectileManager : NetworkBehaviour
     /// </summary>
     private void CheckBetweenTwoPositions()
     {
+        if (!IsServer) return;
         if (Physics.Linecast(transform.position, previousPosition, out RaycastHit hit))
         {
             if (hit.transform.gameObject.tag == "Player")
             {
                 DamagePlayerServerRPC();
-                hit.transform.gameObject.GetComponent<HealthManager>().DamagePlayer(_Damage);
+                hit.transform.gameObject.GetComponent<HealthManager>().DamagePlayer(_Damage, _Owner);
             }
         }
         previousPosition = transform.position;

@@ -32,7 +32,7 @@ public class PlayerTeamManager : NetworkBehaviour
 
         if (Input.GetKeyDown("tab"))
         {
-            _NetworkManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, 1);
+            //_NetworkManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, 1);
             if (_Team.Value == TEAMS.RED) ChangeTeam(1);
             else ChangeTeam(0);
         }

@@ -9,6 +9,8 @@ using TMPro;
 
 public enum TEAMS { RED, BLUE, GREEN, YELLOW };
 
+public enum MODES { DEATHMATCH, KINGOFTHEHILL};
+
 [System.Serializable]
 public struct TEAMDATA : INetworkSerializable, System.IEquatable<TEAMDATA> {
 
@@ -32,24 +34,29 @@ public struct TEAMDATA : INetworkSerializable, System.IEquatable<TEAMDATA> {
 
 public class ObjectiveManager : NetworkBehaviour
 {
-    //public NetworkVariable<TEAMDATA> _Team[4] = new NetworkVariable<TEAMDATA>(NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public TEAMDATA[] _Teams;// = new NetworkVariable<TEAMDATA>(NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-     //public NetworkList<TEAMDATA> _TeamsNetwork = new NetworkList<TEAMDATA>(
-      //  default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public TEAMDATA[] _Teams;
+
+    [SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.DEATHMATCH);
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
+
+    private GameObject _KingOfTheHill;
+    private bool _GameInProgress;
 
     List<GameObject> _Players;
 
     // Start is called before the first frame update
     void Start()
     {
+        _KingOfTheHill = GameObject.Find("KingOfTheHill");
+        _GameInProgress = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!_GameInProgress) return;
         int i = 0;
         string Message = "";
         foreach(TEAMDATA TeamData in _Teams)
@@ -60,7 +67,56 @@ public class ObjectiveManager : NetworkBehaviour
             //Message += string.Format("{0} Members \n", TeamData.Players.Count);
             _ScoreText[i].text = Message;
             i++;
+
+            if (TeamData.TeamScore >= 10)
+            {
+                EndGame();
+            }
         }
+    }
+
+    public void EndGame()
+    {
+        _GameInProgress = false;
+        if (IsServer) GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
+        else GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
+    }
+
+    public void StartNewGame()
+    {
+        StartNewGameClientRPC();
+        StartNewGameServerRPC();
+    }
+
+    [ClientRpc]
+    void StartNewGameClientRPC()
+    {
+        _GameInProgress = true;
+        Debug.Log("Hdwadawdwadsi");
+        _KingOfTheHill.SetActive(false);
+        GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
+        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn();
+        switch (_CurrentMode.Value) 
+        {
+            case (MODES.DEATHMATCH):
+                Debug.Log("Starting deathmatch");
+                break;
+            case (MODES.KINGOFTHEHILL):
+                _KingOfTheHill.SetActive(true);
+                _KingOfTheHill.GetComponent<HillManager>().StartGame();
+                break;
+        }
+        for (int i = 0; i < _Teams.Length - 1; i++)
+        {
+            _Teams[i].TeamScore = 0;
+            //Message += string.Format("{0} Members \n", TeamData.Players.Count);
+        }
+    }
+
+    [ServerRpc]
+    void StartNewGameServerRPC()
+    {
+        
     }
 
     public Color GetTeamColour(TEAMS Team)
@@ -102,5 +158,15 @@ public class ObjectiveManager : NetworkBehaviour
     public void UpdateTeamDataClientRpc(TEAMDATA TeamData, int i)
     {
        _Teams[i] = TeamData;
+    }
+
+    public MODES GetMode()
+    {
+        return _CurrentMode.Value;
+    }
+
+    public void SetMode(int GameMode)
+    {
+        _CurrentMode.Value = (MODES)GameMode;
     }
 }
