@@ -7,34 +7,49 @@ public class HealthManager : NetworkBehaviour
 {
 
     //private float _HealthCur;
-    [SerializeField] NetworkVariable<float> _HealthCur = new NetworkVariable<float>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    [SerializeField] float _HealthMax;
-    [SerializeField] float _HealthRegen;
+    [SerializeField] NetworkVariable<int> _HealthCur = new NetworkVariable<int>(-1);
+    [SerializeField] int _HealthMax;
+    [SerializeField] int _HealthRegen;
     [SerializeField] float _HealthCooldown;
 
-    // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        _HealthCur.Value = _HealthMax;
+        _HealthCur.OnValueChanged += SetHealthClientRPC;
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Set the player healt on the server side
+    /// </summary>
+    [ServerRpc(RequireOwnership = false)]
+    private void SetHealthServerRPC(int health)
     {
-
+        _HealthCur.Value = health;
     }
 
-    public void ChangeHealth(float Delta)
+    /// <summary>
+    /// if the player health less than 0, do the thingy
+    /// </summary>
+    [ClientRpc]
+    private void SetHealthClientRPC(int prevHealth, int newHealth)
     {
-        _HealthCur.Value += Delta;
-        if (_HealthCur.Value <= 0)
+        if (newHealth <= 0)
         {
             transform.position = new Vector3(0, 10, 0);
-            _HealthCur.Value = _HealthMax;
+            if (IsOwner) SetHealthServerRPC(_HealthMax);
         }
-        else if (_HealthCur.Value > _HealthMax)
-        {
-            _HealthCur.Value = _HealthMax;
-        }
+    }
+
+    /// <summary>
+    /// Damage the player
+    /// </summary>
+    public void DamagePlayer(int damage)
+    {
+        int health = _HealthCur.Value;
+
+        Debug.Log("got hit " + damage);
+
+        health -= damage;
+
+        SetHealthServerRPC(health);
     }
 }
