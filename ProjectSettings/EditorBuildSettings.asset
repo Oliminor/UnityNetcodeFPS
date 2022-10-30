@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Ben.unity
     guid: bda0b1f433b7f5c4ca71f3fc75c7b008
+  - enabled: 1
+    path: Assets/Scenes/Ollie.unity
+    guid: 9cf2927d636f56343b63e2f4480dee3b
   m_configObjects: {}

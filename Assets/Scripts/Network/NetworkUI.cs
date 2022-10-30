@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using TMPro;
 
 public class NetworkUI : NetworkBehaviour
 {
 
+    [SerializeField] private GameObject chatUI;
+    [SerializeField] private TextMeshProUGUI chatText;
+    [SerializeField] private TMP_InputField chatInput;
     void Start()
     {
         Application.targetFrameRate = 120;
@@ -41,5 +45,21 @@ public class NetworkUI : NetworkBehaviour
         {
             weaponSpawners[i].SpawnWeaponClientRPC();
         }
+    }
+    public GameObject GetNetworkUI()
+    {
+        return gameObject;
+    }
+    public GameObject GetChatUI()
+    {
+        return chatUI;
+    }
+    public TMP_InputField GetInputField()
+    {
+        return chatInput;
+    }
+    public TextMeshProUGUI GetChatlog()
+    {
+        return chatText;
     }
 }
