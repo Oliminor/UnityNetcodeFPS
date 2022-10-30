@@ -6,19 +6,20 @@ using TMPro;
 
 public class NetworkUI : NetworkBehaviour
 {
+    [SerializeField] TextMeshProUGUI textInputForPlayerName;
+    public static NetworkUI instance;
 
-    [SerializeField] private GameObject chatUI;
-    [SerializeField] private TextMeshProUGUI chatText;
-    [SerializeField] private TMP_InputField chatInput;
+    public string GetPlayerNameFromInput() { return textInputForPlayerName.text; }
+
     void Start()
     {
+        instance = this;
         Application.targetFrameRate = 120;
     }
 
     public void StartHost()
     {
         NetworkManager.Singleton.StartHost();
-        SpawnWeapons();
     }
 
     public void StartClient()
@@ -29,37 +30,10 @@ public class NetworkUI : NetworkBehaviour
     public void StartServer()
     {
         NetworkManager.Singleton.StartServer();
-        SpawnWeapons();
     }
 
     public void Shutdown()
     {
         NetworkManager.Singleton.Shutdown();
-    }
-
-    private void SpawnWeapons()
-    {
-        WeaponSpawner[] weaponSpawners = WeaponSpawner.FindObjectsOfType<WeaponSpawner>();
-
-        for (int i = 0; i < weaponSpawners.Length; i++)
-        {
-            weaponSpawners[i].SpawnWeaponClientRPC();
-        }
-    }
-    public GameObject GetNetworkUI()
-    {
-        return gameObject;
-    }
-    public GameObject GetChatUI()
-    {
-        return chatUI;
-    }
-    public TMP_InputField GetInputField()
-    {
-        return chatInput;
-    }
-    public TextMeshProUGUI GetChatlog()
-    {
-        return chatText;
     }
 }

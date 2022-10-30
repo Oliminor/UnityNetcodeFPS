@@ -36,6 +36,8 @@ public class PlayerMovement : NetworkBehaviour
     public WeaponInventory GetWeaponInventory() { return weaponInv; }
     public float GetAnimSpeed() { return lerpMovementAnim; }
 
+    public Transform GetPlayerCamera() { return playerCamera; }
+
     // Start is called before the first frame update
     void Start()
     {

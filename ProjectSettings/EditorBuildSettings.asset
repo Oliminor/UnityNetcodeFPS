@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Joe.unity
     guid: 2f1a0a162176cb6468d4eb238f94f6e1
   - enabled: 1
