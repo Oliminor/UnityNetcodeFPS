@@ -40,10 +40,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8648011547008751320}
-  - component: {fileID: -418209047774735616}
-  - component: {fileID: 3794556562843175306}
   m_Layer: 6
-  m_Name: XCom_laserRifle_obj
+  m_Name: XComModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,48 +64,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-418209047774735616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8306951095173680226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2355ed02d4c90a409f8a8a57d3144e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectIndex: 2
-  spawner: {fileID: 0}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 8
---- !u!114 &3794556562843175306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8306951095173680226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 864da9491dbbf2e41afbd23951dfd642, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fireRate: 0.5
-  shotPoint: {fileID: 8125061263401457938}
-  projectile: {fileID: 4115888716068934635, guid: 30cb970065e4e3c488621282e8ccd822,
-    type: 3}
-  muzzleEffect: {fileID: 4279155088673816091, guid: 10992e6700505164c8870ebbb000d1a4,
-    type: 3}
-  objectPoolSize: 5
-  animController: {fileID: 9100000, guid: 34025cbc3b55d604a9244cbaeb20e47a, type: 2}
-  rotation: {x: 0, y: 0, z: 0}
-  _ProjectilePrefab: {fileID: 6751431095911560430, guid: 30cb970065e4e3c488621282e8ccd822,
-    type: 3}
-  _ProjectileSpeed: 50
-  _ProjectileDamage: 1
 --- !u!1 &9181307520287530174
 GameObject:
   m_ObjectHideFlags: 0

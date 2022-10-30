@@ -7,19 +7,14 @@ using Unity.Netcode.Components;
 
 public class WeaponManager : NetworkBehaviour
 {
-    [SerializeField] private int index;
     [SerializeField] private float fireRate;
 
     [SerializeField] private Transform shotPoint;
+    [SerializeField] private Transform projectile;
     [SerializeField] private GameObject muzzleEffect;
     [SerializeField] private int objectPoolSize;
     [SerializeField] private RuntimeAnimatorController animController;
     [SerializeField] private Vector3 rotation;
-
-    [SerializeField] private GameObject _ProjectilePrefab;
-    [SerializeField] private float _ProjectileSpeed;
-    [SerializeField] private float _ProjectileDamage;
-
 
     private Animator anim;
     private NetworkAnimator netAnim;
@@ -29,8 +24,6 @@ public class WeaponManager : NetworkBehaviour
     private PlayerMovement player;
 
     bool isWeaponPickedUp = false;
-
-    public int GetIndex() { return index; }
 
     // Start is called before the first frame update
     void Start()
@@ -97,7 +90,7 @@ public class WeaponManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// The shooting functions (ONLY THE EFFECTS)
+    /// The shooting functions (Effect only at the moment)
     /// </summary>
     private void Shooting()
     {
@@ -112,6 +105,9 @@ public class WeaponManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Calls this when the player Picks up a new item (it's a mess)
+    /// </summary>
     public void PickedUp()
     {
         isWeaponPickedUp = true;
@@ -127,21 +123,44 @@ public class WeaponManager : NetworkBehaviour
         for (int i = 0; i < objectPool.Count; i++) objectPool[i].SetActive(false);
     }
 
+    /// <summary>
+    ///  aim to the center of the screen/camera 
+    /// </summary>
+    private Vector3 FireDirection()
+    {
+        Ray ray = player.GetPlayerCamera().GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
+        Vector3 targetDirection;
+        if (Physics.Raycast(ray, out RaycastHit hit)) targetDirection = hit.point;
+        else targetDirection = ray.GetPoint(100);
+
+        return targetDirection;
+    }
+
+    /// <summary>
+    /// Calls the fire on the server side
+    /// </summary>
     [ServerRpc]
     private void FireVoidServerRPC()
     {
-        GameObject Proj = Instantiate(_ProjectilePrefab, transform.position + (transform.forward), transform.rotation);
-        Proj.GetComponent<NetworkObject>().Spawn();
-        Proj.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed);
+        GameObject _projectile = Instantiate(projectile.gameObject, shotPoint.position, Quaternion.identity);
+        _projectile.GetComponent<NetworkObject>().Spawn();
+        _projectile.transform.LookAt(FireDirection());
+
         FireVoidClientRPC();
     }
 
+    /// <summary>
+    /// Calls the fire on the client side
+    /// </summary>
     [ClientRpc]
     private void FireVoidClientRPC()
     {
         if(!player.IsOwner) StartCoroutine(Fire());
     }
 
+    /// <summary>
+    /// The fire function itself (Effect only at the moment)
+    /// </summary>
     IEnumerator Fire()
     {
         GameObject go = FreeObjectFromPool();
