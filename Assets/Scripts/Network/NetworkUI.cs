@@ -22,7 +22,7 @@ public class NetworkUI : NetworkBehaviour
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         _NetworkManager = GameObject.Find("NetworkManager");
         instance = this;
-        Application.targetFrameRate = 120;
+       // Application.targetFrameRate = 120;
     }
 
     void Update()

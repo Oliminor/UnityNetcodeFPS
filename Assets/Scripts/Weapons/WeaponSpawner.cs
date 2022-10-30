@@ -65,6 +65,9 @@ public class WeaponSpawner : NetworkBehaviour
         if (other.tag == "Player" && Input.GetKey(KeyCode.F))
         {
             Debug.Log("Picked up weapon index: " + index.Value + " Clinet ID " + other.GetComponent<PlayerMovement>().OwnerClientId);
+
+            if (!other.GetComponent<PlayerMovement>().GetWeaponInventory().CheckPlayerWeapon(index.Value)) return;
+
             other.GetComponent<PlayerMovement>().GetWeaponInventory().AddWeapon(index.Value);
             other.GetComponent<PlayerMovement>().GetWeaponInventory().ActivatePickedUpWeapon(index.Value - 1);
             DeActivateSpawnerServerRPC();

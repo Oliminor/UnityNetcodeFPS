@@ -70,6 +70,21 @@ public class WeaponInventory : NetworkBehaviour
         }
     }
 
+    public bool CheckPlayerWeapon(int _index)
+    {
+        for (int i = 0; i < defaultWeapons.Length; i++)
+        {
+            if (defaultWeapons[i] == _index) return false;
+        }
+
+        for (int i = 0; i < defaultWeapons.Length - 1; i++)
+        {
+            if (defaultWeapons[i] == 0) return true;
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// Add the weapon to the weapon inventory (index only, the weapons are already on the Player prefab)
     /// </summary>
