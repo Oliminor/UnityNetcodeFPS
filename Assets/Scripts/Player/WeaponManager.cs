@@ -16,6 +16,11 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private RuntimeAnimatorController animController;
     [SerializeField] private Vector3 rotation;
 
+    [SerializeField] private GameObject _ProjectilePrefab;
+    [SerializeField] private float _ProjectileSpeed;
+    [SerializeField] private float _ProjectileDamage;
+
+
     private Animator anim;
     private NetworkAnimator netAnim;
     private float fireRateCoolDown;
@@ -125,6 +130,9 @@ public class WeaponManager : NetworkBehaviour
     [ServerRpc]
     private void FireVoidServerRPC()
     {
+        GameObject Proj = Instantiate(_ProjectilePrefab, transform.position + (transform.forward), transform.rotation);
+        Proj.GetComponent<NetworkObject>().Spawn();
+        Proj.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed);
         FireVoidClientRPC();
     }
 
