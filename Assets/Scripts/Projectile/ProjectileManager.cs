@@ -12,13 +12,11 @@ public class ProjectileManager : NetworkBehaviour
     private Rigidbody _RigidBody;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        _Speed = 100;
-        _Damage = 33.3f;
         _RigidBody = GetComponent<Rigidbody>();
         _RigidBody.velocity = transform.forward * _Speed;
-        Destroy(gameObject, 100);
+        Destroy(gameObject, 30);
     }
 
     public void SetProperties(float Damage, float Speed)
@@ -37,6 +35,8 @@ public class ProjectileManager : NetworkBehaviour
 
     void OnTriggerEnter(Collider Object) 
     {
+        if (!IsServer) return;
+        if (Object.gameObject.tag == "Objective") return;
         if (Object.gameObject.tag == "Player")
         {
             Object.GetComponent<HealthManager>().ChangeHealth(-_Damage);
