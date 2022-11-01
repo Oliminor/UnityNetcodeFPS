@@ -2,49 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using Unity.Netcode.Transports.UTP;
 using TMPro;
 
 public class NetworkUI : NetworkBehaviour
 {
     [SerializeField] TextMeshProUGUI textInputForPlayerName;
-    [SerializeField] TextMeshProUGUI _IPInput;
-    [SerializeField] TextMeshProUGUI _PortInput;
     public static NetworkUI instance;
+    [SerializeField] public GameObject chatUI;
+    [SerializeField] public TextMeshProUGUI chatText;
+    [SerializeField] public TMP_InputField inputText;
 
     public string GetPlayerNameFromInput() { return textInputForPlayerName.text; }
 
-    private GameObject _ObjectiveManager;
-    private GameObject _NetworkManager;
-
     void Start()
     {
-        _ObjectiveManager = GameObject.Find("ObjectiveManager");
-        _NetworkManager = GameObject.Find("NetworkManager");
         instance = this;
-       // Application.targetFrameRate = 120;
-    }
-
-    void Update()
-    {
-        _NetworkManager.GetComponent<UnityTransport>().ConnectionData.Address = "127.0.0.1";//_IPInput.text;
+        
+        Application.targetFrameRate = 120;
+        DontDestroyOnLoad(gameObject);
+        chatUI.SetActive(false);
     }
 
     public void StartHost()
     {
-        _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
-        NetworkManager.Singleton.StartHost();
+        bool success = false;
+        success = NetworkManager.Singleton.StartHost();
+        if (success)
+        {
+            NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;//subscribe to SceneEvents
+            chatUI.SetActive(true);
+        }
     }
 
     public void StartClient()
     {
-        _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
-        NetworkManager.Singleton.StartClient();
+        bool success = false;
+        success = NetworkManager.Singleton.StartClient();
+        if (success)
+        {
+            NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent; //subscribe to SceneEvents
+            chatUI.SetActive(true);
+        }
+    }
+    public void StartGame()
+    {
+        NetworkManager.SceneManager.LoadScene("Test", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
     public void StartServer()
     {
-        _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
         NetworkManager.Singleton.StartServer();
     }
 
