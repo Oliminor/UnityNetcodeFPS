@@ -6,73 +6,43 @@ using Unity.Netcode;
 public class ProjectileManager : NetworkBehaviour
 {
 
-    private int _Damage;
+    private float _Damage;
     private float _Speed;
-    private float _Life;
 
     private Rigidbody _RigidBody;
-    private Vector3 previousPosition;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        previousPosition = transform.position;
-        SetProperties(34, 10, 3);
         _RigidBody = GetComponent<Rigidbody>();
-        StartCoroutine(TimeBeforeDestroyed(_Life));
+        _RigidBody.velocity = transform.forward * _Speed;
+        Destroy(gameObject, 30);
     }
 
-    /// <summary>
-    /// Set the projectile variables
-    /// </summary>
-    public void SetProperties(int Damage, float Speed, float Life)
+    public void SetProperties(float Damage, float Speed)
     {
-        _Damage = Damage;
         _Speed = Speed;
-        _Life = Life;
+        _Damage = Damage;
+
+        _RigidBody.velocity = transform.forward * _Speed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        _RigidBody.velocity = transform.forward * _Speed * (Time.deltaTime * 100);
 
-        if (!IsOwner) return;
-
-        CheckBetweenTwoPositions();
     }
 
-    /// <summary>
-    /// Set the time after the projectile destroyed
-    /// </summary>
-    IEnumerator TimeBeforeDestroyed(float _life)
+    void OnTriggerEnter(Collider Object) 
     {
-        yield return new WaitForSeconds(_life);
-        if (IsOwner) DamagePlayerServerRPC();
-    }
-
-    /// <summary>
-    /// Despawn the projectile
-    /// </summary>
-    [ServerRpc]
-    private void DamagePlayerServerRPC()
-    {
-        gameObject.GetComponent<NetworkObject>().Despawn();
-    }
-
-    /// <summary>
-    /// Hit player check and send the damage to the player
-    /// </summary>
-    private void CheckBetweenTwoPositions()
-    {
-        if (Physics.Linecast(transform.position, previousPosition, out RaycastHit hit))
+        if (!IsServer) return;
+        if (Object.gameObject.tag == "Objective") return;
+        if (Object.gameObject.tag == "Player")
         {
-            if (hit.transform.gameObject.tag == "Player")
-            {
-                DamagePlayerServerRPC();
-                hit.transform.gameObject.GetComponent<HealthManager>().DamagePlayer(_Damage);
-            }
+            Object.GetComponent<HealthManager>().ChangeHealth(-_Damage);
         }
-        previousPosition = transform.position;
+        GetComponent<NetworkObject>().Despawn();
+        Destroy(gameObject);
     }
+
 }
