@@ -13,8 +13,9 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
     private void Start()
     {
         singleton = this;
+        DontDestroyOnLoad(this);
     }
-    private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true)
+    private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true) //currently seems useless, but will see
     {
         string sceneEventAction;
         if (isLoading)
@@ -33,9 +34,9 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
     }
     public void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
     {
-        switch (sceneEvent.SceneEventType) //put things in this switch case that you want to happen at specific points (for example, set the player positions on the LoadEventComplete case)
+        switch (sceneEvent.SceneEventType) //put things in this switch case that you want to happen at specific points (for example, set the player positions on the LoadComplete case)
         {
-            case SceneEventType.Load:
+            case SceneEventType.Load: //start loading for everyone
                 {
                     var loadAsyncOp = sceneEvent.AsyncOperation;
                     if (IsServer)
@@ -48,7 +49,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     }
                     break;
                 }
-            case SceneEventType.Unload:
+            case SceneEventType.Unload: //start unloading for everyone
                 if (IsServer)
                 {
 
@@ -58,7 +59,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
 
                 }
                 break;
-            case SceneEventType.LoadEventCompleted:
+            case SceneEventType.LoadEventCompleted: //when every client and the server/host has loaded 
                 foreach (var clientID in sceneEvent.ClientsThatCompleted)
                 {
                     if (IsServer)
@@ -67,11 +68,12 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     }
                     else
                     {
-
+                        
                     }
+                    Debug.Log("loadeventcompleted");
                 }
                 break;
-            case SceneEventType.UnloadEventCompleted:
+            case SceneEventType.UnloadEventCompleted: //when everyone has unloaded 
                 foreach (var clientID in sceneEvent.ClientsThatCompleted)
                 {
                     if (IsServer)
@@ -84,7 +86,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     }
                 }
                 break;
-            case SceneEventType.LoadComplete:
+            case SceneEventType.LoadComplete: //event triggers each client successfully loading
                 if (IsServer)
                 {
                     if (sceneEvent.ClientId == NetworkManager.LocalClientId)
@@ -95,17 +97,20 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     {
 
                     }
+                    Debug.Log("loadcompleted");
                 }
                 else
                 {
 
                 }
                 break;
-            case SceneEventType.UnloadComplete:
+            case SceneEventType.UnloadComplete: //same as above but for unload 
                 break;
+
+                //theres also sync events unincluded 
         }
     }
-    public bool SceneLoadedSuccessfully
+    public bool SceneLoadedSuccessfully //prob not needed 
     {
         get => (loadedScene.IsValid() && loadedScene.isLoaded) ? true : false;
     }
@@ -118,8 +123,8 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         var status = NetworkManager.SceneManager.UnloadScene(loadedScene);
         CheckLoadStatus(status, false);
     }
-    //SERVER VALIDATION THINGZZZZZZZZZZZZZZZZZZZ
-    private bool ServerValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)//KEEP AN EYE ON ALL OF THIS
+    //SERVER VALIDATION THINGZZZZZZZZZZZZZZZZZZZ (also prob not needed) 
+    private bool ServerValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)//KEEP AN EYE ON ALL OF THIS OLLIE EVERYONE ELSE IGNORE
     {
         if (sceneName == "REMEMBER_TO_CHANGE_THIS" || sceneIndex == 3)//CHANGE ALL OF THIS FUNCTION
         {
@@ -131,7 +136,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         }
         return true;
     }
-    public override void OnNetworkSpawn() //MIGHT CAUSE PROBLEMS WHO KNOWS I DONT
+    public override void OnNetworkSpawn() //MIGHT CAUSE PROBLEMS WHO KNOWS I DONT (also prob not needed)
     {
         if (IsServer && !string.IsNullOrEmpty(sceneName))
         {

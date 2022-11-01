@@ -17,6 +17,7 @@ public class NetworkUI : NetworkBehaviour
     void Start()
     {
         instance = this;
+        
         Application.targetFrameRate = 120;
         DontDestroyOnLoad(gameObject);
         chatUI.SetActive(false);
