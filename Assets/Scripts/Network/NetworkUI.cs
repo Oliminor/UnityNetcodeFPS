@@ -27,7 +27,7 @@ public class NetworkUI : NetworkBehaviour
 
     void Update()
     {
-        _NetworkManager.GetComponent<UnityTransport>().ConnectionData.Address = _IPInput.text;
+        _NetworkManager.GetComponent<UnityTransport>().ConnectionData.Address = "127.0.0.1";//_IPInput.text;
     }
 
     public void StartHost()

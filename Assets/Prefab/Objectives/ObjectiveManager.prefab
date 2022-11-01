@@ -370,6 +370,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e80fd03c429e84b9c4c965baf671e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _NetworkCanvas: {fileID: 0}
-  _GameSetup: {fileID: 0}
-  _GameUI: {fileID: 0}
+  _NetworkCanvas: {fileID: 4222775899743432294, guid: b7ca6ac848dd5c74da6e74a1ad9d855d,
+    type: 3}
+  _GameSetup: {fileID: 2646932787883087953, guid: 28492f8071ecc2040929e4542be018ec,
+    type: 3}
+  _GameUI: {fileID: 7198583812681228261, guid: 2bcf8ce9c8bc1674791a87a86ba4f57b, type: 3}

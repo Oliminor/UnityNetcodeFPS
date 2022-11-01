@@ -84,8 +84,8 @@ public class ObjectiveManager : NetworkBehaviour
 
     public void StartNewGame()
     {
-        StartNewGameClientRPC();
         StartNewGameServerRPC();
+        StartNewGameClientRPC();
     }
 
     [ClientRpc]
@@ -95,7 +95,7 @@ public class ObjectiveManager : NetworkBehaviour
         Debug.Log("Hdwadawdwadsi");
         _KingOfTheHill.SetActive(false);
         GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
-        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn();
+        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
         switch (_CurrentMode.Value) 
         {
             case (MODES.DEATHMATCH):
@@ -106,17 +106,16 @@ public class ObjectiveManager : NetworkBehaviour
                 _KingOfTheHill.GetComponent<HillManager>().StartGame();
                 break;
         }
-        for (int i = 0; i < _Teams.Length - 1; i++)
-        {
-            _Teams[i].TeamScore = 0;
-            //Message += string.Format("{0} Members \n", TeamData.Players.Count);
-        }
     }
 
     [ServerRpc]
     void StartNewGameServerRPC()
     {
-        
+        for (int i = 0; i < _Teams.Length; i++)
+        {
+            Debug.Log("Setting team to 0 points" + i);
+            SetScoreToTeamServerRPC(0, i);
+        }
     }
 
     public Color GetTeamColour(TEAMS Team)
@@ -151,6 +150,13 @@ public class ObjectiveManager : NetworkBehaviour
     public void AddScoreToTeamServerRPC(int Score, int Team)
     {
         _Teams[Team].TeamScore += Score;
+        UpdateTeamDataClientRpc(_Teams[Team], Team);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetScoreToTeamServerRPC(int Score, int Team)
+    {
+        _Teams[Team].TeamScore = Score;
         UpdateTeamDataClientRpc(_Teams[Team], Team);
     }
 

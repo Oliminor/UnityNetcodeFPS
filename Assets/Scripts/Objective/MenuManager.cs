@@ -20,6 +20,7 @@ public class MenuManager : MonoBehaviour
         _NetworkCanvas.SetActive(true);
         _GameSetup.SetActive(false);
         _GameUI.SetActive(false);
+        SetMenuState(MENUSTATES.CONNECTION);
     }
 
     // Update is called once per frame
