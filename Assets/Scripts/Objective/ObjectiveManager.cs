@@ -43,12 +43,15 @@ public class ObjectiveManager : NetworkBehaviour
 
     private GameObject _KingOfTheHill;
     private bool _GameInProgress;
+    public static ObjectiveManager instance;
 
     List<GameObject> _Players;
 
     // Start is called before the first frame update
     void Start()
     {
+        DontDestroyOnLoad(this);
+        instance = this;
         _KingOfTheHill = GameObject.Find("KingOfTheHill");
         _GameInProgress = false;
     }

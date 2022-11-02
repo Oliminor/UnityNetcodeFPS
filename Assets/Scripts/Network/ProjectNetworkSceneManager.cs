@@ -15,6 +15,11 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         singleton = this;
         DontDestroyOnLoad(this);
     }
+
+    public void SwitchScenes()
+    {
+        NetworkManager.SceneManager.LoadScene("Test", LoadSceneMode.Single);
+    }
     private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true) //currently seems useless, but will see
     {
         string sceneEventAction;
@@ -84,6 +89,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     {
 
                     }
+                    NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
                 }
                 break;
             case SceneEventType.LoadComplete: //event triggers each client successfully loading
