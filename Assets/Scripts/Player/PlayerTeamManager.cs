@@ -18,17 +18,21 @@ public class PlayerTeamManager : NetworkBehaviour
     void Awake()
     {
         _NetworkManager = GameObject.Find("ObjectiveManager");
+        ChangeTeam(0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner) {
+        if (!IsOwner)
+        {
             this.gameObject.transform.GetChild(1).GetComponent<Renderer>().material.color = _NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value);
+            return;
         }
 
         if (Input.GetKeyDown("tab"))
         {
+            //_NetworkManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, 1);
             if (_Team.Value == TEAMS.RED) ChangeTeam(1);
             else ChangeTeam(0);
         }

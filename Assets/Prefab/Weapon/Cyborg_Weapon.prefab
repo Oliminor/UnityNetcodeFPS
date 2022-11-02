@@ -141,7 +141,7 @@ Transform:
   m_GameObject: {fileID: 7484525781483434150}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.7265444, y: 0.413, z: -0.19932556}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: -1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2774509030248924272}
@@ -186,4 +186,6 @@ MonoBehaviour:
     type: 3}
   objectPoolSize: 5
   animController: {fileID: 9100000, guid: 34025cbc3b55d604a9244cbaeb20e47a, type: 2}
-  rotation: {x: 0, y: 180, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
+  _Damage: 50
+  _Velocity: 100

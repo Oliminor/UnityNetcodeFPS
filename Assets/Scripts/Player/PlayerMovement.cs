@@ -7,6 +7,7 @@ public class PlayerMovement : NetworkBehaviour
     public enum PlayerStatus { GROUND, AIR, SHOOT }
 
     private PlayerStatus playerStatus;
+    private bool _MousePoppedOut;
 
     [SerializeField] Transform playerCamera;
     [SerializeField] Transform cameraPos;
@@ -61,6 +62,9 @@ public class PlayerMovement : NetworkBehaviour
             case PlayerStatus.SHOOT:
                 break;
         }
+        if (Input.GetKeyDown(KeyCode.Escape)) _MousePoppedOut = !_MousePoppedOut;
+        Screen.lockCursor = _MousePoppedOut;
+
     }
 
     // Update is called once per frame
@@ -120,6 +124,7 @@ public class PlayerMovement : NetworkBehaviour
     /// </summary>
     private void InputManager()
     {
+
         // Movement SPeed (Jog and Sprint)
         if (IsAiming())
         {
