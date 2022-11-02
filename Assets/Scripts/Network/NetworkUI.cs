@@ -38,6 +38,7 @@ public class NetworkUI : NetworkBehaviour
     {
         //_ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
         NetworkManager.Singleton.StartHost();
+        ObjectiveManager.instance.StartNewGame();
         NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
     }
 
