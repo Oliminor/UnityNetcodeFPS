@@ -329,6 +329,8 @@ MonoBehaviour:
   _ScoreText:
   - {fileID: 0}
   - {fileID: 0}
+  _PlayerForAI: {fileID: 1684849076941075191, guid: 21070ae849abecf458e2cce90a7844cc,
+    type: 3}
 --- !u!114 &3438880962905502151
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -40255,6 +40255,12 @@ PrefabInstance:
       objectReference: {fileID: 1731745297}
     - target: {fileID: 3438880962905502144, guid: aad0b21ab084fb941aeeabe7891d3c47,
         type: 3}
+      propertyPath: _PlayerForAI
+      value: 
+      objectReference: {fileID: 1684849076941075191, guid: 21070ae849abecf458e2cce90a7844cc,
+        type: 3}
+    - target: {fileID: 3438880962905502144, guid: aad0b21ab084fb941aeeabe7891d3c47,
+        type: 3}
       propertyPath: _ScoreText.Array.data[0]
       value: 
       objectReference: {fileID: 984595407}
