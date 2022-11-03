@@ -22,7 +22,7 @@ public class GLOBALVALUES : NetworkBehaviour
     {
         if(IsServer)
         {
-            if(sceneName=="Test")
+            if(sceneName== ProjectNetworkSceneManager.sceneNames[2])
             {
                 _ObjectiveManager = GameObject.Find("ObjectiveManager");
                 _ObjectiveManager.GetComponent<ObjectiveManager>().SetMode((int)gameMode);

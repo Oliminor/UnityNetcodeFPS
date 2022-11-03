@@ -36,7 +36,7 @@ public class HealthManager : NetworkBehaviour
             if(IsClient)
             {
                 Debug.Log("THIS IS HITTING");
-                if(sceneName=="Test") //NEED TO CHANGE THIS FOR ACTUAL SCENE OFC
+                if(sceneName== ProjectNetworkSceneManager.sceneNames[2]) //NEED TO CHANGE THIS FOR ACTUAL SCENE OFC
                 {
                     _NetworkManager = GameObject.Find("ObjectiveManager");
                     Respawn(false);

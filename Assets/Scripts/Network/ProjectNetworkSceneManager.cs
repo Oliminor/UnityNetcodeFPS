@@ -2,29 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
 
 public class ProjectNetworkSceneManager : NetworkBehaviour
 {
     public static ProjectNetworkSceneManager singleton;
     private string sceneName;
-    private Scene loadedScene;
+    public Scene loadedScene;
+    public static List<string> sceneNames = new List<string>();
 
     private void Start()
     {
         singleton = this;
+
+        sceneNames = SceneNamesForEasySwapping();
+        
+        foreach(string scene in sceneNames)
+        {
+            Debug.Log(scene);
+        }
         DontDestroyOnLoad(this);
     }
     
 
     public void SwitchScenes()
     {
-        NetworkManager.SceneManager.LoadScene("Test", LoadSceneMode.Single);
-        //ObjectiveManager.instance.GetComponent<RespawnManager>().RemoveSpawnPoint();
+        NetworkManager.SceneManager.LoadScene(sceneNames[2], LoadSceneMode.Single);
+        
     }
     public void ExitGameMode()
     {
-        NetworkManager.SceneManager.LoadScene("Ollie", LoadSceneMode.Single);
+        NetworkManager.SceneManager.LoadScene(sceneNames[1], LoadSceneMode.Single);
     }
     private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true) //currently seems useless, but will see
     {
@@ -160,5 +169,19 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         }
         base.OnNetworkSpawn();
     }
-}
+
     //END OF SERVER VALIDATION THINGZZZZZZZZZZZZ
+
+    private List<string> SceneNamesForEasySwapping() //absolutely not my code in the slightest
+    {
+        var regex = new Regex(@"([^/]*/)*([\w\d\-]*)\.unity");
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+        {
+            var path = SceneUtility.GetScenePathByBuildIndex(i);
+            var name = regex.Replace(path, "$2");
+            sceneNames.Add(name);
+        }
+        return sceneNames;
+    }
+}
+    

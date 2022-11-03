@@ -67,7 +67,7 @@ public class ObjectiveManager : NetworkBehaviour
     {
         if(IsServer)
         {
-            if(sceneName=="Test")
+            if(sceneName==ProjectNetworkSceneManager.sceneNames[2])
             {
                 StartNewGame();
                 Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED");
