@@ -28,4 +28,9 @@ public class RespawnManager : MonoBehaviour
     {
         return _AllRespawnPoints[Random.Range(0, _AllRespawnPoints.Count-1)];
     }
+
+    public void RemoveSpawnPoint()
+    {
+        _AllRespawnPoints.Clear();
+    }
 }

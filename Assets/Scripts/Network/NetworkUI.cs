@@ -10,6 +10,9 @@ public class NetworkUI : NetworkBehaviour
     [SerializeField] TextMeshProUGUI textInputForPlayerName;
     [SerializeField] TextMeshProUGUI _IPInput;
     [SerializeField] TextMeshProUGUI _PortInput;
+    public TMP_InputField inputText;
+    public TextMeshProUGUI chatText;
+    public GameObject chatUI;
     public static NetworkUI instance;
 
     public string GetPlayerNameFromInput() { return textInputForPlayerName.text; }
@@ -22,6 +25,7 @@ public class NetworkUI : NetworkBehaviour
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         _NetworkManager = GameObject.Find("NetworkManager");
         instance = this;
+        DontDestroyOnLoad(this);
        // Application.targetFrameRate = 120;
     }
 
@@ -32,14 +36,17 @@ public class NetworkUI : NetworkBehaviour
 
     public void StartHost()
     {
-        _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
+        //_ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
         NetworkManager.Singleton.StartHost();
+        ObjectiveManager.instance.StartNewGame();
+        NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
     }
 
     public void StartClient()
     {
         _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
         NetworkManager.Singleton.StartClient();
+        NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
     }
 
     public void StartServer()

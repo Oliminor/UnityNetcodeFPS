@@ -43,14 +43,25 @@ public class ObjectiveManager : NetworkBehaviour
 
     private GameObject _KingOfTheHill;
     private bool _GameInProgress;
+    public static ObjectiveManager instance;
 
     List<GameObject> _Players;
 
     // Start is called before the first frame update
     void Start()
     {
+        DontDestroyOnLoad(this);
+        instance = this;
         _KingOfTheHill = GameObject.Find("KingOfTheHill");
         _GameInProgress = false;
+    }
+
+    private void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
+    {
+        if(sceneEvent.SceneEventType==SceneEventType.LoadComplete)
+        {
+            GetComponent<RespawnManager>().GetRespawnPoint();
+        }
     }
 
     // Update is called once per frame
@@ -65,7 +76,7 @@ public class ObjectiveManager : NetworkBehaviour
             Message += string.Format("Team {0}\n", TeamData.TeamName);
             Message += string.Format("{0} Score \n", TeamData.TeamScore);
             //Message += string.Format("{0} Members \n", TeamData.Players.Count);
-            _ScoreText[i].text = Message;
+            //_ScoreText[i].text = Message;
             i++;
 
             if (TeamData.TeamScore >= 10)
@@ -93,8 +104,8 @@ public class ObjectiveManager : NetworkBehaviour
     {
         _GameInProgress = true;
         Debug.Log("Hdwadawdwadsi");
-        _KingOfTheHill.SetActive(false);
-        GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
+        //_KingOfTheHill.SetActive(false);
+        //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
         NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
         switch (_CurrentMode.Value) 
         {
@@ -174,5 +185,9 @@ public class ObjectiveManager : NetworkBehaviour
     public void SetMode(int GameMode)
     {
         _CurrentMode.Value = (MODES)GameMode;
+    }
+    public void StartGameOnTransition()
+    {
+        Invoke(nameof(StartNewGame), 0.2f);
     }
 }
