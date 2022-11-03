@@ -7,23 +7,23 @@ using UnityEngine.SceneManagement;
 
 public class GLOBALVALUES : NetworkBehaviour
 {
-    
-    public enum GameMode { TDM, KOTH };
 
-    public MODES gameMode; 
+    public MODES gameMode;
+    private GameObject _ObjectiveManager;
     // Start is called before the first frame update
     void Start()
     {
-        gameMode = MODES.DEATHMATCH;
+        gameMode = MODES.KINGOFTHEHILL;
         NetworkManager.SceneManager.OnLoadComplete += SceneManager_OnLoadComplete;
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
     }
 
     private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
     {
-        if(IsHost)
+        if(IsServer)
         {
-            ObjectiveManager.instance.SetMode(0);
-            Debug.Log("HELLLLLLLLLLLOOOOOOOOOOOOOOOOOOOO");
+            _ObjectiveManager = GameObject.Find("ObjectiveManager");
+            _ObjectiveManager.GetComponent<ObjectiveManager>().SetMode((int)gameMode);
         }
     }
     // Update is called once per frame
