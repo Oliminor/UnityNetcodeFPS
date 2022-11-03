@@ -65,14 +65,14 @@ public class PlayerMovement : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Escape)) _MousePoppedOut = !_MousePoppedOut;
         Screen.lockCursor = _MousePoppedOut;
 
+        Direction();
+
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         if (!IsOwner) return;
-
-        Direction();
 
         switch (playerStatus)
         {
