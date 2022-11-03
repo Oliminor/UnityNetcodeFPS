@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Collections;
 using Unity.Netcode;
-
+using UnityEngine.SceneManagement;
 using TMPro;
 
 
@@ -40,19 +40,21 @@ public class ObjectiveManager : NetworkBehaviour
     [SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.DEATHMATCH);
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
+    [SerializeField] GameObject _PlayerForAI;
 
     private GameObject _KingOfTheHill;
     private bool _GameInProgress;
     public static ObjectiveManager instance;
 
-    List<GameObject> _Players;
+    private List<GameObject> _Players;
+    private List<GameObject> _Bots;
 
     // Start is called before the first frame update
     void Start()
     {
+        _Bots = new List<GameObject> { };
         DontDestroyOnLoad(this);
         instance = this;
-        _KingOfTheHill = GameObject.Find("KingOfTheHill");
         _GameInProgress = false;
     }
 
@@ -95,15 +97,16 @@ public class ObjectiveManager : NetworkBehaviour
 
     public void StartNewGame()
     {
+        _KingOfTheHill = GameObject.Find("KingOfTheHill");
         StartNewGameServerRPC();
         StartNewGameClientRPC();
+        
     }
 
     [ClientRpc]
     void StartNewGameClientRPC()
     {
         _GameInProgress = true;
-        Debug.Log("Hdwadawdwadsi");
         //_KingOfTheHill.SetActive(false);
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
         NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
@@ -113,8 +116,7 @@ public class ObjectiveManager : NetworkBehaviour
                 Debug.Log("Starting deathmatch");
                 break;
             case (MODES.KINGOFTHEHILL):
-                _KingOfTheHill.SetActive(true);
-                _KingOfTheHill.GetComponent<HillManager>().StartGame();
+                Debug.Log("Starting King of the hill");
                 break;
         }
     }
@@ -122,11 +124,33 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     void StartNewGameServerRPC()
     {
+        ClearAIServerRPC();
+        SpawnAIServerRPC();
         for (int i = 0; i < _Teams.Length; i++)
         {
             Debug.Log("Setting team to 0 points" + i);
             SetScoreToTeamServerRPC(0, i);
         }
+    }
+
+    [ServerRpc]
+    public void SpawnAIServerRPC()
+    {
+        GameObject AI = Instantiate(_PlayerForAI);
+        AI.GetComponent<NetworkObject>().Spawn(true);
+        AI.GetComponent<NetworkObject>().RemoveOwnership();
+        _Bots.Add(AI);
+    }
+
+    [ServerRpc]
+    public void ClearAIServerRPC()
+    {
+        foreach(GameObject Bot in _Bots)
+        {
+            Bot.GetComponent<NetworkObject>().Despawn();
+            Destroy(Bot);
+        }
+        _Bots.Clear();
     }
 
     public Color GetTeamColour(TEAMS Team)

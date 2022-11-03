@@ -13,6 +13,7 @@ public class HillManager : NetworkBehaviour
     private GameObject _NetworkManager;
     private TEAMS _ControllingTeam;
     private List<TEAMS> _TEAMSInHill;
+    private bool _GameActive;
 
     private float _PointCountdown;
 
@@ -24,20 +25,28 @@ public class HillManager : NetworkBehaviour
 
     void Awake()
     {
-
+        _NetworkManager = GameObject.Find("ObjectiveManager");
+        _GameActive = false;
+        StartGame();
     }
 
     public void StartGame()
     {
+        Debug.Log("HEy i've been cvalled");
+        _TEAMSInHill = new List<TEAMS> { };
         if (_NetworkManager.GetComponent<ObjectiveManager>().GetMode() == MODES.KINGOFTHEHILL)
         {
+            Debug.Log("Yup");
+            _GameActive = true;
             _State = _States.EMPTY;
             gameObject.SetActive(true);
-            _TEAMSInHill = new List<TEAMS> { };
             _PointCountdown = 1;
         }
         else
         {
+            Debug.Log("Nope");
+            _State = _States.EMPTY;
+            _GameActive = false;
             gameObject.SetActive(false);
         }
     }
@@ -46,6 +55,7 @@ public class HillManager : NetworkBehaviour
     void Update()
     {
         if (!IsServer) return;
+        if (!_GameActive) return;
         TEAMS TeamControlling;
         switch (_State)
         {

@@ -17,10 +17,10 @@ public class ChatHandler: NetworkBehaviour
         if (IsOwner)
         {
             networkUI = NetworkUI.FindObjectOfType<NetworkUI>();
-            chatInput=networkUI.GetInputField();
-            chatUI=networkUI.GetChatUI();
-            chatText=networkUI.GetChatlog();
-            chatUI.SetActive(true);
+            //chatInput=networkUI.GetInputField();
+            //chatUI=networkUI.GetChatUI();
+            //chatText=networkUI.GetChatlog();
+            //chatUI.SetActive(true);
         }
     }
 
