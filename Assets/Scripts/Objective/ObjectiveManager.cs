@@ -42,7 +42,7 @@ public class ObjectiveManager : NetworkBehaviour
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
     [SerializeField] GameObject _PlayerForAI;
 
-    private GameObject _KingOfTheHill;
+    private GameObject _Objective;
     private bool _GameInProgress;
     public static ObjectiveManager instance;
 
@@ -53,9 +53,18 @@ public class ObjectiveManager : NetworkBehaviour
     void Start()
     {
         _Bots = new List<GameObject> { };
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
         instance = this;
         _GameInProgress = false;
+    }
+
+    void Awake()
+    {
+        _Bots = new List<GameObject> { };
+        //DontDestroyOnLoad(this);
+        instance = this;
+        _GameInProgress = false;
+        StartNewGame();
     }
 
     private void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
@@ -67,7 +76,7 @@ public class ObjectiveManager : NetworkBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!_GameInProgress) return;
         int i = 0;
@@ -81,7 +90,7 @@ public class ObjectiveManager : NetworkBehaviour
             //_ScoreText[i].text = Message;
             i++;
 
-            if (TeamData.TeamScore >= 10)
+            if (TeamData.TeamScore >= 999)
             {
                 EndGame();
             }
@@ -97,7 +106,8 @@ public class ObjectiveManager : NetworkBehaviour
 
     public void StartNewGame()
     {
-        _KingOfTheHill = GameObject.Find("KingOfTheHill");
+        _Bots.Clear();
+        _Objective = GameObject.Find("KingOfTheHill");
         StartNewGameServerRPC();
         StartNewGameClientRPC();
         
@@ -125,7 +135,11 @@ public class ObjectiveManager : NetworkBehaviour
     void StartNewGameServerRPC()
     {
         ClearAIServerRPC();
-        SpawnAIServerRPC();
+        //SpawnAIServerRPC();
+        //SpawnAIServerRPC();
+        //SpawnAIServerRPC();
+        //SpawnAIServerRPC();
+        //SpawnAIServerRPC();
         for (int i = 0; i < _Teams.Length; i++)
         {
             Debug.Log("Setting team to 0 points" + i);
@@ -139,6 +153,8 @@ public class ObjectiveManager : NetworkBehaviour
         GameObject AI = Instantiate(_PlayerForAI);
         AI.GetComponent<NetworkObject>().Spawn(true);
         AI.GetComponent<NetworkObject>().RemoveOwnership();
+        AI.GetComponent<PlayerTeamManager>().ChangeTeam(Random.Range(0, 1));
+        AI.GetComponent<HealthManager>().Respawn(false);
         _Bots.Add(AI);
     }
 
@@ -147,10 +163,24 @@ public class ObjectiveManager : NetworkBehaviour
     {
         foreach(GameObject Bot in _Bots)
         {
-            Bot.GetComponent<NetworkObject>().Despawn();
+            Bot.GetComponent<NetworkObject>().Despawn(false);
             Destroy(Bot);
         }
         _Bots.Clear();
+    }
+
+    public int GetTeamInControl()
+    {
+        switch (_CurrentMode.Value)
+        {
+            case (MODES.DEATHMATCH):
+                return -1;
+                break;
+            case (MODES.KINGOFTHEHILL):
+                return _Objective.GetComponent<HillManager>().GetTeamControlling();
+                break;
+        }
+        return 0;
     }
 
     public Color GetTeamColour(TEAMS Team)

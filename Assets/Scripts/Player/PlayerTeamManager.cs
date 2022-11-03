@@ -24,9 +24,9 @@ public class PlayerTeamManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        gameObject.transform.GetChild(1).GetComponent<Renderer>().material.color = _NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value);
         if (!IsOwner)
         {
-            this.gameObject.transform.GetChild(1).GetComponent<Renderer>().material.color = _NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value);
             return;
         }
 

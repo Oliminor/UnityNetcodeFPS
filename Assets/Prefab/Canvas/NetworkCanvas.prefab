@@ -741,6 +741,9 @@ MonoBehaviour:
   textInputForPlayerName: {fileID: 4222775900182886829}
   _IPInput: {fileID: 0}
   _PortInput: {fileID: 0}
+  inputText: {fileID: 0}
+  chatText: {fileID: 0}
+  chatUI: {fileID: 0}
 --- !u!223 &4222775899743432297
 Canvas:
   m_ObjectHideFlags: 0

@@ -19,7 +19,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
     public void SwitchScenes()
     {
         NetworkManager.SceneManager.LoadScene("Test", LoadSceneMode.Single);
-        ObjectiveManager.instance.GetComponent<RespawnManager>().RemoveSpawnPoint();
+        //ObjectiveManager.instance.GetComponent<RespawnManager>().RemoveSpawnPoint();
     }
     private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true) //currently seems useless, but will see
     {

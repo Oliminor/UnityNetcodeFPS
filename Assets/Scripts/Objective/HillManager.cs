@@ -14,6 +14,7 @@ public class HillManager : NetworkBehaviour
     private TEAMS _ControllingTeam;
     private List<TEAMS> _TEAMSInHill;
     private bool _GameActive;
+    private int _TeamInControl;
 
     private float _PointCountdown;
 
@@ -61,6 +62,7 @@ public class HillManager : NetworkBehaviour
         {
             case (_States.EMPTY):
                 Debug.Log("Empty");
+                _TeamInControl = -1;
                 if (_TEAMSInHill.Count > 0) _State = _States.CONTROLLED;
                 break;
             case (_States.CONTROLLED):
@@ -78,6 +80,7 @@ public class HillManager : NetworkBehaviour
                         break;
                     }
                 }
+                _TeamInControl = (int)TeamControlling;
                 _ControllingTeam = TeamControlling;
                 if (_PointCountdown <= 0)
                 {
@@ -95,6 +98,7 @@ public class HillManager : NetworkBehaviour
                     if (TeamControlling != Team)
                     {
                         _State = _States.CONTESTED;
+                        _TeamInControl = -2;
                         return;
                     }
                 }
@@ -102,6 +106,11 @@ public class HillManager : NetworkBehaviour
                 break;
         }
 
+    }
+
+    public int GetTeamControlling()
+    {
+        return _TeamInControl;
     }
 
     void OnTriggerEnter(Collider Object)
