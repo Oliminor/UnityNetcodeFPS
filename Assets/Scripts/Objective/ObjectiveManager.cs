@@ -216,8 +216,4 @@ public class ObjectiveManager : NetworkBehaviour
     {
         _CurrentMode.Value = (MODES)GameMode;
     }
-    public void StartGameOnTransition()
-    {
-        Invoke(nameof(StartNewGame), 0.2f);
-    }
 }
