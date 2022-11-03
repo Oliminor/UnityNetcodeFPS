@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Netcode;
 
 public class HealthManager : NetworkBehaviour
@@ -20,11 +21,26 @@ public class HealthManager : NetworkBehaviour
     {
         _NetworkManager = GameObject.Find("ObjectiveManager");
         _KilledBy = gameObject;
+        NetworkManager.SceneManager.OnLoadComplete += SceneManager_OnLoadComplete;
     }
 
     void Awake()
     {
         _NetworkManager = GameObject.Find("ObjectiveManager");
+    }
+
+    private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        if (IsOwner)
+        {
+            if(IsClient)
+            {
+                Debug.Log("THIS IS HITTING");
+                _NetworkManager = GameObject.Find("ObjectiveManager");
+                Respawn(false);
+            }
+        }
+
     }
 
     public override void OnNetworkSpawn()

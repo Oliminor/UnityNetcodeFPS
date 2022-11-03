@@ -15,11 +15,12 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         singleton = this;
         DontDestroyOnLoad(this);
     }
+    
 
     public void SwitchScenes()
     {
         NetworkManager.SceneManager.LoadScene("Test", LoadSceneMode.Single);
-        ObjectiveManager.instance.GetComponent<RespawnManager>().RemoveSpawnPoint();
+        //ObjectiveManager.instance.GetComponent<RespawnManager>().RemoveSpawnPoint();
     }
     private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true) //currently seems useless, but will see
     {
@@ -51,7 +52,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     }
                     else
                     {
-
+                        
                     }
                     break;
                 }
@@ -71,11 +72,11 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     if (IsServer)
                     {
                         loadedScene = sceneEvent.Scene;
-                        ObjectiveManager.instance.StartGameOnTransition();
+                        
                     }
                     else
                     {
-                        
+                        ObjectiveManager.instance.StartNewGame();
                     }
                     Debug.Log("loadeventcompleted");
                 }

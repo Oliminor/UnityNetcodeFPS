@@ -50,20 +50,26 @@ public class ObjectiveManager : NetworkBehaviour
     private List<GameObject> _Bots;
 
     // Start is called before the first frame update
+    private void Awake()
+    {
+        NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
+    }
     void Start()
     {
         _Bots = new List<GameObject> { };
         DontDestroyOnLoad(this);
         instance = this;
         _GameInProgress = false;
+        
     }
 
-    private void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
+    private void SceneManagement_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        if(sceneEvent.SceneEventType==SceneEventType.LoadComplete)
+        if(IsServer)
         {
-            GetComponent<RespawnManager>().GetRespawnPoint();
-        }
+            StartNewGame();
+            Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED");
+        }  
     }
 
     // Update is called once per frame
@@ -107,7 +113,7 @@ public class ObjectiveManager : NetworkBehaviour
     void StartNewGameClientRPC()
     {
         _GameInProgress = true;
-        //_KingOfTheHill.SetActive(false);
+        _KingOfTheHill.SetActive(false);
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
         NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
         switch (_CurrentMode.Value) 
@@ -124,8 +130,8 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     void StartNewGameServerRPC()
     {
-        ClearAIServerRPC();
-        SpawnAIServerRPC();
+        //ClearAIServerRPC();
+        //SpawnAIServerRPC();
         for (int i = 0; i < _Teams.Length; i++)
         {
             Debug.Log("Setting team to 0 points" + i);
@@ -145,7 +151,7 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     public void ClearAIServerRPC()
     {
-        foreach(GameObject Bot in _Bots)
+        foreach (GameObject Bot in _Bots)
         {
             Bot.GetComponent<NetworkObject>().Despawn();
             Destroy(Bot);
