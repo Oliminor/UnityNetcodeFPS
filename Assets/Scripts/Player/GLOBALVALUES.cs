@@ -22,8 +22,11 @@ public class GLOBALVALUES : NetworkBehaviour
     {
         if(IsServer)
         {
-            _ObjectiveManager = GameObject.Find("ObjectiveManager");
-            _ObjectiveManager.GetComponent<ObjectiveManager>().SetMode((int)gameMode);
+            if(sceneName=="Test")
+            {
+                _ObjectiveManager = GameObject.Find("ObjectiveManager");
+                _ObjectiveManager.GetComponent<ObjectiveManager>().SetMode((int)gameMode);
+            }
         }
     }
     // Update is called once per frame

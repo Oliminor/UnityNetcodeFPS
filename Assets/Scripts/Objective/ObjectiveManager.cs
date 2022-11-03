@@ -53,11 +53,11 @@ public class ObjectiveManager : NetworkBehaviour
     private void Awake()
     {
         NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
+        NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
     }
     void Start()
     {
         _Bots = new List<GameObject> { };
-        DontDestroyOnLoad(this);
         instance = this;
         _GameInProgress = false;
         
@@ -67,9 +67,24 @@ public class ObjectiveManager : NetworkBehaviour
     {
         if(IsServer)
         {
-            StartNewGame();
-            Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED");
+            if(sceneName=="Test")
+            {
+                StartNewGame();
+                Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED");
+            }
+           
         }  
+    }
+    private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
+    {
+        if(IsServer)
+        {
+            if (_GameInProgress)
+            {
+                EndGame();
+            }
+        }
+        
     }
 
     // Update is called once per frame
