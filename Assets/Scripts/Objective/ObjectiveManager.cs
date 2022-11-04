@@ -53,7 +53,7 @@ public class ObjectiveManager : NetworkBehaviour
     private void Awake()
     {
         NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
-        NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
+        //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
     }
     void Start()
     {
@@ -75,17 +75,17 @@ public class ObjectiveManager : NetworkBehaviour
            
         }  
     }
-    private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
-    {
-        if(IsServer)
-        {
-            if (_GameInProgress)
-            {
-                EndGame();
-            }
-        }
+    //private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
+    //{
+    //    if(IsServer)
+    //    {
+    //        if (_GameInProgress)
+    //        {
+    //            EndGame();
+    //        }
+    //    }
         
-    }
+    //}
 
     // Update is called once per frame
     void Update()

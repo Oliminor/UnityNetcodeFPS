@@ -44,15 +44,16 @@ public class NetworkUI : NetworkBehaviour
 
     public void StartClient()
     {
-        _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
+        //_ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
         NetworkManager.Singleton.StartClient();
         NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
     }
 
     public void StartServer()
     {
-        _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
+        //_ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
         NetworkManager.Singleton.StartServer();
+        NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
     }
 
     public void Shutdown()

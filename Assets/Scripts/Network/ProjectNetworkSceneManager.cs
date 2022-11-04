@@ -4,13 +4,21 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
+using TMPro; 
 
 public class ProjectNetworkSceneManager : NetworkBehaviour
 {
     public static ProjectNetworkSceneManager singleton;
     private string sceneName;
     public Scene loadedScene;
+    
     public static List<string> sceneNames = new List<string>();
+    private NetworkVariable<int> playersConnected = new NetworkVariable<int>();
+    private NetworkVariable<int> playersLoadedInScene = new NetworkVariable<int>();
+    
+    public TextMeshProUGUI playersConnectedText;
+    public TextMeshProUGUI playersLoadedText;
+
 
     private void Start()
     {
@@ -23,17 +31,34 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
             Debug.Log(scene);
         }
         DontDestroyOnLoad(this);
+
+        NetworkManager.Singleton.OnClientConnectedCallback += (id) => { if (NetworkManager.Singleton.IsServer) playersConnected.Value++; };
+
+        NetworkManager.Singleton.OnClientDisconnectCallback += (id) => { if (NetworkManager.Singleton.IsServer) playersConnected.Value--; };
     }
-    
+    private void Update()
+    {
+        playersConnectedText.text = playersConnected.Value.ToString();
+        playersLoadedText.text = playersLoadedInScene.Value.ToString();
+    }
+
 
     public void SwitchScenes()
     {
-        NetworkManager.SceneManager.LoadScene(sceneNames[2], LoadSceneMode.Single);
+        NetworkManager.SceneManager.LoadScene("Test", LoadSceneMode.Single);
+        if (IsServer)
+        {
+            playersLoadedInScene = new NetworkVariable<int>();
+        }
         
     }
     public void ExitGameMode()
     {
-        NetworkManager.SceneManager.LoadScene(sceneNames[1], LoadSceneMode.Single);
+        NetworkManager.SceneManager.LoadScene("Ollie", LoadSceneMode.Single);
+        if (IsServer)
+        {
+            playersLoadedInScene = new NetworkVariable<int>();
+        }
     }
     private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true) //currently seems useless, but will see
     {
@@ -86,10 +111,11 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     {
                         loadedScene = sceneEvent.Scene;
                         
+                        
                     }
                     else
                     {
-                        ObjectiveManager.instance.StartNewGame();
+
                     }
                     Debug.Log("loadeventcompleted");
                 }
@@ -119,6 +145,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     {
 
                     }
+                    if (NetworkManager.Singleton.IsServer) playersLoadedInScene.Value++;
                     Debug.Log("loadcompleted");
                 }
                 else
@@ -146,24 +173,13 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         CheckLoadStatus(status, false);
     }
     //SERVER VALIDATION THINGZZZZZZZZZZZZZZZZZZZ (also prob not needed) 
-    private bool ServerValidation(int sceneIndex, string sceneName, LoadSceneMode loadSceneMode)//KEEP AN EYE ON ALL OF THIS OLLIE EVERYONE ELSE IGNORE
-    {
-        if (sceneName == "REMEMBER_TO_CHANGE_THIS" || sceneIndex == 3)//CHANGE ALL OF THIS FUNCTION
-        {
-            return false;
-        }
-        if (loadSceneMode == LoadSceneMode.Single)
-        {
-            return false;
-        }
-        return true;
-    }
+   
     public override void OnNetworkSpawn() //MIGHT CAUSE PROBLEMS WHO KNOWS I DONT (also prob not needed)
     {
         if (IsServer && !string.IsNullOrEmpty(sceneName))
         {
             NetworkManager.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
-            var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+            var status = NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             CheckLoadStatus(status);
 
         }
