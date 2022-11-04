@@ -41,13 +41,13 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Velocity Z
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -121,8 +121,7 @@ BlendTree:
   m_Name: Blend Tree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 1375c94ff45abf648acefce7f4effd06,
-      type: 3}
+    m_Motion: {fileID: 7400000, guid: 6cc92458144404f46a2e2693604011d0, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -130,8 +129,7 @@ BlendTree:
     m_DirectBlendParameter: Velocity X
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: a89a977ad451e8241b59de6c2db1e54b,
-      type: 3}
+    m_Motion: {fileID: 7400000, guid: 689f5e73e29f2e14591179a6c3394980, type: 2}
     m_Threshold: 0.2
     m_Position: {x: 0, y: 1}
     m_TimeScale: 1
@@ -139,8 +137,7 @@ BlendTree:
     m_DirectBlendParameter: Velocity X
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 3f1b769347334e84b9d56a2df529da85,
-      type: 3}
+    m_Motion: {fileID: 7400000, guid: f65ba044b61a63f4cadd339d621d1e58, type: 2}
     m_Threshold: 0.4
     m_Position: {x: 0, y: -1}
     m_TimeScale: 1
@@ -148,8 +145,7 @@ BlendTree:
     m_DirectBlendParameter: Velocity X
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 1f5be9872ee0fa5499e44bf287f8d261,
-      type: 3}
+    m_Motion: {fileID: 7400000, guid: 20bcad56b0fcf0944bd6a9c5bfedc6a2, type: 2}
     m_Threshold: 0.6
     m_Position: {x: -1, y: 0}
     m_TimeScale: 1
@@ -157,8 +153,7 @@ BlendTree:
     m_DirectBlendParameter: Velocity X
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: 12ab8f04b42782948a8637b9b0dd2a65,
-      type: 3}
+    m_Motion: {fileID: 7400000, guid: babd930bd6a07c2489611d762f46b880, type: 2}
     m_Threshold: 0.8
     m_Position: {x: 1, y: 0}
     m_TimeScale: 1
