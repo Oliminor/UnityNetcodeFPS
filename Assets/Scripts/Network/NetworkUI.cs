@@ -27,24 +27,24 @@ public class NetworkUI : NetworkBehaviour
 
     void Update()
     {
-        _NetworkManager.GetComponent<UnityTransport>().ConnectionData.Address = _IPInput.text;
+       // _NetworkManager.GetComponent<UnityTransport>().ConnectionData.Address = _IPInput.text;
     }
 
     public void StartHost()
     {
-        _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
+       // _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
         NetworkManager.Singleton.StartHost();
     }
 
     public void StartClient()
     {
-        _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
+       // _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
         NetworkManager.Singleton.StartClient();
     }
 
     public void StartServer()
     {
-        _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
+       // _ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
         NetworkManager.Singleton.StartServer();
     }
 

@@ -79,7 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectIndex: 2
-  spawner: {fileID: 0}
+  spawner: {fileID: 6004201581527224027, guid: 457c40415648ca74bb5669d6522e1978, type: 3}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
@@ -104,8 +104,11 @@ MonoBehaviour:
   objectPoolSize: 5
   animController: {fileID: 9100000, guid: 34025cbc3b55d604a9244cbaeb20e47a, type: 2}
   rotation: {x: 0, y: 0, z: 0}
-  _Damage: 125
-  _Velocity: 150
+  _ProjectileDamage: 3
+  _ProjectileSpeed: 100
+  _ProjectileLife: 3
+  _ProjectileNumber: 7
+  _ProjectileSpread: 150
 --- !u!1 &9181307520287530174
 GameObject:
   m_ObjectHideFlags: 0
