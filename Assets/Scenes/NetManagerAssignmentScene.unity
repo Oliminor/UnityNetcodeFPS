@@ -3405,6 +3405,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadedScene:
     m_Handle: 0
+  playersConnected:
+    m_InternalValue: 0
   playersConnectedText: {fileID: 1776614339}
   playersLoadedText: {fileID: 431478265}
 --- !u!4 &1600172555

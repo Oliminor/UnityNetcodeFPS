@@ -49,6 +49,8 @@ public class ObjectiveManager : NetworkBehaviour
     private List<GameObject> _Players;
     private List<GameObject> _Bots;
 
+    public TextMeshProUGUI text; //TESTING SYNC CAUSE MY UNITY EDITOR IS TRASH- OLLIE
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -67,10 +69,10 @@ public class ObjectiveManager : NetworkBehaviour
     {
         if(IsServer)
         {
-            if(sceneName==ProjectNetworkSceneManager.sceneNames[2])
+            if(sceneName==ProjectNetworkSceneManager.sceneNames[2]&&clientsCompleted.Count==ProjectNetworkSceneManager.singleton.playersConnected.Value)
             {
                 StartNewGame();
-                Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED");
+                Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED"+ clientsCompleted.Count);
             }
            
         }  
@@ -107,6 +109,7 @@ public class ObjectiveManager : NetworkBehaviour
                 EndGame();
             }
         }
+        text.text = _GameInProgress.ToString();
     }
 
     public void EndGame()
@@ -121,6 +124,7 @@ public class ObjectiveManager : NetworkBehaviour
         _KingOfTheHill = GameObject.Find("KingOfTheHill");
         StartNewGameServerRPC();
         StartNewGameClientRPC();
+        
         
     }
 

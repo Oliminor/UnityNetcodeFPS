@@ -13,7 +13,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
     public Scene loadedScene;
     
     public static List<string> sceneNames = new List<string>();
-    private NetworkVariable<int> playersConnected = new NetworkVariable<int>();
+    public NetworkVariable<int> playersConnected = new NetworkVariable<int>();
     private NetworkVariable<int> playersLoadedInScene = new NetworkVariable<int>();
     
     public TextMeshProUGUI playersConnectedText;
@@ -48,7 +48,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         NetworkManager.SceneManager.LoadScene("Test", LoadSceneMode.Single);
         if (IsServer)
         {
-            playersLoadedInScene = new NetworkVariable<int>();
+            playersLoadedInScene.Value=0;
         }
         
     }
@@ -57,7 +57,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         NetworkManager.SceneManager.LoadScene("Ollie", LoadSceneMode.Single);
         if (IsServer)
         {
-            playersLoadedInScene = new NetworkVariable<int>();
+            playersLoadedInScene.Value = 0;
         }
     }
     private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true) //currently seems useless, but will see
@@ -110,6 +110,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     if (IsServer)
                     {
                         loadedScene = sceneEvent.Scene;
+                        playersLoadedInScene.Value = sceneEvent.ClientsThatCompleted.Count;
                         
                         
                     }
@@ -145,7 +146,6 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     {
 
                     }
-                    if (NetworkManager.Singleton.IsServer) playersLoadedInScene.Value++;
                     Debug.Log("loadcompleted");
                 }
                 else

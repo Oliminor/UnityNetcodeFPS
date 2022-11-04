@@ -1170,6 +1170,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3438880962905502144, guid: aad0b21ab084fb941aeeabe7891d3c47,
         type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3438880962905502144, guid: aad0b21ab084fb941aeeabe7891d3c47,
+        type: 3}
       propertyPath: _ScoreText.Array.data[0]
       value: 
       objectReference: {fileID: 0}
