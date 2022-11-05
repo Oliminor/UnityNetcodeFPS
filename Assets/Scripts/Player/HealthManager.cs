@@ -78,6 +78,8 @@ public class HealthManager : NetworkBehaviour
 
     public void Respawn(bool AwardPoint)
     {
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         SetHealthServerRPC(_HealthMax);
         player.GetWeaponInventory().DropEveryWeapons();

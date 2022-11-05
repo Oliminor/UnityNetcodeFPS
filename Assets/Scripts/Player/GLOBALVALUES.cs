@@ -25,7 +25,6 @@ public class GLOBALVALUES : NetworkBehaviour
             if(sceneName== ProjectNetworkSceneManager.sceneNames[2])
             {
                 _ObjectiveManager = GameObject.Find("ObjectiveManager");
-                _ObjectiveManager.GetComponent<ObjectiveManager>().SetMode((int)gameMode);
             }
         }
     }

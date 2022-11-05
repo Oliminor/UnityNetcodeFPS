@@ -38,6 +38,7 @@ public class ObjectiveManager : NetworkBehaviour
     public TEAMDATA[] _Teams;
 
     [SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.KINGOFTHEHILL);
+    private int _MaxScore;
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
     [SerializeField] GameObject _PlayerForAI;
@@ -45,7 +46,7 @@ public class ObjectiveManager : NetworkBehaviour
     [SerializeField] private GameObject _KingOfTheHill;
     private bool _GameInProgress;
     private GameObject _SceneManager;
-    public static ObjectiveManager instance;
+    //public static ObjectiveManager instance;
 
     private List<GameObject> _Players;
     private List<GameObject> _Bots;
@@ -56,26 +57,26 @@ public class ObjectiveManager : NetworkBehaviour
     private void Awake()
     {
         NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
-        
+        _SceneManager = GameObject.Find("SceneManager");
         //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
     }
     void Start()
     {
         _Bots = new List<GameObject> { };
-        instance = this;
+       // instance = this;
         _GameInProgress = false;
-        
+        _SceneManager = GameObject.Find("SceneManager");
     }
 
     private void SceneManagement_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        if(IsServer)
+        if (IsServer)
         {
             if(sceneName==ProjectNetworkSceneManager.sceneNames[2]&&clientsCompleted.Count==ProjectNetworkSceneManager.singleton.playersConnected.Value)
             {
                 _SceneManager = GameObject.Find("SceneManager");
-                StartNewGame();
-              //  Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED"+ clientsCompleted.Count);
+                StartNewGame(_SceneManager.GetComponent<GameModeManager>().GetCurrentMode());
+                Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED"+ clientsCompleted.Count);
             }
            
         }  
@@ -96,6 +97,7 @@ public class ObjectiveManager : NetworkBehaviour
     void Update()
     {
         if (!_GameInProgress) return;
+        if (!IsServer) return;
         int i = 0;
         string Message = "";
         foreach(TEAMDATA TeamData in _Teams)
@@ -106,27 +108,37 @@ public class ObjectiveManager : NetworkBehaviour
             //Message += string.Format("{0} Members \n", TeamData.Players.Count);
             //_ScoreText[i].text = Message;
             i++;
-
-            if (TeamData.TeamScore >= 10)
+            Debug.Log("Max score" + _MaxScore);
+            if (TeamData.TeamScore >= _MaxScore)
             {
                 EndGame();
             }
         }
-        text.text = _GameInProgress.ToString();
+
     }
 
     public void EndGame()
     {
+        _KingOfTheHill.SetActive(false);
         _GameInProgress = false;
-        if (IsServer) GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
-        else GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
+
+        Debug.Log("GameOver");
+
         _SceneManager.GetComponent<ProjectNetworkSceneManager>().ExitGameMode();
     }
 
-    public void StartNewGame()
+    public void StartNewGame(GameModeData ModeData)
     {
+        _GameInProgress = true;
+        SetGameModeSettings(ModeData);
         StartNewGameServerRPC();
         StartNewGameClientRPC();
+    }
+
+    public void SetGameModeSettings(GameModeData ModeData)
+    {
+        _CurrentMode.Value = ModeData.Mode;
+        _MaxScore = ModeData.ScoreLimit;
     }
 
     [ClientRpc]
@@ -142,6 +154,7 @@ public class ObjectiveManager : NetworkBehaviour
                 Debug.Log("Starting deathmatch");
                 break;
             case (MODES.KINGOFTHEHILL):
+                _KingOfTheHill.SetActive(true);
                 Debug.Log("Starting King of the hill");
                 break;
         }
@@ -150,6 +163,7 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     void StartNewGameServerRPC()
     {
+        _GameInProgress = true;
         //ClearAIServerRPC();
         //SpawnAIServerRPC();
         for (int i = 0; i < _Teams.Length; i++)
@@ -233,6 +247,6 @@ public class ObjectiveManager : NetworkBehaviour
 
     public void SetMode(int GameMode)
     {
-        _CurrentMode.Value = (MODES)GameMode;
+        //_CurrentMode.Value = (MODES)GameMode;
     }
 }
