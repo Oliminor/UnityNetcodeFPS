@@ -19,9 +19,13 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
     public TextMeshProUGUI playersConnectedText;
     public TextMeshProUGUI playersLoadedText;
 
+    public MODES ModeSelected;
+
 
     private void Start()
     {
+        ModeSelected = MODES.DEATHMATCH;
+
         singleton = this;
 
         sceneNames = SceneNamesForEasySwapping();
@@ -42,6 +46,10 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         playersLoadedText.text = playersLoadedInScene.Value.ToString();
     }
 
+    public void SetMode(MODES Mode)
+    {
+        ModeSelected = Mode;
+    }
 
     public void SwitchScenes()
     {

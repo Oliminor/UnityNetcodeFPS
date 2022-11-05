@@ -71,6 +71,7 @@ public class ObjectiveManager : NetworkBehaviour
         {
             if(sceneName==ProjectNetworkSceneManager.sceneNames[2]&&clientsCompleted.Count==ProjectNetworkSceneManager.singleton.playersConnected.Value)
             {
+                _CurrentMode.Value = GameObject.Find("SceneManager").GetComponent<ProjectNetworkSceneManager>().ModeSelected;
                 StartNewGame();
                 Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED"+ clientsCompleted.Count);
             }
