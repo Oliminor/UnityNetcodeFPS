@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Collections;
 using Unity.Netcode;
-
+using UnityEngine.SceneManagement;
 using TMPro;
 
 
@@ -40,18 +40,54 @@ public class ObjectiveManager : NetworkBehaviour
     [SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.DEATHMATCH);
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
+    [SerializeField] GameObject _PlayerForAI;
 
     private GameObject _KingOfTheHill;
     private bool _GameInProgress;
+    public static ObjectiveManager instance;
 
-    List<GameObject> _Players;
+    private List<GameObject> _Players;
+    private List<GameObject> _Bots;
+
+    public TextMeshProUGUI text; //TESTING SYNC CAUSE MY UNITY EDITOR IS TRASH- OLLIE
 
     // Start is called before the first frame update
+    private void Awake()
+    {
+        NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
+        //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
+    }
     void Start()
     {
-        _KingOfTheHill = GameObject.Find("KingOfTheHill");
+        _Bots = new List<GameObject> { };
+        instance = this;
         _GameInProgress = false;
+        
     }
+
+    private void SceneManagement_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        if(IsServer)
+        {
+            if(sceneName==ProjectNetworkSceneManager.sceneNames[2]&&clientsCompleted.Count==ProjectNetworkSceneManager.singleton.playersConnected.Value)
+            {
+                StartNewGame();
+                Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED"+ clientsCompleted.Count);
+            }
+           
+        }  
+    }
+    //private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
+    //{
+    //    if(IsServer)
+    //    {
+    //        if (_GameInProgress)
+    //        {
+    //            EndGame();
+    //        }
+    //    }
+        
+    //}
 
     // Update is called once per frame
     void Update()
@@ -65,7 +101,7 @@ public class ObjectiveManager : NetworkBehaviour
             Message += string.Format("Team {0}\n", TeamData.TeamName);
             Message += string.Format("{0} Score \n", TeamData.TeamScore);
             //Message += string.Format("{0} Members \n", TeamData.Players.Count);
-            _ScoreText[i].text = Message;
+            //_ScoreText[i].text = Message;
             i++;
 
             if (TeamData.TeamScore >= 10)
@@ -73,6 +109,7 @@ public class ObjectiveManager : NetworkBehaviour
                 EndGame();
             }
         }
+        text.text = _GameInProgress.ToString();
     }
 
     public void EndGame()
@@ -84,39 +121,61 @@ public class ObjectiveManager : NetworkBehaviour
 
     public void StartNewGame()
     {
-        StartNewGameClientRPC();
+        _KingOfTheHill = GameObject.Find("KingOfTheHill");
         StartNewGameServerRPC();
+        StartNewGameClientRPC();
+        
+        
     }
 
     [ClientRpc]
     void StartNewGameClientRPC()
     {
         _GameInProgress = true;
-        Debug.Log("Hdwadawdwadsi");
         _KingOfTheHill.SetActive(false);
-        GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
-        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn();
+        //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
+        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
         switch (_CurrentMode.Value) 
         {
             case (MODES.DEATHMATCH):
                 Debug.Log("Starting deathmatch");
                 break;
             case (MODES.KINGOFTHEHILL):
-                _KingOfTheHill.SetActive(true);
-                _KingOfTheHill.GetComponent<HillManager>().StartGame();
+                Debug.Log("Starting King of the hill");
                 break;
-        }
-        for (int i = 0; i < _Teams.Length - 1; i++)
-        {
-            _Teams[i].TeamScore = 0;
-            //Message += string.Format("{0} Members \n", TeamData.Players.Count);
         }
     }
 
     [ServerRpc]
     void StartNewGameServerRPC()
     {
-        
+        //ClearAIServerRPC();
+        //SpawnAIServerRPC();
+        for (int i = 0; i < _Teams.Length; i++)
+        {
+            Debug.Log("Setting team to 0 points" + i);
+            SetScoreToTeamServerRPC(0, i);
+        }
+    }
+
+    [ServerRpc]
+    public void SpawnAIServerRPC()
+    {
+        GameObject AI = Instantiate(_PlayerForAI);
+        AI.GetComponent<NetworkObject>().Spawn(true);
+        AI.GetComponent<NetworkObject>().RemoveOwnership();
+        _Bots.Add(AI);
+    }
+
+    [ServerRpc]
+    public void ClearAIServerRPC()
+    {
+        foreach (GameObject Bot in _Bots)
+        {
+            Bot.GetComponent<NetworkObject>().Despawn();
+            Destroy(Bot);
+        }
+        _Bots.Clear();
     }
 
     public Color GetTeamColour(TEAMS Team)
@@ -151,6 +210,13 @@ public class ObjectiveManager : NetworkBehaviour
     public void AddScoreToTeamServerRPC(int Score, int Team)
     {
         _Teams[Team].TeamScore += Score;
+        UpdateTeamDataClientRpc(_Teams[Team], Team);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetScoreToTeamServerRPC(int Score, int Team)
+    {
+        _Teams[Team].TeamScore = Score;
         UpdateTeamDataClientRpc(_Teams[Team], Team);
     }
 

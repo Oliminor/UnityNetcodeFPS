@@ -26,7 +26,6 @@ public class PlayerTeamManager : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            this.gameObject.transform.GetChild(1).GetComponent<Renderer>().material.color = _NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value);
             return;
         }
 

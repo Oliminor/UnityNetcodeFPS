@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Netcode;
 
 public class HealthManager : NetworkBehaviour
@@ -8,7 +9,6 @@ public class HealthManager : NetworkBehaviour
 
     //private float _HealthCur;
     [SerializeField] NetworkVariable<int> _HealthCur = new NetworkVariable<int>(-1);
-    [SerializeField] NetworkVariable<Vector3> sourcePlayer = new NetworkVariable<Vector3>();
     [SerializeField] int _HealthMax;
     [SerializeField] int _HealthRegen;
     [SerializeField] float _HealthCooldown;
@@ -16,15 +16,12 @@ public class HealthManager : NetworkBehaviour
     private GameObject _KilledBy;
     private bool _CanRespawn;
     private GameObject _NetworkManager;
-    private PlayerMovement player;
-
-    public float GetPercentHealth() { return (float)_HealthCur.Value / _HealthMax * 100.0f; }
 
     void Start()
     {
-        player = GetComponent<PlayerMovement>();
         _NetworkManager = GameObject.Find("ObjectiveManager");
         _KilledBy = gameObject;
+        NetworkManager.SceneManager.OnLoadComplete += SceneManager_OnLoadComplete;
     }
 
     void Awake()
@@ -32,22 +29,27 @@ public class HealthManager : NetworkBehaviour
         _NetworkManager = GameObject.Find("ObjectiveManager");
     }
 
+    private void SceneManager_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        if (IsOwner)
+        {
+            if(IsClient)
+            {
+                Debug.Log("THIS IS HITTING");
+                if(sceneName== ProjectNetworkSceneManager.sceneNames[2]) //NEED TO CHANGE THIS FOR ACTUAL SCENE OFC
+                {
+                    _NetworkManager = GameObject.Find("ObjectiveManager");
+                    Respawn(false);
+                }
+                
+            }
+        }
+
+    }
+
     public override void OnNetworkSpawn()
     {
         _HealthCur.OnValueChanged += SetHealthClientRPC;
-        sourcePlayer.OnValueChanged += SetSourcePositionClientRPC;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void SetSourcePositionServerRPC(Vector3 _sourcePlayer)
-    {
-        sourcePlayer.Value = _sourcePlayer;
-    }
-
-    [ClientRpc]
-    private void SetSourcePositionClientRPC(Vector3 _prePos, Vector3 _newPos)
-    {
-        if (IsOwner) DamageIndicatorManagerUI.instance.InstantiateDamageIndicator(_newPos);
     }
 
     /// <summary>
@@ -57,6 +59,7 @@ public class HealthManager : NetworkBehaviour
     private void SetHealthServerRPC(int health)
     {
         _HealthCur.Value = health;
+
     }
 
     /// <summary>
@@ -67,24 +70,19 @@ public class HealthManager : NetworkBehaviour
     {
         if (newHealth <= 0)
         {
-            if (IsOwner)
-            {
-                Respawn();
-                SetHealthServerRPC(_HealthMax);
-            }
+            Respawn(true);
+            if (IsOwner) SetHealthServerRPC(_HealthMax);
         }
     }
 
-    public void Respawn()
+    public void Respawn(bool GivePoint)
     {
         SetHealthServerRPC(_HealthMax);
-        player.GetWeaponInventory().DropEveryWeapons();
-        player.GetWeaponInventory().ResetInventory();
-        transform.position = _NetworkManager.GetComponent<RespawnManager>().GetRespawnPoint().transform.position;
-            if (_NetworkManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam())
-            {
-                _NetworkManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
-            }
+        transform.position = _NetworkManager.GetComponent<RespawnManager>().GetRespawnPoint().transform.position;//new Vector3(0, 10, 0);
+            //if (_NetworkManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam() && GivePoint)
+            //{
+            //    _NetworkManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
+            //}
     }
 
     /// <summary>
@@ -102,12 +100,6 @@ public class HealthManager : NetworkBehaviour
         Debug.Log(_KilledBy);
 
         SetHealthServerRPC(health);
-        SetSourcePositionServerRPC(Source.transform.position);
 
-        if (!IsServer) return;
-
-        _HealthCur.Value = health;
-        SetHealthClientRPC(0, health);
-        SetSourcePositionClientRPC(Vector3.zero, Source.transform.position);
     }
 }
