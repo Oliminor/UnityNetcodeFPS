@@ -36,7 +36,6 @@ public class PlayerMovement : NetworkBehaviour
 
     public WeaponInventory GetWeaponInventory() { return weaponInv; }
     public float GetAnimSpeed() { return lerpMovementAnim; }
-
     public Transform GetPlayerCamera() { return playerCamera; }
 
     // Start is called before the first frame update
@@ -128,6 +127,7 @@ public class PlayerMovement : NetworkBehaviour
         // Movement SPeed (Jog and Sprint)
         if (IsAiming())
         {
+            movementAnim = 1;
             movementSpeed = aimSpeed;
         }
         else if (IsRunning())
@@ -147,8 +147,9 @@ public class PlayerMovement : NetworkBehaviour
             movementSpeed = 0;
         }
 
+        lerpMovementAnim = Mathf.Lerp(lerpMovementAnim, movementAnim, 0.2f);
         // Jump
-            if (Input.GetKey(KeyCode.Space) && IsGrounded() && !jumpBool) Jump();
+        if (Input.GetKey(KeyCode.Space) && IsGrounded() && !jumpBool) Jump();
     }
 
     /// <summary>
@@ -189,7 +190,6 @@ public class PlayerMovement : NetworkBehaviour
         Vector3 velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
         lerpMovementSpeed = Mathf.Lerp(lerpMovementSpeed, movementSpeed, 0.2f);
-        lerpMovementAnim = Mathf.Lerp(lerpMovementAnim, movementAnim, 0.2f);
 
         if (velocity.magnitude > lerpMovementSpeed)
         {

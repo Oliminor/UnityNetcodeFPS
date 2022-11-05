@@ -5,13 +5,52 @@ using Unity.Netcode;
 
 public class WeaponSpawner : NetworkBehaviour
 {
-    [SerializeField] private GameObject weapon; 
+    [SerializeField] private GameObject weapon;
+    [SerializeField] private Transform spawnEffect;
+    [SerializeField] private MeshRenderer dissolveMat;
 
     [SerializeField] private NetworkVariable<int> index = new NetworkVariable<int>(0);
     [SerializeField] private NetworkVariable<bool> isWeaponPickedUp = new NetworkVariable<bool>(false);
     [SerializeField] private NetworkVariable<bool> isTemporarySpawner = new NetworkVariable<bool>(false);
 
+    float dissolveLerp;
+
     public void SetIndex(int _index) { index.Value = _index; }
+
+    private void Start()
+    {
+        DissolveEffect();
+    }
+
+    private void Update()
+    {
+        // for testing
+        if (Input.GetKeyDown(KeyCode.G)) ActivateSpawnerServerRPC();
+
+        if (!dissolveMat) return;
+
+        dissolveLerp = Mathf.Lerp(dissolveLerp, 0, Time.deltaTime * 2);
+        dissolveMat.material.SetFloat("_dissAmount", dissolveLerp);
+    }
+
+    /// <summary>
+    /// Spawning effect
+    /// </summary>
+    private void SpawnEffect()
+    {
+        if (spawnEffect)
+        {
+            GameObject go = Instantiate(spawnEffect.gameObject, transform.position, Quaternion.identity);
+            Destroy(go, 5);
+        }
+
+        DissolveEffect();
+    }
+
+    private void DissolveEffect()
+    {
+        if (dissolveMat) dissolveLerp = 1;
+    }
 
     /// <summary>
     /// Activate when the object spawned (or the beginning of the game, thats also count spawn, even if it's already on the scene)
@@ -48,10 +87,40 @@ public class WeaponSpawner : NetworkBehaviour
     private void DeActivateSpawnerClientRPC()
     {
         if (isTemporarySpawner.Value && IsServer) gameObject.GetComponent<NetworkObject>().Despawn();
+
         for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(false);
         }
+    }
+
+    /// <summary>
+    /// Activate the spawner on the server side
+    /// </summary>
+    [ServerRpc(RequireOwnership = false)]
+    private void ActivateSpawnerServerRPC()
+    {
+        if (isTemporarySpawner.Value)
+        {
+            gameObject.GetComponent<NetworkObject>().Despawn();
+            return;
+        }
+
+        isWeaponPickedUp.Value = false;
+        ActivateSpawnerClientRPC();
+    }
+
+    /// <summary>
+    /// Activate the spawner on the client side
+    /// </summary>
+    [ClientRpc]
+    private void ActivateSpawnerClientRPC()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(true);
+        }
+        SpawnEffect();
     }
 
 
@@ -62,15 +131,32 @@ public class WeaponSpawner : NetworkBehaviour
     {
         if (isWeaponPickedUp.Value) return;
 
-        if (other.tag == "Player" && Input.GetKey(KeyCode.F))
+        if (dissolveLerp > 0.1f) return;
+
+        if (other.tag == "Player")
         {
-            Debug.Log("Picked up weapon index: " + index.Value + " Clinet ID " + other.GetComponent<PlayerMovement>().OwnerClientId);
+            if (!other.GetComponent<PlayerMovement>().IsOwner) return;
+            if (weapon.transform.tag == "CarriedObject")
+            {
+               if (Input.GetKey(KeyCode.F))
+                {
+                    other.GetComponent<PlayerMovement>().GetWeaponInventory().AddObject(index.Value);
+                    other.GetComponent<PlayerMovement>().GetWeaponInventory().ActivatePickedUpWeapon(index.Value - 1);
+                    DeActivateSpawnerServerRPC();
+                }
+                return;
+            }
+            else
+            {
+                if (other.GetComponent<PlayerMovement>().GetWeaponInventory().CheckIfPlayerHasThatWeapon(index.Value)) return;
 
-            if (!other.GetComponent<PlayerMovement>().GetWeaponInventory().CheckPlayerWeapon(index.Value)) return;
+                other.GetComponent<PlayerMovement>().GetWeaponInventory().AddWeapon(index.Value);
+                other.GetComponent<PlayerMovement>().GetWeaponInventory().ActivatePickedUpWeapon(index.Value - 1);
 
-            other.GetComponent<PlayerMovement>().GetWeaponInventory().AddWeapon(index.Value);
-            other.GetComponent<PlayerMovement>().GetWeaponInventory().ActivatePickedUpWeapon(index.Value - 1);
-            DeActivateSpawnerServerRPC();
+                Debug.Log("Picked up weapon index: " + index.Value + " Clinet ID " + other.GetComponent<PlayerMovement>().OwnerClientId);
+
+                DeActivateSpawnerServerRPC();
+            }
         }
     }
 }

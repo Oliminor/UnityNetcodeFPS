@@ -16,13 +16,19 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private RuntimeAnimatorController animController;
     [SerializeField] private Vector3 rotation;
 
-    [SerializeField] private float _Damage;
-    [SerializeField] private float _Velocity;
+    [SerializeField] private float _ZoomSizeFOV;
+    [SerializeField] private float _ProjectileDamage;
+    [SerializeField] private float _ProjectileSpeed;
+    [SerializeField] private float _ProjectileLife;
+    [SerializeField] private float _ProjectileNumber;
+    [SerializeField] private float _ProjectileSpread;
 
 
     private Animator anim;
     private NetworkAnimator netAnim;
     private float fireRateCoolDown;
+    private float defaultFOV = 60;
+    private float lerpFOV;
 
     private List<GameObject> objectPool = new();
     private PlayerMovement player;
@@ -43,10 +49,27 @@ public class WeaponManager : NetworkBehaviour
 
         if (!player.IsOwner) return;
 
+        CrossHairManagement.instance.SetDefaultSpreadValue(DefaultCrossHairSize());
+
+        CameraZoom();
+
         anim.SetFloat("speed", player.GetAnimSpeed());
         anim.SetBool("isAiming", player.IsAiming());
 
         Shooting();
+    }
+
+
+    public void CameraZoom()
+    {
+        lerpFOV = defaultFOV;
+
+        if (player.IsAiming())
+        {
+            lerpFOV = _ZoomSizeFOV;
+        }
+
+        player.GetPlayerCamera().GetComponent<Camera>().fieldOfView = Mathf.Lerp(player.GetPlayerCamera().GetComponent<Camera>().fieldOfView, lerpFOV, Time.deltaTime * 20);
     }
 
     /// <summary>
@@ -134,10 +157,43 @@ public class WeaponManager : NetworkBehaviour
     {
         Ray ray = player.GetPlayerCamera().GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
         Vector3 targetDirection;
-        if (Physics.Raycast(ray, out RaycastHit hit)) targetDirection = hit.point;
-        else targetDirection = ray.GetPoint(100);
+
+        float distance = 200;
+
+        targetDirection = ray.GetPoint(200);
+
+        float spreadX = Random.Range(-(distance * _ProjectileSpread), (distance * _ProjectileSpread)) / 1000;
+        float spreadY = Random.Range(-(distance * _ProjectileSpread), (distance * _ProjectileSpread)) / 1000;
+
+        if (player.GetAnimSpeed() < 0.5f)
+        {
+            spreadX /= 1.5f;
+            spreadY /= 1.5f;
+        }
+
+        if (player.IsAiming())
+        {
+            spreadX /= 2.0f;
+            spreadY /= 2.0f;
+        }
+
+        targetDirection = new Vector3(targetDirection.x + spreadX, targetDirection.y + spreadY, targetDirection.z);
 
         return targetDirection;
+    }
+
+    private float DefaultCrossHairSize()
+    {
+        float _size = _ProjectileSpread / 3;
+
+        if (player.GetAnimSpeed() < 0.5f)
+        {
+            _size /= 1.5f;
+        }
+
+        if (player.IsAiming()) _size /= 2.0f;
+
+        return _size;
     }
 
     /// <summary>
@@ -146,13 +202,15 @@ public class WeaponManager : NetworkBehaviour
     [ServerRpc]
     private void FireVoidServerRPC()
     {
-        GameObject _projectile = Instantiate(projectile.gameObject, shotPoint.position, Quaternion.identity);
-        _projectile.GetComponent<ProjectileManager>().SetProperties(_Damage, _Velocity, 3, transform.root.gameObject);
-        _projectile.GetComponent<NetworkObject>().Spawn();
-        
-        _projectile.transform.LookAt(FireDirection());
-
         FireVoidClientRPC();
+
+        for (int i = 0; i < _ProjectileNumber; i++)
+        {
+            GameObject _projectile = Instantiate(projectile.gameObject, shotPoint.position, Quaternion.identity);
+            _projectile.GetComponent<NetworkObject>().Spawn();
+            _projectile.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed, _ProjectileLife, transform.root.gameObject);
+            _projectile.transform.LookAt(FireDirection());
+        }
     }
 
     /// <summary>
@@ -162,6 +220,7 @@ public class WeaponManager : NetworkBehaviour
     private void FireVoidClientRPC()
     {
         if(!player.IsOwner) StartCoroutine(Fire());
+        if (IsOwner) CrossHairManagement.instance.SetSpreadValue(DefaultCrossHairSize() * 2);
     }
 
     /// <summary>

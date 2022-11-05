@@ -8,6 +8,10 @@ using TMPro;
 public class NamePlateManager : NetworkBehaviour
 {
     [SerializeField] TextMeshProUGUI playerNameText;
+    [SerializeField] RectTransform playerHealthBar;
+    [SerializeField] RectTransform LerpHealthBar;
+
+
     private NetworkVariable<FixedString64Bytes> playerName = new NetworkVariable<FixedString64Bytes>("" ,NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     public void SetPlayerName(string name) { playerNameText.text = name; }
@@ -31,7 +35,21 @@ public class NamePlateManager : NetworkBehaviour
 
     void Update()
     {
+        PlayerUIOrientation();
+        PlayerHealthUpdate();
+    }
+
+    private void PlayerHealthUpdate()
+    {
+        float scaleX = gameObject.GetComponent<HealthManager>().GetPercentHealth() / 100.0f;
+        playerHealthBar.localScale = new Vector3(scaleX, 1, 1);
+
+        LerpHealthBar.localScale = new Vector3(Mathf.Lerp(LerpHealthBar.localScale.x, scaleX, 0.05f), 1, 1);
+    }
+
+    private void PlayerUIOrientation()
+    {
         if (playerNameText.text != playerName.Value.ToString()) SetPlayerName(playerName.Value.ToString());
-        playerNameText.transform.parent.LookAt(Camera.main.transform, Vector3.up);
+        if (Camera.main) playerNameText.transform.parent.parent.rotation = Camera.main.transform.rotation;
     }
 }
