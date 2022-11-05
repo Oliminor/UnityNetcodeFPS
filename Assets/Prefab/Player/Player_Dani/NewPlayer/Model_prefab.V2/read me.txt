@@ -1,0 +1,6 @@
+Model 2.1 = 3d model rigged with target, weapons, animator and animator controller script.
+
+**Model 2.2 = Model with Parent object and all the original componets from capsule_player_model.
+
+**Creating a prefab of Model2.2 and placing it on the scene breaks the movement of the object(player). 
+**In other words, you can't move any instance of the Model2.2 anymore unless prefab is removed from the scene. 
