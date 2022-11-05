@@ -15,7 +15,7 @@ public class HealthManager : NetworkBehaviour
 
     private GameObject _KilledBy;
     private bool _CanRespawn;
-    private GameObject _NetworkManager;
+    private GameObject _ObjectiveManager;
     private PlayerMovement player;
 
     public float GetPercentHealth() { return (float)_HealthCur.Value / _HealthMax * 100.0f; }
@@ -23,19 +23,20 @@ public class HealthManager : NetworkBehaviour
     void Start()
     {
         player = GetComponent<PlayerMovement>();
-        _NetworkManager = GameObject.Find("ObjectiveManager");
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
         _KilledBy = gameObject;
     }
 
     void Awake()
     {
-        _NetworkManager = GameObject.Find("ObjectiveManager");
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
     }
 
     public override void OnNetworkSpawn()
     {
         _HealthCur.OnValueChanged += SetHealthClientRPC;
         sourcePlayer.OnValueChanged += SetSourcePositionClientRPC;
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -69,21 +70,22 @@ public class HealthManager : NetworkBehaviour
         {
             if (IsOwner)
             {
-                Respawn();
+                Respawn(true);
                 SetHealthServerRPC(_HealthMax);
             }
         }
     }
 
-    public void Respawn()
+    public void Respawn(bool AwardPoint)
     {
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
         SetHealthServerRPC(_HealthMax);
         player.GetWeaponInventory().DropEveryWeapons();
         player.GetWeaponInventory().ResetInventory();
-        transform.position = _NetworkManager.GetComponent<RespawnManager>().GetRespawnPoint().transform.position;
-            if (_NetworkManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam())
+        transform.position = _ObjectiveManager.GetComponent<RespawnManager>().GetRespawnPoint().transform.position;
+            if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam() && AwardPoint)
             {
-                _NetworkManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
+            _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
             }
     }
 
@@ -94,12 +96,12 @@ public class HealthManager : NetworkBehaviour
     {
         int health = _HealthCur.Value;
 
-        Debug.Log("got hit " + damage);
+        //Debug.Log("got hit " + damage);
 
         health -= (int)damage;
 
         _KilledBy = Source;
-        Debug.Log(_KilledBy);
+        //Debug.Log(_KilledBy);
 
         SetHealthServerRPC(health);
         SetSourcePositionServerRPC(Source.transform.position);

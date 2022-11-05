@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/NetManagerAssignmentScene.unity
+    guid: 1dfe1a26e09a79e48934a36fd1d0d22d
+  - enabled: 1
+    path: Assets/Scenes/Ollie.unity
+    guid: a48fa11d0ba82fe41a8fb964a4d6e84c
+  - enabled: 1
     path: Assets/Scenes/Ben.unity
     guid: 9e36c0c09e0b9314384011f6a15c323e
   m_configObjects: {}

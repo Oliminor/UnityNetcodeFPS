@@ -37,13 +37,14 @@ public class ObjectiveManager : NetworkBehaviour
 
     public TEAMDATA[] _Teams;
 
-    [SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.DEATHMATCH);
+    [SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.KINGOFTHEHILL);
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
     [SerializeField] GameObject _PlayerForAI;
 
-    private GameObject _KingOfTheHill;
+    [SerializeField] private GameObject _KingOfTheHill;
     private bool _GameInProgress;
+    private GameObject _SceneManager;
     public static ObjectiveManager instance;
 
     private List<GameObject> _Players;
@@ -55,6 +56,7 @@ public class ObjectiveManager : NetworkBehaviour
     private void Awake()
     {
         NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
+        
         //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
     }
     void Start()
@@ -71,8 +73,9 @@ public class ObjectiveManager : NetworkBehaviour
         {
             if(sceneName==ProjectNetworkSceneManager.sceneNames[2]&&clientsCompleted.Count==ProjectNetworkSceneManager.singleton.playersConnected.Value)
             {
+                _SceneManager = GameObject.Find("SceneManager");
                 StartNewGame();
-                Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED"+ clientsCompleted.Count);
+              //  Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED"+ clientsCompleted.Count);
             }
            
         }  
@@ -117,15 +120,13 @@ public class ObjectiveManager : NetworkBehaviour
         _GameInProgress = false;
         if (IsServer) GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
         else GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
+        _SceneManager.GetComponent<ProjectNetworkSceneManager>().ExitGameMode();
     }
 
     public void StartNewGame()
     {
-        _KingOfTheHill = GameObject.Find("KingOfTheHill");
         StartNewGameServerRPC();
         StartNewGameClientRPC();
-        
-        
     }
 
     [ClientRpc]
@@ -191,7 +192,6 @@ public class ObjectiveManager : NetworkBehaviour
         if (!NetworkManager.ConnectedClients.ContainsKey(ClientID)) return;
 
         GameObject Player = NetworkManager.Singleton.ConnectedClients[ClientID].PlayerObject.transform.gameObject;
-
 
         //Remove player from team
        // _Teams[(int)Player.GetComponent<PlayerTeamManager>().GetTeam()].Players.Remove((int)ClientID);

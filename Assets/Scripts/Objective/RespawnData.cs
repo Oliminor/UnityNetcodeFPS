@@ -22,7 +22,9 @@ public class RespawnData : MonoBehaviour
 
     void Awake()
     {
-        
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
+        _ObjectiveManager.GetComponent<RespawnManager>().AddRespawnPoint(gameObject);
+        gameObject.transform.GetComponent<Renderer>().material.color = _ObjectiveManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team);
     }
 
     // Update is called once per frame

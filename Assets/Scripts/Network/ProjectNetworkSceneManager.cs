@@ -45,7 +45,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
 
     public void SwitchScenes()
     {
-        NetworkManager.SceneManager.LoadScene("Test", LoadSceneMode.Single);
+        NetworkManager.SceneManager.LoadScene("Ben", LoadSceneMode.Single);
         if (IsServer)
         {
             playersLoadedInScene.Value=0;
