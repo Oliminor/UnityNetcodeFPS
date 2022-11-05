@@ -16,7 +16,7 @@ public class RespawnData : MonoBehaviour
         //DontDestroyOnLoad(this); //just testing
         //NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
-        //_ObjectiveManager.GetComponent<RespawnManager>().AddRespawnPoint(gameObject); //can set these in the inspector if its not persistent
+        _ObjectiveManager.GetComponent<RespawnManager>().AddRespawnPoint(gameObject);
         gameObject.transform.GetComponent<Renderer>().material.color = _ObjectiveManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team);
     }
 

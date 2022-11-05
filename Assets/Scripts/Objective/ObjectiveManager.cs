@@ -42,31 +42,25 @@ public class ObjectiveManager : NetworkBehaviour
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
     [SerializeField] GameObject _PlayerForAI;
 
-    private GameObject _KingOfTheHill;
+    private GameObject _Objective;
     private bool _GameInProgress;
     public static ObjectiveManager instance;
 
     private List<GameObject> _Players;
     private List<GameObject> _Bots;
 
-    public TextMeshProUGUI text; //TESTING SYNC CAUSE MY UNITY EDITOR IS TRASH- OLLIE
-
     // Start is called before the first frame update
-    private void Awake()
-    {
-        NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
-        //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
-    }
     void Start()
     {
         _Bots = new List<GameObject> { };
+        //DontDestroyOnLoad(this);
         instance = this;
         _GameInProgress = false;
-        
     }
 
-    private void SceneManagement_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    void Awake()
     {
+<<<<<<< HEAD
         if(IsServer)
         {
             if(sceneName==ProjectNetworkSceneManager.sceneNames[2]&&clientsCompleted.Count==ProjectNetworkSceneManager.singleton.playersConnected.Value)
@@ -77,21 +71,25 @@ public class ObjectiveManager : NetworkBehaviour
             }
            
         }  
+=======
+        _Bots = new List<GameObject> { };
+        //DontDestroyOnLoad(this);
+        instance = this;
+        _GameInProgress = false;
+        StartNewGame();
     }
-    //private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
-    //{
-    //    if(IsServer)
-    //    {
-    //        if (_GameInProgress)
-    //        {
-    //            EndGame();
-    //        }
-    //    }
-        
-    //}
+
+    private void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
+    {
+        if(sceneEvent.SceneEventType==SceneEventType.LoadComplete)
+        {
+            GetComponent<RespawnManager>().GetRespawnPoint();
+        }
+>>>>>>> parent of 1cb812d (Merge branch 'NewOllieBecauseBrokeLastOne' into Joe)
+    }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!_GameInProgress) return;
         int i = 0;
@@ -105,12 +103,11 @@ public class ObjectiveManager : NetworkBehaviour
             //_ScoreText[i].text = Message;
             i++;
 
-            if (TeamData.TeamScore >= 10)
+            if (TeamData.TeamScore >= 999)
             {
                 EndGame();
             }
         }
-        text.text = _GameInProgress.ToString();
     }
 
     public void EndGame()
@@ -122,10 +119,10 @@ public class ObjectiveManager : NetworkBehaviour
 
     public void StartNewGame()
     {
-        _KingOfTheHill = GameObject.Find("KingOfTheHill");
+        _Bots.Clear();
+        _Objective = GameObject.Find("KingOfTheHill");
         StartNewGameServerRPC();
         StartNewGameClientRPC();
-        
         
     }
 
@@ -133,7 +130,7 @@ public class ObjectiveManager : NetworkBehaviour
     void StartNewGameClientRPC()
     {
         _GameInProgress = true;
-        _KingOfTheHill.SetActive(false);
+        //_KingOfTheHill.SetActive(false);
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
         NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
         switch (_CurrentMode.Value) 
@@ -150,7 +147,11 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     void StartNewGameServerRPC()
     {
-        //ClearAIServerRPC();
+        ClearAIServerRPC();
+        //SpawnAIServerRPC();
+        //SpawnAIServerRPC();
+        //SpawnAIServerRPC();
+        //SpawnAIServerRPC();
         //SpawnAIServerRPC();
         for (int i = 0; i < _Teams.Length; i++)
         {
@@ -165,18 +166,34 @@ public class ObjectiveManager : NetworkBehaviour
         GameObject AI = Instantiate(_PlayerForAI);
         AI.GetComponent<NetworkObject>().Spawn(true);
         AI.GetComponent<NetworkObject>().RemoveOwnership();
+        AI.GetComponent<PlayerTeamManager>().ChangeTeam(Random.Range(0, 1));
+        AI.GetComponent<HealthManager>().Respawn(false);
         _Bots.Add(AI);
     }
 
     [ServerRpc]
     public void ClearAIServerRPC()
     {
-        foreach (GameObject Bot in _Bots)
+        foreach(GameObject Bot in _Bots)
         {
-            Bot.GetComponent<NetworkObject>().Despawn();
+            Bot.GetComponent<NetworkObject>().Despawn(false);
             Destroy(Bot);
         }
         _Bots.Clear();
+    }
+
+    public int GetTeamInControl()
+    {
+        switch (_CurrentMode.Value)
+        {
+            case (MODES.DEATHMATCH):
+                return -1;
+                break;
+            case (MODES.KINGOFTHEHILL):
+                return _Objective.GetComponent<HillManager>().GetTeamControlling();
+                break;
+        }
+        return 0;
     }
 
     public Color GetTeamColour(TEAMS Team)
@@ -235,5 +252,9 @@ public class ObjectiveManager : NetworkBehaviour
     public void SetMode(int GameMode)
     {
         _CurrentMode.Value = (MODES)GameMode;
+    }
+    public void StartGameOnTransition()
+    {
+        Invoke(nameof(StartNewGame), 0.2f);
     }
 }
