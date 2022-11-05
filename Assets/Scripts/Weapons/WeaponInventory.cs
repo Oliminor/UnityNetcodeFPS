@@ -49,7 +49,7 @@ public class WeaponInventory : NetworkBehaviour
     {
         if (!player.IsOwner) return;
 
-        DropFlag();
+        if (Input.GetKeyDown(KeyCode.R)) DropCurrentObject();
 
         if (isObjectCarried) return;
 
@@ -57,32 +57,66 @@ public class WeaponInventory : NetworkBehaviour
     }
 
     /// <summary>
-    /// Drops the flag and spawn a new temporary flag spawner for the other players
+    /// Drops the flag to the ground
     /// </summary>
-    private void DropFlag()
+    public void DropCurrentObject()
     {
-        if (Input.GetKeyDown(KeyCode.R) && isObjectCarried)
+        if (currentWeaponIndex == 0) return;
+        Debug.Log(defaultWeapons[currentWeaponIndex] - 1 + "CurrentweaponIndex: " + currentWeaponIndex);
+        weapons[defaultWeapons[currentWeaponIndex] - 1].GetComponent<ObjectIndex>().DropObjectServerRPC();
+        defaultWeapons[currentWeaponIndex] = 0;
+        isObjectCarried = false;
+        ActivateWeaponServerRPC(0);
+    }
+
+    /// <summary>
+    /// Drops every weapon to the ground (but the default one)
+    /// </summary>
+    public void DropEveryWeapons()
+    {
+        for (int i = 1; i < defaultWeapons.Length ; i++)
         {
-            weapons[serverIndex.Value].GetComponent<ObjectIndex>().DropObjectServerRPC();
-            defaultWeapons[defaultWeapons.Length - 1] = 0;
-            isObjectCarried = false;
-            ActivateWeaponServerRPC(0);
+            if (defaultWeapons[i] == 0) continue;
+            weapons[defaultWeapons[i] - 1].GetComponent<ObjectIndex>().DropObjectServerRPC();
         }
     }
 
-    public bool CheckPlayerWeapon(int _index)
+    /// <summary>
+    /// Reset the inventory to the default state
+    /// </summary>
+    public void ResetInventory()
     {
+        for (int i = 0; i < defaultWeapons.Length; i++) defaultWeapons[i] = 0;
+
+        defaultWeapons[0] = 1;
+
+        ActivateWeaponServerRPC(0);
+    }
+
+    /// <summary>
+    ///  Checks if the player has the same weapon already
+    /// </summary>
+    public bool CheckIfPlayerHasThatWeapon(int _index)
+    {
+        if (isObjectCarried) return true;
+
         for (int i = 0; i < defaultWeapons.Length; i++)
         {
-            if (defaultWeapons[i] == _index) return false;
-        }
-
-        for (int i = 0; i < defaultWeapons.Length - 1; i++)
-        {
-            if (defaultWeapons[i] == 0) return true;
+            if (defaultWeapons[i] == _index) return true;
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Add non-weapon object to the character
+    /// </summary>
+    public void AddObject (int _index)
+    {
+        if (!player.IsOwner) return;
+
+        defaultWeapons[defaultWeapons.Length - 1] = _index;
+        currentWeaponIndex = defaultWeapons.Length - 1;
     }
 
     /// <summary>
@@ -92,21 +126,11 @@ public class WeaponInventory : NetworkBehaviour
     {
         if (!player.IsOwner) return;
 
-        if (weapons[_index - 1].tag == "CarriedObject")
-        {
-            defaultWeapons[defaultWeapons.Length - 1] = _index;
-            return;
-        }
-
-        for (int i = 0; i < defaultWeapons.Length; i++)
-        {
-            if (defaultWeapons[i] == _index) return;
-        }
-
         for (int i = 0; i < defaultWeapons.Length - 1; i++)
         {
             if (defaultWeapons[i] == 0)
             {
+                currentWeaponIndex = i;
                 defaultWeapons[i] = _index;
                 return;
             }
