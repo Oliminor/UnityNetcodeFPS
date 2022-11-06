@@ -79,6 +79,8 @@ public class WeaponInventory : NetworkBehaviour
             if (defaultWeapons[i] == 0) continue;
             weapons[defaultWeapons[i] - 1].GetComponent<ObjectIndex>().DropObjectServerRPC();
         }
+
+        isObjectCarried = false;
     }
 
     /// <summary>
