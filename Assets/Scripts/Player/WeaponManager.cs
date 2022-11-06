@@ -80,6 +80,7 @@ public class WeaponManager : NetworkBehaviour
         for (int i = 0; i < objectPoolSize; i++)
         {
             GameObject go = Instantiate(muzzleEffect, transform);
+            if (IsOwner) go.gameObject.layer = LayerMask.NameToLayer("RenderOnTop");
             go.SetActive(false);
             objectPool.Add(go);
         }
@@ -128,7 +129,7 @@ public class WeaponManager : NetworkBehaviour
             netAnim.SetTrigger("fire");
             fireRateCoolDown = fireRate;
             StartCoroutine(Fire());
-            FireVoidServerRPC();
+            FireVoidServerRPC(transform.position, transform.rotation);
         }
     }
 
@@ -164,20 +165,23 @@ public class WeaponManager : NetworkBehaviour
 
         float spreadX = Random.Range(-(distance * _ProjectileSpread), (distance * _ProjectileSpread)) / 1000;
         float spreadY = Random.Range(-(distance * _ProjectileSpread), (distance * _ProjectileSpread)) / 1000;
+        float spreadZ = Random.Range(-(distance * _ProjectileSpread), (distance * _ProjectileSpread)) / 1000;
 
         if (player.GetAnimSpeed() < 0.5f)
         {
             spreadX /= 1.5f;
             spreadY /= 1.5f;
+            spreadZ /= 1.5f;
         }
 
         if (player.IsAiming())
         {
             spreadX /= 2.0f;
             spreadY /= 2.0f;
+            spreadZ /= 2.0f;
         }
 
-        targetDirection = new Vector3(targetDirection.x + spreadX, targetDirection.y + spreadY, targetDirection.z);
+        targetDirection = new Vector3(targetDirection.x + spreadX, targetDirection.y + spreadY, targetDirection.z + spreadZ);
 
         return targetDirection;
     }
@@ -200,13 +204,13 @@ public class WeaponManager : NetworkBehaviour
     /// Calls the fire on the server side
     /// </summary>
     [ServerRpc]
-    private void FireVoidServerRPC()
+    private void FireVoidServerRPC(Vector3 Position, Quaternion Rotation)
     {
         FireVoidClientRPC();
 
         for (int i = 0; i < _ProjectileNumber; i++)
         {
-            GameObject _projectile = Instantiate(projectile.gameObject, shotPoint.position, Quaternion.identity);
+            GameObject _projectile = Instantiate(projectile.gameObject, Position, Rotation);
             _projectile.GetComponent<NetworkObject>().Spawn();
             _projectile.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed, _ProjectileLife, transform.root.gameObject);
             _projectile.transform.LookAt(FireDirection());

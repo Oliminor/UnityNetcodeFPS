@@ -52,6 +52,8 @@ public class ObjectiveManager : NetworkBehaviour
     [SerializeField] private GameObject _Scoreboard;
     //public static ObjectiveManager instance;
 
+    public GameObject TeamScoreText;
+
     private List<GameObject> _Players;
     private List<GameObject> _Bots;
 
@@ -61,7 +63,6 @@ public class ObjectiveManager : NetworkBehaviour
     private void Awake()
     {
         NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
-        NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
 
         //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
     }
@@ -90,14 +91,6 @@ public class ObjectiveManager : NetworkBehaviour
         }  
     }
 
-    private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
-    {
-        if (sceneName == "Test")
-        {
-            NetworkManager.SceneManager.OnLoadEventCompleted -= SceneManagement_OnLoadEventCompleted;
-        }
-    }
-
     //private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
     //{
     //    if(IsServer)
@@ -113,12 +106,12 @@ public class ObjectiveManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Game in Progress" + _GameInProgress);
+        //Debug.Log("Game in Progress" + _GameInProgress);
         if (!_GameInProgress) return;
        
         foreach(TEAMDATA TeamData in _Teams)
         {
-            Debug.Log("Max score" + _MaxScore);
+            //Debug.Log("Max score" + _MaxScore);
             UpdateScoreboard();
             
             if (TeamData.TeamScore >= _MaxScore && IsServer)
@@ -131,7 +124,10 @@ public class ObjectiveManager : NetworkBehaviour
 
     void UpdateScoreboard()
     {
-        Transform ScoreboardParent;
+        TeamScoreText = GameObject.Find("Temp");
+        TeamScoreText.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Score: " + _Teams[0].TeamScore.ToString();
+        TeamScoreText.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Score: " + _Teams[1].TeamScore.ToString();
+        /*Transform ScoreboardParent;
         TMP_Text Name;
         TMP_Text Score;
         for(int i = 0; i < _Teams.Length; i++)
@@ -141,7 +137,7 @@ public class ObjectiveManager : NetworkBehaviour
             Score = ScoreboardParent.GetChild(1).GetComponent<TextMeshProUGUI>();// = _Teams[i].TeamScore.ToString();
             Name.text = _Teams[i].TeamName.ToString();
             Score.text = _Teams[i].TeamScore.ToString();
-        }
+        }*/
     }
 
     void AssignTeams()
@@ -166,6 +162,7 @@ public class ObjectiveManager : NetworkBehaviour
     public void EndGame()
     {
         _KingOfTheHill.SetActive(false);
+
         _GameInProgress = false;
 
         Debug.Log("GameOver");
@@ -176,9 +173,13 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     public void StartNewGameServerRPC(GameModeData ModeData)
     {
-        SetGameModeSettings(ModeData);
+        foreach (ulong i in NetworkManager.ConnectedClientsIds)
+        {
+            NetworkManager.ConnectedClients[i].PlayerObject.GetComponent<PlayerTeamManager>().ChangeTeam((int)i % 2);
+        }
         StartNewGameClientRPC(ModeData);
         StartNewGameServerRPC();
+        
     }
 
     public void SetGameModeSettings(GameModeData ModeData)
@@ -192,6 +193,7 @@ public class ObjectiveManager : NetworkBehaviour
     {
         _Teams[0].TeamName = "Red";
         _Teams[1].TeamName = "Blue";
+        SetGameModeSettings(ModeData);
         _GameInProgress = true;
         _KingOfTheHill.SetActive(false);
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
@@ -212,6 +214,10 @@ public class ObjectiveManager : NetworkBehaviour
     void StartNewGameServerRPC()
     {
         _GameInProgress = true;
+        if (_CurrentMode == MODES.KINGOFTHEHILL)
+        {
+            _KingOfTheHill.GetComponent<NetworkObject>().Spawn();
+        }
         //AssignTeams();
         for (int i = 0; i < _Teams.Length; i++)
         {
