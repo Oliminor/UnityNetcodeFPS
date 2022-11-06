@@ -150,7 +150,7 @@ MonoBehaviour:
   capsuleCol: {fileID: 1756515391692927241}
   playerHitEffect: {fileID: 851497118884686250, guid: 031793ac1b915d24ca4b977fa261778c,
     type: 3}
-  damage: 50
+  damage: 125
   meleeRate: 1
 --- !u!136 &1756515391692927241
 CapsuleCollider:

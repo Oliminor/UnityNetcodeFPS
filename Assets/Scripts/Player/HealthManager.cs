@@ -71,7 +71,6 @@ public class HealthManager : NetworkBehaviour
             if (IsOwner)
             {
                 Respawn(true);
-                SetHealthServerRPC(_HealthMax);
             }
         }
     }
@@ -80,10 +79,13 @@ public class HealthManager : NetworkBehaviour
     {
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        Debug.Log("HElo there");
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         SetHealthServerRPC(_HealthMax);
         player.GetWeaponInventory().DropEveryWeapons();
         player.GetWeaponInventory().ResetInventory();
+        Debug.Log("HGEOIFHAFH DHOHAWIDHAW ");
+        //transform.position = new Vector3(0, 10, 0);
         transform.position = _ObjectiveManager.GetComponent<RespawnManager>().GetRespawnPoint().transform.position;
             if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam() && AwardPoint)
             {

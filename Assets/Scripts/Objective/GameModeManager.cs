@@ -29,31 +29,11 @@ public struct GameModeData : INetworkSerializable
 public class GameModeManager : MonoBehaviour
 {
 
-   /* private GameModeData _TDM = new GameModeData
-    {
-    Mode = MODES.DEATHMATCH,
-    TimeLimit = 10 * 60,
-    ScoreLimit = 10,
-    FFA = false,
-    Team1Weapons = 0,
-    Team2Weapons = 0,
-    RoundLimit = 1,
-    };
-
-    private GameModeData _KOTH = new GameModeData
-    {
-        Mode = MODES.KINGOFTHEHILL,
-        TimeLimit = 10 * 60,
-        ScoreLimit = 10,
-        FFA = false,
-        Team1Weapons = 0,
-        Team2Weapons = 0,
-        RoundLimit = 1,
-    };*/
-
     [SerializeField] private List<GameModeData> _ModeList;
+    [SerializeField] private GameObject _Scoreboard;
 
-    private NetworkVariable<GameModeData> _CurrentMode = new NetworkVariable<GameModeData>(default);
+    [SerializeField] public NetworkVariable<GameModeData> _CurrentMode = new NetworkVariable<GameModeData>(new GameModeData { }, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [SerializeField] public NetworkVariable<int> _CurrentModeInt = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     // Start is called before the first frame update
     void Start()
@@ -65,13 +45,22 @@ public class GameModeManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKey(KeyCode.Tab))
+        {
+            _Scoreboard.SetActive(true);
+        }
+        else
+        {
+            _Scoreboard.SetActive(false);
+        }
     }
 
-    public void SetMode(int Index)
+    [ServerRpc(RequireOwnership = false)]
+    public void SetModeServerRPC(int Index)
     {
-        
-        _CurrentMode.Value = _ModeList[Index];
+        GameModeData Data = _ModeList[Index];
+        _CurrentMode.Value = Data;
+        _CurrentModeInt.Value = Index;
         Debug.Log(_CurrentMode.Value.Mode);
     }
 

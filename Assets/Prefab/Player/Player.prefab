@@ -1437,16 +1437,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1770150130}
     m_Modifications:
-    - target: {fileID: 3242913708140117973, guid: 8161be08461a24041bdc8c7366d58017,
-        type: 3}
-      propertyPath: _ZoomSizeFOV
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 3242913708140117973, guid: 8161be08461a24041bdc8c7366d58017,
-        type: 3}
-      propertyPath: _ProjectileNumber
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7484525781483434150, guid: 8161be08461a24041bdc8c7366d58017,
         type: 3}
       propertyPath: m_Name
@@ -1522,16 +1512,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1770150130}
     m_Modifications:
-    - target: {fileID: 3794556562843175306, guid: e9cef01821697fa468dcfdf83bcd84fa,
-        type: 3}
-      propertyPath: _ZoomSizeFOV
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 3794556562843175306, guid: e9cef01821697fa468dcfdf83bcd84fa,
-        type: 3}
-      propertyPath: _ProjectileNumber
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 8306951095173680226, guid: e9cef01821697fa468dcfdf83bcd84fa,
         type: 3}
       propertyPath: m_Name

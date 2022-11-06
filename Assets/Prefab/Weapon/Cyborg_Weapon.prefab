@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 864da9491dbbf2e41afbd23951dfd642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireRate: 0.3
+  fireRate: 0.4
   shotPoint: {fileID: 1505022683}
   projectile: {fileID: 4115888716068934635, guid: 30cb970065e4e3c488621282e8ccd822,
     type: 3}
@@ -187,8 +187,9 @@ MonoBehaviour:
   objectPoolSize: 5
   animController: {fileID: 9100000, guid: 34025cbc3b55d604a9244cbaeb20e47a, type: 2}
   rotation: {x: 0, y: 0, z: 0}
-  _ProjectileDamage: 5
-  _ProjectileSpeed: 100
+  _ZoomSizeFOV: 45
+  _ProjectileDamage: 35
+  _ProjectileSpeed: 150
   _ProjectileLife: 3
-  _ProjectileNumber: 3
-  _ProjectileSpread: 75
+  _ProjectileNumber: 1
+  _ProjectileSpread: 15

@@ -17,12 +17,14 @@ public struct TEAMDATA : INetworkSerializable, System.IEquatable<TEAMDATA> {
     public Color Colour;
     public int TeamScore;
     public FixedString128Bytes TeamName;
+    public int[] PlayerData;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref Colour);
         serializer.SerializeValue(ref TeamScore);
         serializer.SerializeValue(ref TeamName);
+        serializer.SerializeValue(ref PlayerData);
 
     }
 
@@ -35,9 +37,9 @@ public struct TEAMDATA : INetworkSerializable, System.IEquatable<TEAMDATA> {
 public class ObjectiveManager : NetworkBehaviour
 {
 
-    public TEAMDATA[] _Teams;
+    [SerializeField] public TEAMDATA[] _Teams;
 
-    [SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.KINGOFTHEHILL);
+    [SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.KINGOFTHEHILL, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
     private int _MaxScore;
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
@@ -46,6 +48,7 @@ public class ObjectiveManager : NetworkBehaviour
     [SerializeField] private GameObject _KingOfTheHill;
     private bool _GameInProgress;
     private GameObject _SceneManager;
+    [SerializeField] private GameObject _Scoreboard;
     //public static ObjectiveManager instance;
 
     private List<GameObject> _Players;
@@ -57,7 +60,8 @@ public class ObjectiveManager : NetworkBehaviour
     private void Awake()
     {
         NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
-        _SceneManager = GameObject.Find("SceneManager");
+        NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
+
         //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
     }
     void Start()
@@ -66,6 +70,8 @@ public class ObjectiveManager : NetworkBehaviour
        // instance = this;
         _GameInProgress = false;
         _SceneManager = GameObject.Find("SceneManager");
+        if (!IsServer) return;
+        StartNewGameServerRPC(_SceneManager.GetComponent<GameModeManager>().GetCurrentMode());
     }
 
     private void SceneManagement_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
@@ -75,12 +81,22 @@ public class ObjectiveManager : NetworkBehaviour
             if(sceneName==ProjectNetworkSceneManager.sceneNames[2]&&clientsCompleted.Count==ProjectNetworkSceneManager.singleton.playersConnected.Value)
             {
                 _SceneManager = GameObject.Find("SceneManager");
-                StartNewGame(_SceneManager.GetComponent<GameModeManager>().GetCurrentMode());
+                
                 Debug.Log("BOOOOOOOOIIIIIIIII IT WORKED"+ clientsCompleted.Count);
+                
             }
            
         }  
     }
+
+    private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
+    {
+        if (sceneName == "Test")
+        {
+            NetworkManager.SceneManager.OnLoadEventCompleted -= SceneManagement_OnLoadEventCompleted;
+        }
+    }
+
     //private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
     //{
     //    if(IsServer)
@@ -96,25 +112,54 @@ public class ObjectiveManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("Game in Progress" + _GameInProgress);
         if (!_GameInProgress) return;
-        if (!IsServer) return;
-        int i = 0;
-        string Message = "";
+       
         foreach(TEAMDATA TeamData in _Teams)
         {
-            Message = "";
-            Message += string.Format("Team {0}\n", TeamData.TeamName);
-            Message += string.Format("{0} Score \n", TeamData.TeamScore);
-            //Message += string.Format("{0} Members \n", TeamData.Players.Count);
-            //_ScoreText[i].text = Message;
-            i++;
             Debug.Log("Max score" + _MaxScore);
-            if (TeamData.TeamScore >= _MaxScore)
+            UpdateScoreboard();
+            
+            if (TeamData.TeamScore >= _MaxScore && IsServer)
             {
                 EndGame();
             }
         }
 
+    }
+
+    void UpdateScoreboard()
+    {
+        Transform ScoreboardParent;
+        TMP_Text Name;
+        TMP_Text Score;
+        for(int i = 0; i < _Teams.Length; i++)
+        {
+            ScoreboardParent = _Scoreboard.transform.GetChild(i);
+            Name = ScoreboardParent.GetChild(0).GetComponent<TextMeshProUGUI>();// = _Teams[i].TeamName.ToString();
+            Score = ScoreboardParent.GetChild(1).GetComponent<TextMeshProUGUI>();// = _Teams[i].TeamScore.ToString();
+            Name.text = _Teams[i].TeamName.ToString();
+            Score.text = _Teams[i].TeamScore.ToString();
+        }
+    }
+
+    void AssignTeams()
+    {
+        if (!IsServer) return;
+        for(int i = 0; i < NetworkManager.Singleton.ConnectedClients.Count; i++)
+        {
+            NetworkObject Player = NetworkManager.Singleton.ConnectedClients[(ulong)i].PlayerObject;
+            int PlayerID = i;
+            TEAMS PlayerTeam = Player.GetComponent<PlayerTeamManager>().GetTeam();
+            int PlayerScore = 0;
+            int PlayerKills = 0;
+            int PlayerDeaths = 0;
+            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 0] = PlayerID;
+            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 1] = (int)PlayerTeam;
+            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 2] = PlayerScore;
+            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 3] = PlayerKills;
+            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 4] = PlayerDeaths;
+        }
     }
 
     public void EndGame()
@@ -127,12 +172,12 @@ public class ObjectiveManager : NetworkBehaviour
         _SceneManager.GetComponent<ProjectNetworkSceneManager>().ExitGameMode();
     }
 
-    public void StartNewGame(GameModeData ModeData)
+    [ServerRpc]
+    public void StartNewGameServerRPC(GameModeData ModeData)
     {
-        _GameInProgress = true;
         SetGameModeSettings(ModeData);
+        StartNewGameClientRPC(ModeData);
         StartNewGameServerRPC();
-        StartNewGameClientRPC();
     }
 
     public void SetGameModeSettings(GameModeData ModeData)
@@ -142,8 +187,10 @@ public class ObjectiveManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void StartNewGameClientRPC()
+    void StartNewGameClientRPC(GameModeData ModeData)
     {
+        _Teams[0].TeamName = "Red";
+        _Teams[1].TeamName = "Blue";
         _GameInProgress = true;
         _KingOfTheHill.SetActive(false);
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
@@ -164,8 +211,7 @@ public class ObjectiveManager : NetworkBehaviour
     void StartNewGameServerRPC()
     {
         _GameInProgress = true;
-        //ClearAIServerRPC();
-        //SpawnAIServerRPC();
+        //AssignTeams();
         for (int i = 0; i < _Teams.Length; i++)
         {
             Debug.Log("Setting team to 0 points" + i);
