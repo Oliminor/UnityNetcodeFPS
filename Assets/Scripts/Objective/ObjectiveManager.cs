@@ -176,7 +176,6 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     public void StartNewGameServerRPC(GameModeData ModeData)
     {
-        SetGameModeSettings(ModeData);
         StartNewGameClientRPC(ModeData);
         StartNewGameServerRPC();
     }
@@ -192,6 +191,7 @@ public class ObjectiveManager : NetworkBehaviour
     {
         _Teams[0].TeamName = "Red";
         _Teams[1].TeamName = "Blue";
+        SetGameModeSettings(ModeData);
         _GameInProgress = true;
         _KingOfTheHill.SetActive(false);
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
