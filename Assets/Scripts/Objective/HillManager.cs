@@ -35,7 +35,6 @@ public class HillManager : NetworkBehaviour
     public void StartGame()
     {
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
-        Debug.Log("HEy i've been cvalled");
         _TEAMSInHill = new List<TEAMS> { };
         if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.KINGOFTHEHILL)
         {
@@ -52,14 +51,22 @@ public class HillManager : NetworkBehaviour
             _GameActive = false;
             gameObject.SetActive(false);
         }
+        if (!IsServer) return;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        _GameActive = true;
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
         if (!IsServer) return;
-        if (!_GameActive) return;
+        HillUpdateServerRPC();
+
+    }
+    [ServerRpc]
+    void HillUpdateServerRPC()
+    {
+        Debug.Log("Hill update");
         TEAMS TeamControlling;
         switch (_State)
         {
@@ -69,12 +76,13 @@ public class HillManager : NetworkBehaviour
                 break;
             case (_States.CONTROLLED):
                 Debug.Log("Controlled by " + _ControllingTeam);
-                if (_TEAMSInHill.Count <= 0) { 
+                if (_TEAMSInHill.Count <= 0)
+                {
                     _State = _States.EMPTY;
                     break;
                 }
                 TeamControlling = _TEAMSInHill[0];
-                foreach(TEAMS Team in _TEAMSInHill)
+                foreach (TEAMS Team in _TEAMSInHill)
                 {
                     if (TeamControlling != Team)
                     {
@@ -105,7 +113,6 @@ public class HillManager : NetworkBehaviour
                 _State = _States.CONTROLLED;
                 break;
         }
-
     }
 
     void OnTriggerEnter(Collider Object)

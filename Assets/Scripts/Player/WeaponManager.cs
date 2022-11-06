@@ -129,7 +129,7 @@ public class WeaponManager : NetworkBehaviour
             netAnim.SetTrigger("fire");
             fireRateCoolDown = fireRate;
             StartCoroutine(Fire());
-            FireVoidServerRPC();
+            FireVoidServerRPC(transform.position, transform.rotation);
         }
     }
 
@@ -204,13 +204,13 @@ public class WeaponManager : NetworkBehaviour
     /// Calls the fire on the server side
     /// </summary>
     [ServerRpc]
-    private void FireVoidServerRPC()
+    private void FireVoidServerRPC(Vector3 Position, Quaternion Rotation)
     {
         FireVoidClientRPC();
 
         for (int i = 0; i < _ProjectileNumber; i++)
         {
-            GameObject _projectile = Instantiate(projectile.gameObject, shotPoint.position, Quaternion.identity);
+            GameObject _projectile = Instantiate(projectile.gameObject, Position, Rotation);
             _projectile.GetComponent<NetworkObject>().Spawn();
             _projectile.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed, _ProjectileLife, transform.root.gameObject);
             _projectile.transform.LookAt(FireDirection());
