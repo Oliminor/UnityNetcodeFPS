@@ -92,7 +92,7 @@ public class ObjectiveManager : NetworkBehaviour
 
     private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
     {
-        if (sceneName == "Test")
+        if (sceneName == "Ben")
         {
             NetworkManager.SceneManager.OnLoadEventCompleted -= SceneManagement_OnLoadEventCompleted;
         }
@@ -113,12 +113,12 @@ public class ObjectiveManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Game in Progress" + _GameInProgress);
+        //Debug.Log("Game in Progress" + _GameInProgress);
         if (!_GameInProgress) return;
        
         foreach(TEAMDATA TeamData in _Teams)
         {
-            Debug.Log("Max score" + _MaxScore);
+            //Debug.Log("Max score" + _MaxScore);
             UpdateScoreboard();
             
             if (TeamData.TeamScore >= _MaxScore && IsServer)
