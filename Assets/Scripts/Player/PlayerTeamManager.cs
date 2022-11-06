@@ -26,6 +26,7 @@ public class PlayerTeamManager : NetworkBehaviour
     {
         if (!IsOwner)
         {
+
             return;
         }
 

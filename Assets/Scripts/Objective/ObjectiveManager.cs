@@ -61,7 +61,6 @@ public class ObjectiveManager : NetworkBehaviour
     private void Awake()
     {
         NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
-        NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
 
         //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
     }
@@ -88,14 +87,6 @@ public class ObjectiveManager : NetworkBehaviour
             }
            
         }  
-    }
-
-    private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)
-    {
-        if (sceneName == "Ben")
-        {
-            NetworkManager.SceneManager.OnLoadEventCompleted -= SceneManagement_OnLoadEventCompleted;
-        }
     }
 
     //private void SceneManagement_OnUnload(ulong clientId, string sceneName, AsyncOperation asyncOperation)

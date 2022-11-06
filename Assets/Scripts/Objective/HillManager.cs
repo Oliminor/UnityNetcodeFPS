@@ -21,6 +21,8 @@ public class HillManager : NetworkBehaviour
     void Start()
     {
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
+        _GameActive = false;
+        StartGame();
     }
 
     void Awake()
@@ -55,6 +57,7 @@ public class HillManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        _GameActive = true;
         if (!IsServer) return;
         if (!_GameActive) return;
         TEAMS TeamControlling;
