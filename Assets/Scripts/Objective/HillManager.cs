@@ -10,7 +10,7 @@ public class HillManager : NetworkBehaviour
 
     private _States _State;
 
-    private GameObject _NetworkManager;
+    private GameObject _ObjectiveManager;
     private TEAMS _ControllingTeam;
     private List<TEAMS> _TEAMSInHill;
     private bool _GameActive;
@@ -21,21 +21,22 @@ public class HillManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _NetworkManager = GameObject.Find("ObjectiveManager");
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
     }
 
     void Awake()
     {
-        _NetworkManager = GameObject.Find("ObjectiveManager");
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
         _GameActive = false;
         StartGame();
     }
 
     public void StartGame()
     {
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
         Debug.Log("HEy i've been cvalled");
         _TEAMSInHill = new List<TEAMS> { };
-        if (_NetworkManager.GetComponent<ObjectiveManager>().GetMode() == MODES.KINGOFTHEHILL)
+        if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.KINGOFTHEHILL)
         {
             Debug.Log("Yup");
             _GameActive = true;
@@ -86,7 +87,7 @@ public class HillManager : NetworkBehaviour
                 {
                     _PointCountdown = 1;
                     Debug.Log("Point Award");
-                    _NetworkManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_ControllingTeam);
+                    _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_ControllingTeam);
                 }
                 _PointCountdown -= Time.deltaTime;
                 break;

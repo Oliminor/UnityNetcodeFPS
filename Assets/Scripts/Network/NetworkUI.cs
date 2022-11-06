@@ -22,7 +22,7 @@ public class NetworkUI : NetworkBehaviour
 
     void Start()
     {
-        _ObjectiveManager = GameObject.Find("ObjectiveManager");
+        //_ObjectiveManager = GameObject.Find("ObjectiveManager");
         _NetworkManager = GameObject.Find("NetworkManager");
         instance = this;
         DontDestroyOnLoad(this);
@@ -31,7 +31,7 @@ public class NetworkUI : NetworkBehaviour
 
     void Update()
     {
-        _NetworkManager.GetComponent<UnityTransport>().ConnectionData.Address = "127.0.0.1";//_IPInput.text;
+        //_NetworkManager.GetComponent<UnityTransport>().ConnectionData.Address = "127.0.0.1";//_IPInput.text;
     }
 
     public void StartHost()

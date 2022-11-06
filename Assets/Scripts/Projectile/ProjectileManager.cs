@@ -5,7 +5,9 @@ using Unity.Netcode;
 
 public class ProjectileManager : NetworkBehaviour
 {
-
+    [SerializeField] LayerMask whatIsSolid;
+    [SerializeField] Transform groundHitEffect;
+    [SerializeField] Transform playerHitEffect;
     private float _Damage;
     private float _Speed;
     private float _Life;
@@ -18,7 +20,6 @@ public class ProjectileManager : NetworkBehaviour
     void Start()
     {
         previousPosition = transform.position;
-        //SetProperties(34, 10, 3);
         _RigidBody = GetComponent<Rigidbody>();
         StartCoroutine(TimeBeforeDestroyed(_Life));
     }
@@ -37,7 +38,7 @@ public class ProjectileManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        _RigidBody.velocity = transform.forward * _Speed * (Time.deltaTime * 100);
+        _RigidBody.velocity = transform.forward * _Speed * (Time.fixedDeltaTime * 100);
 
         if (!IsOwner) return;
 
@@ -50,16 +51,7 @@ public class ProjectileManager : NetworkBehaviour
     IEnumerator TimeBeforeDestroyed(float _life)
     {
         yield return new WaitForSeconds(_life);
-        if (IsOwner) DamagePlayerServerRPC();
-    }
-
-    /// <summary>
-    /// Despawn the projectile
-    /// </summary>
-    [ServerRpc]
-    private void DamagePlayerServerRPC()
-    {
-        gameObject.GetComponent<NetworkObject>().Despawn();
+        if (IsServer) gameObject.GetComponent<NetworkObject>().Despawn();
     }
 
     /// <summary>
@@ -68,13 +60,25 @@ public class ProjectileManager : NetworkBehaviour
     private void CheckBetweenTwoPositions()
     {
         if (!IsServer) return;
-        if (Physics.Linecast(transform.position, previousPosition, out RaycastHit hit))
+
+        float distance = Vector3.Distance(previousPosition, transform.position);
+        RaycastHit hit;
+
+        if (Physics.Raycast(previousPosition, transform.forward, out hit, distance, whatIsSolid))
         {
             if (hit.transform.gameObject.tag == "Player")
             {
-                DamagePlayerServerRPC();
                 hit.transform.gameObject.GetComponent<HealthManager>().DamagePlayer(_Damage, _Owner);
+                GameObject playerHitParticle = Instantiate(playerHitEffect.gameObject, hit.point, Quaternion.identity);
+                playerHitParticle.GetComponent<NetworkObject>().Spawn();
+                Destroy(playerHitParticle, 0.5f);
+                if (IsServer) gameObject.GetComponent<NetworkObject>().Despawn();
+                return;
             }
+            GameObject groundHitParticle = Instantiate(groundHitEffect.gameObject, hit.point, Quaternion.identity);
+            groundHitParticle.GetComponent<NetworkObject>().Spawn();
+            Destroy(groundHitParticle, 0.5f);
+            if (IsServer) gameObject.GetComponent<NetworkObject>().Despawn();
         }
         previousPosition = transform.position;
     }
