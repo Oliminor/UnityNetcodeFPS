@@ -26,7 +26,7 @@ public struct GameModeData : INetworkSerializable
     }
 }
 
-public class GameModeManager : MonoBehaviour
+public class GameModeManager : NetworkBehaviour
 {
 
     [SerializeField] private List<GameModeData> _ModeList;

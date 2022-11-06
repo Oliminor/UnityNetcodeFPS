@@ -39,7 +39,8 @@ public class ObjectiveManager : NetworkBehaviour
 
     [SerializeField] public TEAMDATA[] _Teams;
 
-    [SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.KINGOFTHEHILL, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
+    //[SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.KINGOFTHEHILL, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
+    [SerializeField] private MODES _CurrentMode;
     private int _MaxScore;
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
@@ -182,7 +183,7 @@ public class ObjectiveManager : NetworkBehaviour
 
     public void SetGameModeSettings(GameModeData ModeData)
     {
-        _CurrentMode.Value = ModeData.Mode;
+        _CurrentMode = ModeData.Mode;
         _MaxScore = ModeData.ScoreLimit;
     }
 
@@ -195,7 +196,7 @@ public class ObjectiveManager : NetworkBehaviour
         _KingOfTheHill.SetActive(false);
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
         NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
-        switch (_CurrentMode.Value) 
+        switch (_CurrentMode) 
         {
             case (MODES.DEATHMATCH):
                 Debug.Log("Starting deathmatch");
@@ -288,11 +289,11 @@ public class ObjectiveManager : NetworkBehaviour
 
     public MODES GetMode()
     {
-        return _CurrentMode.Value;
+        return _CurrentMode;
     }
 
     public void SetMode(int GameMode)
     {
-        //_CurrentMode.Value = (MODES)GameMode;
+        //_CurrentMode = (MODES)GameMode;
     }
 }
