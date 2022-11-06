@@ -80,6 +80,7 @@ public class WeaponManager : NetworkBehaviour
         for (int i = 0; i < objectPoolSize; i++)
         {
             GameObject go = Instantiate(muzzleEffect, transform);
+            if (IsOwner) go.gameObject.layer = LayerMask.NameToLayer("RenderOnTop");
             go.SetActive(false);
             objectPool.Add(go);
         }
