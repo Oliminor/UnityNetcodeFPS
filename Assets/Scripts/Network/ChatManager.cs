@@ -13,32 +13,40 @@ public class ChatManager : NetworkBehaviour
     [SerializeField] public TextMeshProUGUI chatText;
     [SerializeField] public TMP_InputField chatInput;
     bool inputActive = false;
+    public static ChatManager singleton;
 
     private void Start()
     {
+        singleton = this;
+        DontDestroyOnLoad(this);
         
     }
-    public override void OnNetworkSpawn()
-    {
-        if (IsOwner)
-        {
-            chatText = NetworkUI.instance.chatText;
-            chatInput = NetworkUI.instance.inputText;
-            chatUI = NetworkUI.instance.chatUI;
-            playerName = NetworkUI.instance.GetPlayerNameFromInput();
-            //chatInput.onDeselect.AddListener(Send);
-        }
-        base.OnNetworkSpawn();
-    }
+    //public override void OnNetworkSpawn()
+    //{
+    //    //if (IsClient&&!IsHost)
+    //    //{
+    //    //    ChangeOwnershipServerRpc(NetworkManager.Singleton.LocalClientId);
+    //    //}
+
+    //    if (IsClient)
+    //    {
+    //        playerName = NetworkUI.instance.playerName;
+    //        //chatInput.onDeselect.AddListener(Send);
+    //    }
+    //    base.OnNetworkSpawn();
+    //}
 
     private void Update()
     {
-        if(IsOwner)
+       
+        if (IsClient)
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
+                
                 if (inputActive == false)
                 {
+                    
                     chatInput.ActivateInputField();
                     inputActive = true;
                 }
@@ -63,7 +71,7 @@ public class ChatManager : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership =false)]
     private void SendMessageServerRpc(string playerName, string message)
     {
         HandleMessageClientRpc(playerName, message);
@@ -77,11 +85,16 @@ public class ChatManager : NetworkBehaviour
         Debug.Log(message);
     }
 
-
+    [ServerRpc]
+    private void ChangeOwnershipServerRpc(ulong clientID)
+    {
+            gameObject.GetComponent<NetworkObject>().ChangeOwnership(clientID);
+        
+    }
 
     public void UpdateChat(string playerName, string message)
     {
-        NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<ChatManager>().chatText.text += $"\n<color=#62BDE9FF>{playerName}</color> said: {message}";
+        GetComponent<ChatManager>().chatText.text += $"\n<color=#62BDE9FF>{playerName}</color> said: {message}";
         Debug.Log("hit");
     }
 

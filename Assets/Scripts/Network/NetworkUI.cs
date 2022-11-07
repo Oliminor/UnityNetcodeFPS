@@ -15,6 +15,7 @@ public class NetworkUI : NetworkBehaviour
     public TextMeshProUGUI chatText;
     public GameObject chatUI;
     public static NetworkUI instance;
+    public string playerName;
 
     public string GetPlayerNameFromInput() { return textInputForPlayerName.text; }
 
@@ -39,6 +40,8 @@ public class NetworkUI : NetworkBehaviour
     {
         //_ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.HOSTSETUP);
         NetworkManager.Singleton.StartHost();
+        playerName = GetPlayerNameFromInput();
+        ChatManager.singleton.playerName = playerName;
         //ObjectiveManager.instance.StartNewGame();
         NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
     }
@@ -47,6 +50,8 @@ public class NetworkUI : NetworkBehaviour
     {
         //_ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
         NetworkManager.Singleton.StartClient();
+        playerName = GetPlayerNameFromInput();
+        ChatManager.singleton.playerName = playerName;
         NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
     }
 
