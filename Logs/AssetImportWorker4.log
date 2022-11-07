@@ -1,0 +1,283 @@
+Using pre-set license
+Built from '2021.3/staging' branch; Version is '2021.3.2f1 (d6360bedb9a0) revision 14038539'; Using compiler version '192829333'; Build Type 'Release'
+OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 8039 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 1
+
+COMMAND LINE ARGUMENTS:
+D:\Programs\2021.3.2f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker4
+-projectPath
+D:/Git Repo/NetcodeProject
+-logFile
+Logs/AssetImportWorker4.log
+-srvPort
+60820
+Successfully changed project path to: D:/Git Repo/NetcodeProject
+D:/Git Repo/NetcodeProject
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Refreshing native plugins compatible for Editor in 225.63 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2021.3.2f1 (d6360bedb9a0)
+[Subsystems] Discovering subsystems at path D:/Programs/2021.3.2f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path D:/Git Repo/NetcodeProject/Assets
+GfxDevice: creating device client; threaded=0; jobified=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce GTX 1050 Ti (ID=0x1c8c)
+    Vendor:   NVIDIA
+    VRAM:     4019 MB
+    Driver:   30.0.15.1215
+Initialize mono
+Mono path[0] = 'D:/Programs/2021.3.2f1/Editor/Data/Managed'
+Mono path[1] = 'D:/Programs/2021.3.2f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'D:/Programs/2021.3.2f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56696
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: D:/Programs/2021.3.2f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+Register platform support module: D:/Programs/2021.3.2f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.002771 seconds.
+Native extension for WindowsStandalone target not found
+Native extension for Android target not found
+Refreshing native plugins compatible for Editor in 190.28 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.960 seconds
+Domain Reload Profiling:
+	ReloadAssembly (961ms)
+		BeginReloadAssembly (200ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (0ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (1ms)
+		EndReloadAssembly (642ms)
+			LoadAssemblies (200ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (137ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (34ms)
+			SetupLoadedEditorAssemblies (413ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (74ms)
+				SetLoadedEditorAssemblies (2ms)
+				RefreshPlugins (190ms)
+				BeforeProcessingInitializeOnLoad (2ms)
+				ProcessInitializeOnLoadAttributes (98ms)
+				ProcessInitializeOnLoadMethodAttributes (45ms)
+				AfterProcessingInitializeOnLoad (0ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (0ms)
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.008108 seconds.
+Android Extension - Scanning For ADB Devices 4700 ms
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\Git Repo\NetcodeProject\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\Git Repo\NetcodeProject\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Native extension for Android target not found
+Refreshing native plugins compatible for Editor in 222.85 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  3.358 seconds
+Domain Reload Profiling:
+	ReloadAssembly (3359ms)
+		BeginReloadAssembly (218ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (10ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (1ms)
+			CreateAndSetChildDomain (42ms)
+		EndReloadAssembly (2974ms)
+			LoadAssemblies (217ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (636ms)
+			ReleaseScriptCaches (3ms)
+			RebuildScriptCaches (163ms)
+			SetupLoadedEditorAssemblies (1927ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (18ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (223ms)
+				BeforeProcessingInitializeOnLoad (197ms)
+				ProcessInitializeOnLoadAttributes (514ms)
+				ProcessInitializeOnLoadMethodAttributes (971ms)
+				AfterProcessingInitializeOnLoad (4ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (10ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.64 seconds
+Refreshing native plugins compatible for Editor in 1.69 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 7036 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 60 unused Assets / (3.8 MB). Loaded Objects now: 7487.
+Memory consumption went from 310.7 MB to 306.9 MB.
+Total: 7.045300 ms (FindLiveObjects: 0.885200 ms CreateObjectMapping: 0.636500 ms MarkObjects: 4.054500 ms  DeleteObjects: 1.467400 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 369823.618945 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/ConcreteDamaged
+  artifactKey: Guid(aa0e6d494fba20c479418f2522f91242) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/ConcreteDamaged using Guid(aa0e6d494fba20c479418f2522f91242) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1c3dd6b15dea539a8f6ec82b9139380a') in 0.137441 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 644.501567 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/MedievalBrick
+  artifactKey: Guid(a68c019ae3cdc544fbe23d032b6e3a66) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/MedievalBrick using Guid(a68c019ae3cdc544fbe23d032b6e3a66) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b0765f42e22e5d91b96498622e2d7033') in 0.008181 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 51.781000 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/MedievalBrick/TexturesCom_Brick_Medieval_1K_normal.tif
+  artifactKey: Guid(0543ba0201cc35f4dbb9ec7c9b03d645) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/MedievalBrick/TexturesCom_Brick_Medieval_1K_normal.tif using Guid(0543ba0201cc35f4dbb9ec7c9b03d645) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'dee67f48229d107df26969a194ec96b1') in 0.257431 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.935655 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/MedievalBrick/TexturesCom_Brick_Medieval_1K_normal.tif
+  artifactKey: Guid(0543ba0201cc35f4dbb9ec7c9b03d645) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/MedievalBrick/TexturesCom_Brick_Medieval_1K_normal.tif using Guid(0543ba0201cc35f4dbb9ec7c9b03d645) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f582dc613db30da3c3559f068657afd7') in 0.067219 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 3063.163169 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/BrickTimbered
+  artifactKey: Guid(204c770f4c569054fa99ef943b722a2d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/BrickTimbered using Guid(204c770f4c569054fa99ef943b722a2d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c51509964c9a27f9fb72014aea2f39aa') in 0.244042 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 43.553314 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/BrickTimbered/TexturesCom_Brick_TimberedWall_1K_normal.tif
+  artifactKey: Guid(a77f8118621aedf49bd594ecdd4d3701) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/BrickTimbered/TexturesCom_Brick_TimberedWall_1K_normal.tif using Guid(a77f8118621aedf49bd594ecdd4d3701) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a60ba2aa0c3ea0faf23b283bfb16a84c') in 0.842715 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 10.976847 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/BrickTimbered/TexturesCom_Brick_TimberedWall_1K_normal.tif
+  artifactKey: Guid(a77f8118621aedf49bd594ecdd4d3701) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/BrickTimbered/TexturesCom_Brick_TimberedWall_1K_normal.tif using Guid(a77f8118621aedf49bd594ecdd4d3701) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '98e64e11809a1ea407f74c0f5659f81d') in 0.125869 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 691.657327 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/AbstractConcrete
+  artifactKey: Guid(07e298146a264e1438eee36309a5eae2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/AbstractConcrete using Guid(07e298146a264e1438eee36309a5eae2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b5042bfc787bbdcc5dab37bf6bd39f32') in 0.009648 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 4.352514 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/BrokenTiles
+  artifactKey: Guid(c9305679b8e26ef4494e2db9ce61a912) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/BrokenTiles using Guid(c9305679b8e26ef4494e2db9ce61a912) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7a91eb47d77c447733147c12c9c521c2') in 0.008720 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 3.680272 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/BronzeRooftiles
+  artifactKey: Guid(7a3e8ab977a4a4d458b20a58f188d030) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/BronzeRooftiles using Guid(7a3e8ab977a4a4d458b20a58f188d030) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'faeee3670efc311768008a93a7244ad2') in 0.007302 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 3074.599300 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/WoodOldLog
+  artifactKey: Guid(aaf86142d0a1e854b89f4a29f65ec180) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/WoodOldLog using Guid(aaf86142d0a1e854b89f4a29f65ec180) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bbadb2da4dd63b6964f7f94a55e08791') in 0.037807 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 32.103771 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/WoodOldLog/TexturesCom_Wood_OldLog5_2.48x0.31_1K_normal.tif
+  artifactKey: Guid(1fbe684135b5bf846b07415b35a3b759) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/WoodOldLog/TexturesCom_Wood_OldLog5_2.48x0.31_1K_normal.tif using Guid(1fbe684135b5bf846b07415b35a3b759) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b2bb95ffffb233ccb1083ee8e0fc61b2') in 0.250231 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 3.547660 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/WoodOldLog/TexturesCom_Wood_OldLog5_2.48x0.31_1K_normal.tif
+  artifactKey: Guid(1fbe684135b5bf846b07415b35a3b759) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/WoodOldLog/TexturesCom_Wood_OldLog5_2.48x0.31_1K_normal.tif using Guid(1fbe684135b5bf846b07415b35a3b759) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '144fa1bcb16fcfae565a173525e5322b') in 0.088541 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 4712.212001 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/MossyStones
+  artifactKey: Guid(cc2bf981bc890484bb6c2ab581d756d7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/MossyStones using Guid(cc2bf981bc890484bb6c2ab581d756d7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f6709fdd7c1d5c10f46361242fc6f422') in 0.028059 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 7.761295 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/MossyBricks
+  artifactKey: Guid(f5735f91a9b5c16428aaaa70bb7e209d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/MossyBricks using Guid(f5735f91a9b5c16428aaaa70bb7e209d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0c01096948153bbcd3981d1d07099424') in 0.043871 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 867.491765 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/PavementConcrete
+  artifactKey: Guid(94decb3004db55343abe17188af866b2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/PavementConcrete using Guid(94decb3004db55343abe17188af866b2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9459206bd9786b99e48ed3e31dafd59e') in 0.055084 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 44.555581 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/PavementConcrete/TexturesCom_Pavement_ConcretePlatesOld_2.4x2.4_512_normal.tif
+  artifactKey: Guid(08d302a835be4064591e5f0d599777f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/PavementConcrete/TexturesCom_Pavement_ConcretePlatesOld_2.4x2.4_512_normal.tif using Guid(08d302a835be4064591e5f0d599777f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '766eebeab00993c0e5e15fbb844b561a') in 0.462805 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 4.872503 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/PavementConcrete/TexturesCom_Pavement_ConcretePlatesOld_2.4x2.4_512_normal.tif
+  artifactKey: Guid(08d302a835be4064591e5f0d599777f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/PavementConcrete/TexturesCom_Pavement_ConcretePlatesOld_2.4x2.4_512_normal.tif using Guid(08d302a835be4064591e5f0d599777f9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1108b4b38a3437631f34c746368f2c6a') in 0.147134 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 5.393224 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/PavementConcrete/TexturesCom_Pavement_ConcretePlatesOld_2.4x2.4_512_albedo.tif
+  artifactKey: Guid(62960ffa63a83eb468f1ed06f1a88a28) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/PavementConcrete/TexturesCom_Pavement_ConcretePlatesOld_2.4x2.4_512_albedo.tif using Guid(62960ffa63a83eb468f1ed06f1a88a28) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '32daec626a3d1356e05ca70718793ed3') in 0.342365 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 782.385351 seconds.
+  path: Assets/Dani Level Stuff/Level_Materials
+  artifactKey: Guid(ce91a6a9a1f7b034293c4b25c8bde0ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Materials using Guid(ce91a6a9a1f7b034293c4b25c8bde0ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '61baa30a05721d9221246d2d8b8e93bc') in 0.035692 seconds 
