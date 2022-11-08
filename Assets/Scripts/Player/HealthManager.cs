@@ -85,7 +85,7 @@ public class HealthManager : NetworkBehaviour
         player.GetWeaponInventory().DropEveryWeapons();
         player.GetWeaponInventory().ResetInventory();
         Debug.Log("HGEOIFHAFH DHOHAWIDHAW ");
-        //transform.position = new Vector3(0, 10, 0);
+        transform.position = new Vector3(0, 10, 0);
         transform.position = _ObjectiveManager.GetComponent<RespawnManager>().GetRespawnPoint().transform.position;
             if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam() && AwardPoint)
             {
