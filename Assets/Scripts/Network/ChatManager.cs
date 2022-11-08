@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -11,8 +12,13 @@ public class ChatManager : NetworkBehaviour
     [SerializeField] public string playerName;
     [SerializeField] public TextMeshProUGUI chatText;
     [SerializeField] public TMP_InputField chatInput;
+    bool inputActive = false;
 
     private void Start()
+    {
+        
+    }
+    public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
@@ -20,7 +26,30 @@ public class ChatManager : NetworkBehaviour
             chatInput = NetworkUI.instance.inputText;
             chatUI = NetworkUI.instance.chatUI;
             playerName = NetworkUI.instance.GetPlayerNameFromInput();
-            chatInput.onDeselect.AddListener(Send);
+            //chatInput.onDeselect.AddListener(Send);
+        }
+        base.OnNetworkSpawn();
+    }
+
+    private void Update()
+    {
+        if(IsOwner)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                if (inputActive == false)
+                {
+                    chatInput.ActivateInputField();
+                    inputActive = true;
+                }
+                else
+                {
+                    chatInput.DeactivateInputField();
+                    Send(chatInput.text);
+                    inputActive = false;
+
+                }
+            }
         }
     }
 

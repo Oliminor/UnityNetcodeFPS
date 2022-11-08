@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class NetworkUI : NetworkBehaviour
 {
@@ -58,5 +59,6 @@ public class NetworkUI : NetworkBehaviour
     public void Shutdown()
     {
         NetworkManager.Singleton.Shutdown();
+        NetworkManager.SceneManager.LoadScene("Ollie", LoadSceneMode.Single);
     }
 }

@@ -37,20 +37,21 @@ public class CrossHairManagement : MonoBehaviour
         for (int i = 0; i < CrossHairBase.childCount; i++)
         {
             Vector3 pos = CrossHairBase.GetChild(i).transform.position;
+            defaultPos = new Vector3(Screen.width / 2, Screen.height / 2, 0);
 
             switch (i)
             {
-                case 0: 
-                    pos = new Vector3(pos.x, defaultPos.y + lerpPosition + spreadValue, pos.z);
+                case 0:
+                    pos = new Vector3(defaultPos.x, defaultPos.y + lerpPosition + spreadValue, defaultPos.z);
                     break;
                 case 1:
-                    pos = new Vector3(defaultPos.x + lerpPosition + spreadValue, pos.y, pos.z);
+                    pos = new Vector3(defaultPos.x + lerpPosition + spreadValue, defaultPos.y, defaultPos.z);
                     break;
                 case 2:
-                    pos = new Vector3(pos.x, defaultPos.y - lerpPosition - spreadValue, pos.z);
+                    pos = new Vector3(defaultPos.x, defaultPos.y - lerpPosition - spreadValue, defaultPos.z);
                     break;
                 case 3:
-                    pos = new Vector3(defaultPos.x - lerpPosition - spreadValue, pos.y, pos.z);
+                    pos = new Vector3(defaultPos.x - lerpPosition - spreadValue, defaultPos.y, defaultPos.z);
                     break;
             }
 
