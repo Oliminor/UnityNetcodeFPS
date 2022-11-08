@@ -214,9 +214,10 @@ public class ObjectiveManager : NetworkBehaviour
     void StartNewGameServerRPC()
     {
         _GameInProgress = true;
+        _KingOfTheHill.GetComponent<HillManager>().StartGame();
         if (_CurrentMode == MODES.KINGOFTHEHILL)
         {
-            _KingOfTheHill.GetComponent<HillManager>().StartGame();
+            _KingOfTheHill.SetActive(true);
             _KingOfTheHill.transform.position = _HillLocations[0].transform.position;
 
         }

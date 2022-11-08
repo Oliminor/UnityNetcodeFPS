@@ -35,6 +35,7 @@ public class HillManager : NetworkBehaviour
         _TEAMSInHill = new List<TEAMS> { };
         _PointCountdown = 1;
         _State = _States.EMPTY;
+        gameObject.SetActive(false);
     }
 
     // Update is called once per frame
