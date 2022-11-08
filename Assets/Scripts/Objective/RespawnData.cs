@@ -13,11 +13,12 @@ public class RespawnData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        AddSpawn();
     }
 
     void Awake()
     {
-        AddSpawn();
+        
     }
 
     void AddSpawn()
