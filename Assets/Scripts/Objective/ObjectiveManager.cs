@@ -9,7 +9,7 @@ using TMPro;
 
 public enum TEAMS { RED, BLUE, GREEN, YELLOW };
 
-public enum MODES { DEATHMATCH, KINGOFTHEHILL};
+public enum MODES { DEATHMATCH, KINGOFTHEHILL, INFECTION};
 
 [System.Serializable]
 public struct TEAMDATA : INetworkSerializable, System.IEquatable<TEAMDATA> {
@@ -47,6 +47,9 @@ public class ObjectiveManager : NetworkBehaviour
     [SerializeField] GameObject _PlayerForAI;
 
     [SerializeField] private GameObject _KingOfTheHill;
+    [SerializeField] private List<GameObject> _HillLocations;
+    //[SerializeField] private NetworkVariable<int> _KingOfTheHillActive = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
     private bool _GameInProgress;
     private GameObject _SceneManager;
     [SerializeField] private GameObject _Scoreboard;
@@ -56,6 +59,10 @@ public class ObjectiveManager : NetworkBehaviour
 
     private List<GameObject> _Players;
     private List<GameObject> _Bots;
+
+    private float _TimeLimit = 0;
+    private NetworkVariable<float> _Time = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private float _TimeSinceMove = 0;
 
     public TextMeshProUGUI text; //TESTING SYNC CAUSE MY UNITY EDITOR IS TRASH- OLLIE
 
@@ -108,36 +115,32 @@ public class ObjectiveManager : NetworkBehaviour
     {
         //Debug.Log("Game in Progress" + _GameInProgress);
         if (!_GameInProgress) return;
+        if (!IsServer) return;
        
         foreach(TEAMDATA TeamData in _Teams)
         {
             //Debug.Log("Max score" + _MaxScore);
             UpdateScoreboard();
-            
             if (TeamData.TeamScore >= _MaxScore && IsServer)
             {
                 EndGame();
             }
+            if (_TimeSinceMove <= 0)
+            {
+                _TimeSinceMove = (float)(_TimeLimit * 0.25);
+                MoveHillServerRPC();
+            }
+            if (_Time.Value > _TimeLimit)
+            {
+                EndGame();
+            }
         }
-
+        _Time.Value += Time.deltaTime;
+        _TimeSinceMove -= Time.deltaTime;
     }
 
     void UpdateScoreboard()
     {
-        TeamScoreText = GameObject.Find("Temp");
-        TeamScoreText.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Score: " + _Teams[0].TeamScore.ToString();
-        TeamScoreText.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Score: " + _Teams[1].TeamScore.ToString();
-        /*Transform ScoreboardParent;
-        TMP_Text Name;
-        TMP_Text Score;
-        for(int i = 0; i < _Teams.Length; i++)
-        {
-            ScoreboardParent = _Scoreboard.transform.GetChild(i);
-            Name = ScoreboardParent.GetChild(0).GetComponent<TextMeshProUGUI>();// = _Teams[i].TeamName.ToString();
-            Score = ScoreboardParent.GetChild(1).GetComponent<TextMeshProUGUI>();// = _Teams[i].TeamScore.ToString();
-            Name.text = _Teams[i].TeamName.ToString();
-            Score.text = _Teams[i].TeamScore.ToString();
-        }*/
     }
 
     void AssignTeams()
@@ -146,6 +149,7 @@ public class ObjectiveManager : NetworkBehaviour
         for(int i = 0; i < NetworkManager.Singleton.ConnectedClients.Count; i++)
         {
             NetworkObject Player = NetworkManager.Singleton.ConnectedClients[(ulong)i].PlayerObject;
+            Player.GetComponent<PlayerTeamManager>().ChangeTeam((i + 1) % 2);
             int PlayerID = i;
             TEAMS PlayerTeam = Player.GetComponent<PlayerTeamManager>().GetTeam();
             int PlayerScore = 0;
@@ -173,10 +177,7 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     public void StartNewGameServerRPC(GameModeData ModeData)
     {
-        foreach (ulong i in NetworkManager.ConnectedClientsIds)
-        {
-            NetworkManager.ConnectedClients[i].PlayerObject.GetComponent<PlayerTeamManager>().ChangeTeam((int)i % 2);
-        }
+
         StartNewGameClientRPC(ModeData);
         StartNewGameServerRPC();
         
@@ -186,6 +187,7 @@ public class ObjectiveManager : NetworkBehaviour
     {
         _CurrentMode = ModeData.Mode;
         _MaxScore = ModeData.ScoreLimit;
+        _TimeLimit = ModeData.TimeLimit;
     }
 
     [ClientRpc]
@@ -195,7 +197,6 @@ public class ObjectiveManager : NetworkBehaviour
         _Teams[1].TeamName = "Blue";
         SetGameModeSettings(ModeData);
         _GameInProgress = true;
-        _KingOfTheHill.SetActive(false);
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
         NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
         switch (_CurrentMode) 
@@ -204,7 +205,6 @@ public class ObjectiveManager : NetworkBehaviour
                 Debug.Log("Starting deathmatch");
                 break;
             case (MODES.KINGOFTHEHILL):
-                _KingOfTheHill.SetActive(true);
                 Debug.Log("Starting King of the hill");
                 break;
         }
@@ -216,14 +216,18 @@ public class ObjectiveManager : NetworkBehaviour
         _GameInProgress = true;
         if (_CurrentMode == MODES.KINGOFTHEHILL)
         {
-            _KingOfTheHill.GetComponent<NetworkObject>().Spawn();
+            _KingOfTheHill.GetComponent<HillManager>().StartGame();
+            _KingOfTheHill.transform.position = _HillLocations[0].transform.position;
+
         }
-        //AssignTeams();
+        AssignTeams();
         for (int i = 0; i < _Teams.Length; i++)
         {
             Debug.Log("Setting team to 0 points" + i);
             SetScoreToTeamServerRPC(0, i);
         }
+        _TimeSinceMove = 5;
+        _Time.Value = 0;
     }
 
     [ServerRpc]
@@ -244,6 +248,13 @@ public class ObjectiveManager : NetworkBehaviour
             Destroy(Bot);
         }
         _Bots.Clear();
+    }
+
+    [ServerRpc]
+    public void MoveHillServerRPC()
+    {
+
+        _KingOfTheHill.transform.position = _HillLocations[Random.Range(0, _HillLocations.Count)].transform.position;
     }
 
     public Color GetTeamColour(TEAMS Team)

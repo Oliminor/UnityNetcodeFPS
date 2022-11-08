@@ -2947,6 +2947,7 @@ MonoBehaviour:
   inputText: {fileID: 1880681813}
   chatText: {fileID: 701201680}
   chatUI: {fileID: 1822013447}
+  playerName: 
 --- !u!224 &919725483
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4624,14 +4625,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ModeList:
   - Mode: 0
-    TimeLimit: 10
+    TimeLimit: 60
     ScoreLimit: 10
     FFA: 0
     Team1Weapons: 0
     Team2Weapons: 0
     RoundLimit: 1
   - Mode: 1
-    TimeLimit: 10
+    TimeLimit: 30
     ScoreLimit: 10
     FFA: 0
     Team1Weapons: 0

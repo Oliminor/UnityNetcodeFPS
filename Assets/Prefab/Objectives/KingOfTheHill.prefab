@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6445035798772486380}
   - component: {fileID: 3589548039461865717}
   - component: {fileID: 4363958025849049784}
+  - component: {fileID: -1133642856469105019}
   m_Layer: 0
   m_Name: KingOfTheHill
   m_TagString: Objective
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 808537235149997393}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 6.37, y: 4.9, z: 6.37}
+  m_LocalScale: {x: 6, y: 4.615385, z: 6}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -128,3 +129,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b0092a6afd1330448844119c291be3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-1133642856469105019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808537235149997393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1

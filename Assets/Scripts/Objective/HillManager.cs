@@ -23,43 +23,23 @@ public class HillManager : NetworkBehaviour
     {
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         _GameActive = false;
-        StartGame();
     }
 
     void Awake()
     {
-        _ObjectiveManager = GameObject.Find("ObjectiveManager");
-        _GameActive = false;
-        StartGame();
     }
 
     public void StartGame()
     {
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         _TEAMSInHill = new List<TEAMS> { };
-        if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.KINGOFTHEHILL)
-        {
-            Debug.Log("Yup");
-            _GameActive = true;
-            _State = _States.EMPTY;
-            gameObject.SetActive(true);
-            _PointCountdown = 1;
-        }
-        else
-        {
-            Debug.Log("Nope");
-            _State = _States.EMPTY;
-            _GameActive = false;
-            gameObject.SetActive(false);
-        }
-        if (!IsServer) return;
-        
+        _PointCountdown = 1;
+        _State = _States.EMPTY;
     }
 
     // Update is called once per frame
     void Update()
     {
-        _ObjectiveManager = GameObject.Find("ObjectiveManager");
         if (!IsServer) return;
         HillUpdateServerRPC();
 

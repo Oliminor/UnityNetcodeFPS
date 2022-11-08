@@ -85,12 +85,17 @@ public class HealthManager : NetworkBehaviour
         player.GetWeaponInventory().DropEveryWeapons();
         player.GetWeaponInventory().ResetInventory();
         Debug.Log("HGEOIFHAFH DHOHAWIDHAW ");
-        transform.position = new Vector3(0, 10, 0);
-        transform.position = _ObjectiveManager.GetComponent<RespawnManager>().GetRespawnPoint().transform.position;
+        _ObjectiveManager.GetComponent<RespawnManager>().GetRespawnPointServerRPC();
             if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam() && AwardPoint)
             {
             _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
             }
+    }
+
+    [ClientRpc]
+    public void SetPositionClientRPC(Vector3 NewPosition, ClientRpcParams clientRpcParams = default)
+    {
+        transform.position = NewPosition;
     }
 
     /// <summary>

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class RespawnManager : MonoBehaviour
+public class RespawnManager : NetworkBehaviour
 {
 
     [SerializeField] private List<GameObject> _AllRespawnPoints;
@@ -29,10 +30,22 @@ public class RespawnManager : MonoBehaviour
         _AllRespawnPoints.Add(RespawnPoint);
     }
 
-    public GameObject GetRespawnPoint()
+    [ServerRpc(RequireOwnership = false)]
+    public void GetRespawnPointServerRPC(ServerRpcParams serverRpcParams = default)
     {
-        Debug.Log(_AllRespawnPoints.Count);
-        return _AllRespawnPoints[Random.Range(0, _AllRespawnPoints.Count)];
+        var ClientId = serverRpcParams.Receive.SenderClientId;
+
+
+        Vector3 Position = _AllRespawnPoints[Random.Range(0, _AllRespawnPoints.Count)].transform.position;
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { ClientId }
+            }
+        };
+        NetworkManager.ConnectedClients[ClientId].PlayerObject.GetComponent<HealthManager>().SetPositionClientRPC(Position, clientRpcParams);
+        return;
     }
 
     public void RemoveSpawnPoint()

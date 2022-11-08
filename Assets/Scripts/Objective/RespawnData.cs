@@ -13,14 +13,14 @@ public class RespawnData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //DontDestroyOnLoad(this); //just testing
-        //NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
-        _ObjectiveManager = GameObject.Find("ObjectiveManager");
-        _ObjectiveManager.GetComponent<RespawnManager>().AddRespawnPoint(gameObject);
-        gameObject.transform.GetComponent<Renderer>().material.color = _ObjectiveManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team);
     }
 
     void Awake()
+    {
+        AddSpawn();
+    }
+
+    void AddSpawn()
     {
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         _ObjectiveManager.GetComponent<RespawnManager>().AddRespawnPoint(gameObject);

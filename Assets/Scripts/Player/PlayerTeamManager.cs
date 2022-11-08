@@ -32,7 +32,7 @@ public class PlayerTeamManager : NetworkBehaviour
         _NetworkManager = GameObject.Find("ObjectiveManager");
         if (!IsOwner)
         {
-            //transform.GetChild(1).gameObject.GetComponent<Renderer>().material.color = _NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value);
+            transform.GetChild(1).gameObject.GetComponent<Renderer>().material.color = _NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value);
             return;
         }
         //TeamYouText = GameObject.Find("Temp");
