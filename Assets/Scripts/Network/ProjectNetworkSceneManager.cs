@@ -35,11 +35,12 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += (id) => { if (NetworkManager.Singleton.IsServer) playersConnected.Value++; };
 
         NetworkManager.Singleton.OnClientDisconnectCallback += (id) => { if (NetworkManager.Singleton.IsServer) playersConnected.Value--; };
+
     }
     private void Update()
     {
         playersConnectedText.text = playersConnected.Value.ToString();
-        playersLoadedText.text = playersLoadedInScene.Value.ToString();
+        //playersLoadedText.text = playersLoadedInScene.Value.ToString();
     }
 
 
