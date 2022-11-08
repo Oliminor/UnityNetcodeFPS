@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class RespawnData : MonoBehaviour
 {
 
-    [SerializeField] TEAMS _Team;
+    [SerializeField] public TEAMS _Team;
     private GameObject _ObjectiveManager;
 
     // Start is called before the first frame update

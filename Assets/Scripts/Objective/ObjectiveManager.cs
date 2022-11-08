@@ -41,7 +41,9 @@ public class ObjectiveManager : NetworkBehaviour
 
     //[SerializeField] private NetworkVariable<MODES> _CurrentMode = new NetworkVariable<MODES>(MODES.KINGOFTHEHILL, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
     [SerializeField] private MODES _CurrentMode;
+    private float _TimeLimit = 0;
     private int _MaxScore;
+    private int[] _TeamWeapons;
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
     [SerializeField] GameObject _PlayerForAI;
@@ -60,7 +62,6 @@ public class ObjectiveManager : NetworkBehaviour
     private List<GameObject> _Players;
     private List<GameObject> _Bots;
 
-    private float _TimeLimit = 0;
     private NetworkVariable<float> _Time = new NetworkVariable<float>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private float _TimeSinceMove = 0;
 
@@ -69,6 +70,7 @@ public class ObjectiveManager : NetworkBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
+        _TeamWeapons = new int[4];
         NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
 
         //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
@@ -116,7 +118,7 @@ public class ObjectiveManager : NetworkBehaviour
         //Debug.Log("Game in Progress" + _GameInProgress);
         if (!_GameInProgress) return;
         if (!IsServer) return;
-       
+
         foreach(TEAMDATA TeamData in _Teams)
         {
             //Debug.Log("Max score" + _MaxScore);
@@ -149,7 +151,17 @@ public class ObjectiveManager : NetworkBehaviour
         for(int i = 0; i < NetworkManager.Singleton.ConnectedClients.Count; i++)
         {
             NetworkObject Player = NetworkManager.Singleton.ConnectedClients[(ulong)i].PlayerObject;
-            Player.GetComponent<PlayerTeamManager>().ChangeTeam((i + 1) % 2);
+            
+            switch (_CurrentMode) 
+            {
+                case (MODES.DEATHMATCH | MODES.KINGOFTHEHILL):
+                    Player.GetComponent<PlayerTeamManager>().ChangeTeam((i + 1) % 2);
+                    break;
+                case (MODES.INFECTION):
+                    Player.GetComponent<PlayerTeamManager>().ChangeTeam(0);
+                    break;
+            }
+
             int PlayerID = i;
             TEAMS PlayerTeam = Player.GetComponent<PlayerTeamManager>().GetTeam();
             int PlayerScore = 0;
@@ -160,6 +172,11 @@ public class ObjectiveManager : NetworkBehaviour
             _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 2] = PlayerScore;
             _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 3] = PlayerKills;
             _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 4] = PlayerDeaths;
+        }
+
+        if (_CurrentMode == MODES.INFECTION)
+        {
+            NetworkManager.Singleton.ConnectedClients[(ulong)Random.Range(0, NetworkManager.Singleton.ConnectedClients.Count)].PlayerObject.GetComponent<PlayerTeamManager>().ChangeTeam(1);
         }
     }
 
@@ -188,6 +205,8 @@ public class ObjectiveManager : NetworkBehaviour
         _CurrentMode = ModeData.Mode;
         _MaxScore = ModeData.ScoreLimit;
         _TimeLimit = ModeData.TimeLimit;
+        _TeamWeapons[0] = ModeData.Team1Weapons;
+        _TeamWeapons[1] = ModeData.Team2Weapons;
     }
 
     [ClientRpc]
@@ -206,6 +225,9 @@ public class ObjectiveManager : NetworkBehaviour
                 break;
             case (MODES.KINGOFTHEHILL):
                 Debug.Log("Starting King of the hill");
+                break;
+            case (MODES.INFECTION):
+                Debug.Log("Starting Infection");
                 break;
         }
     }
@@ -272,11 +294,7 @@ public class ObjectiveManager : NetworkBehaviour
 
         GameObject Player = NetworkManager.Singleton.ConnectedClients[ClientID].PlayerObject.transform.gameObject;
 
-        //Remove player from team
-       // _Teams[(int)Player.GetComponent<PlayerTeamManager>().GetTeam()].Players.Remove((int)ClientID);
-
-        //Add player to new team
-        //_Teams[(int)Team].Players.Add((int)ClientID);
+        Player.transform.GetChild(2).transform.GetChild(0).GetComponent<WeaponInventory>().ChangeStartingWeapon(_TeamWeapons[Team]);
 
         Player.GetComponent<PlayerTeamManager>()._Team.Value = (TEAMS)Team;
 

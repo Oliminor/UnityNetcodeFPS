@@ -35,8 +35,6 @@ public class RespawnManager : NetworkBehaviour
     {
         var ClientId = serverRpcParams.Receive.SenderClientId;
 
-
-        Vector3 Position = _AllRespawnPoints[Random.Range(0, _AllRespawnPoints.Count)].transform.position;
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -44,7 +42,19 @@ public class RespawnManager : NetworkBehaviour
                 TargetClientIds = new ulong[] { ClientId }
             }
         };
-        NetworkManager.ConnectedClients[ClientId].PlayerObject.GetComponent<HealthManager>().SetPositionClientRPC(Position, clientRpcParams);
+
+        GameObject RespawnPoint = _AllRespawnPoints[Random.Range(0, _AllRespawnPoints.Count)];
+        NetworkObject Player = NetworkManager.ConnectedClients[ClientId].PlayerObject;
+        for (int i = 0; i < 50; i++)
+        {
+            if (RespawnPoint.GetComponent<RespawnData>()._Team == Player.GetComponent<PlayerTeamManager>()._Team.Value)
+            {
+                Player.GetComponent<HealthManager>().SetPositionClientRPC(RespawnPoint.transform.position, clientRpcParams);
+                return;
+            }
+            RespawnPoint = _AllRespawnPoints[Random.Range(0, _AllRespawnPoints.Count)];
+        }
+        Player.GetComponent<HealthManager>().SetPositionClientRPC(RespawnPoint.transform.position, clientRpcParams);
         return;
     }
 

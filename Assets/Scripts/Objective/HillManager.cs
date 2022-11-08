@@ -13,6 +13,7 @@ public class HillManager : NetworkBehaviour
     private GameObject _ObjectiveManager;
     private TEAMS _ControllingTeam;
     private List<TEAMS> _TEAMSInHill;
+    private List<GameObject> _PlayersInHill;
     private bool _GameActive;
     private int _TeamInControl;
 
@@ -80,6 +81,10 @@ public class HillManager : NetworkBehaviour
                     _PointCountdown = 1;
                     Debug.Log("Point Award");
                     _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_ControllingTeam);
+                    foreach (GameObject Player in _PlayersInHill) 
+                    {
+                        Player.GetComponent<PlayerStats>()._Stats.Value.AddScore(1);
+                    }
                 }
                 _PointCountdown -= Time.deltaTime;
                 break;
@@ -111,6 +116,7 @@ public class HillManager : NetworkBehaviour
         if (!(Object.gameObject.tag == "Player")) return;
         TEAMS Team = Object.gameObject.GetComponent<PlayerTeamManager>().GetTeam();
         _TEAMSInHill.Add(Team);
+        _PlayersInHill.Add(Object.gameObject);
     }
 
     void OnTriggerExit(Collider Object)
@@ -119,5 +125,6 @@ public class HillManager : NetworkBehaviour
         if (!(Object.gameObject.tag == "Player")) return;
         TEAMS Team = Object.gameObject.GetComponent<PlayerTeamManager>().GetTeam();
         _TEAMSInHill.Remove(Team);
+        _PlayersInHill.Remove(Object.gameObject);
     }
 }

@@ -13,6 +13,8 @@ public class WeaponInventory : NetworkBehaviour
     int currentWeaponIndex;
     NetworkVariable<int> serverIndex = new NetworkVariable<int>(-1);
 
+    private int _StarterWeapon;
+
     PlayerMovement player;
 
     private bool isObjectCarried = false;
@@ -22,6 +24,7 @@ public class WeaponInventory : NetworkBehaviour
     {
         player = transform.root.GetComponent<PlayerMovement>();
         anim = GetComponent<Animator>();
+        _StarterWeapon = 0;
     }
 
     /// <summary>
@@ -246,5 +249,10 @@ public class WeaponInventory : NetworkBehaviour
         for (int i = _currentIndex - 1; i >= 0; i--) if (defaultWeapons[i] != 0) return i;
 
         return 0;
+    }
+
+    public void ChangeStartingWeapon(int NewWeapon)
+    {
+        _StarterWeapon = NewWeapon;
     }
 }

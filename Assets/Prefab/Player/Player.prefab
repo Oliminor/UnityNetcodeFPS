@@ -748,6 +748,7 @@ GameObject:
   - component: {fileID: 2050109340}
   - component: {fileID: 2956046512797994697}
   - component: {fileID: 7647724478163998238}
+  - component: {fileID: 4894305613974879446}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -942,6 +943,23 @@ MonoBehaviour:
     m_InternalValue: 0
   TeamYouText: {fileID: 7381113190664584267, guid: c346618398c0fae4781217c1cbca7c4f,
     type: 3}
+--- !u!114 &4894305613974879446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1684849076941075191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 776ecd5539b1d9947b2d9e9648625d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Stats:
+    m_InternalValue:
+      Kills: 0
+      Deaths: 0
+      Score: 0
 --- !u!1 &1684849078618555623
 GameObject:
   m_ObjectHideFlags: 0

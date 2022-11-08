@@ -83,13 +83,22 @@ public class HealthManager : NetworkBehaviour
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         SetHealthServerRPC(_HealthMax);
         player.GetWeaponInventory().DropEveryWeapons();
-        player.GetWeaponInventory().ResetInventory();
+        
         Debug.Log("HGEOIFHAFH DHOHAWIDHAW ");
         _ObjectiveManager.GetComponent<RespawnManager>().GetRespawnPointServerRPC();
-            if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam() && AwardPoint)
-            {
+        if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam() && AwardPoint)
+        {
             _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
+        }
+        if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.INFECTION && AwardPoint)
+        {
+            if (_KilledBy.GetComponent<PlayerTeamManager>().GetTeam() == TEAMS.BLUE)
+            {
+                GetComponent<PlayerTeamManager>().ChangeTeam(1);
             }
+            _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
+        }
+        player.GetWeaponInventory().ResetInventory();
     }
 
     [ClientRpc]
