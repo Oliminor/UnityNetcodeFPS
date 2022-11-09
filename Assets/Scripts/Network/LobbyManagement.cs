@@ -30,6 +30,7 @@ public class LobbyManagement : NetworkBehaviour
     {
         readyCountText = GameObject.Find("PlayersLoadedScene").GetComponent<TMP_Text>();
         readyIcon = GameObject.Find("ReadyIcon");
+        readyIcon.GetComponent<RawImage>().color = Color.red;
         playersConnectedText = GameObject.Find("PlayersConnected").GetComponent<TMP_Text>();
         playButtonText = GameObject.Find("PlayButtonText").GetComponent<TMP_Text>();
         readyUpButton = GameObject.Find("ReadyUp").GetComponent<Button>();
@@ -46,6 +47,7 @@ public class LobbyManagement : NetworkBehaviour
         {
             isMinimumPlayerReqMet = false;
             NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+
         }
 
         base.OnNetworkSpawn();
@@ -80,6 +82,10 @@ public class LobbyManagement : NetworkBehaviour
         if (readyClientsTextInt == connectedClients.Count)
         {
             playButtonText.color = Color.green;
+        }
+        else
+        {
+            playButtonText.color = Color.red;
         }
     }
 
@@ -119,8 +125,12 @@ public class LobbyManagement : NetworkBehaviour
             }
             if (areAllPlayersReady)
             {
-                //NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
-                //ProjectNetworkSceneManager.singleton.SwitchScenes();
+                NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+                if(IsServer)
+                {
+                    NetworkManager.SceneManager.LoadScene("Ben", LoadSceneMode.Single);
+                }
+                
                 Debug.Log("YES ALL PLAYERS ARE READY");
             }
         }
@@ -140,6 +150,15 @@ public class LobbyManagement : NetworkBehaviour
                 connectedClients[Id] = isReady;
             }
             UpdateReadyClientsInts();
+        }
+    }
+
+    [ServerRpc]
+    private void SceneChangeServerRpc()
+    {
+        if (IsServer)
+        {
+            ProjectNetworkSceneManager.singleton.SwitchScenes();
         }
     }
 

@@ -40,6 +40,8 @@ public class GameModeManager : NetworkBehaviour
     {
         //_ModeList.Add(_TDM);
         //_ModeList.Add(_KOTH);
+        if (!IsServer) return;
+        _CurrentMode.Value=_ModeList[0];
     }
 
     // Update is called once per frame
