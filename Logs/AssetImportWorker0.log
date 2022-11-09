@@ -1465,3 +1465,312 @@ AssetImportParameters requested are different than current active one (requested
   custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
   custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 8045.179603 seconds.
+  path: Assets/Dani Level Stuff
+  artifactKey: Guid(fe313a5cf97f14c4695b507b3c24e792) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff using Guid(fe313a5cf97f14c4695b507b3c24e792) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6f1cd94879412aab13b03c076a657732') in 0.274186 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 17.616154 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages
+  artifactKey: Guid(d048a3c6d5810764f9bc3f9cb26a13a7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages using Guid(d048a3c6d5810764f9bc3f9cb26a13a7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3ca23aae65ae2a05b6338f159076aff6') in 0.019429 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 26.977057 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems
+  artifactKey: Guid(51dc9ece02cff024c82cddc872824862) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems using Guid(51dc9ece02cff024c82cddc872824862) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '017ad9952458898491c28b142dad3a57') in 0.033010 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.377589 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Historic environment
+  artifactKey: Guid(cd4c1e4cb5512da4e9656d9aa284e4f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Historic environment using Guid(cd4c1e4cb5512da4e9656d9aa284e4f2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '018185490ab37a4e395331aa46ad000f') in 0.008309 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1896.318822 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/oldWoodPlank
+  artifactKey: Guid(9344afd77fba9044d8976c1ba2764952) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/oldWoodPlank using Guid(9344afd77fba9044d8976c1ba2764952) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ede226ac1038fae5c5643856a340c8e3') in 0.007484 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 11.846441 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/New Flare.flare
+  artifactKey: Guid(98364552f1ed1ef419fa6f41c9181a10) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/New Flare.flare using Guid(98364552f1ed1ef419fa6f41c9181a10) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7ed265108be0922139767bfe9d8374f6') in 2.930004 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 24.958696 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/TexturesCom_Wood_PlanksOld2_2x2_1K_normal.tif
+  artifactKey: Guid(af1e0effe3ac4ca4783e8581f5d11108) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/TexturesCom_Wood_PlanksOld2_2x2_1K_normal.tif using Guid(af1e0effe3ac4ca4783e8581f5d11108) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f8e58b505ab931fbd34fb579e3930afd') in 2.354399 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 8.042456 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/TexturesCom_Wood_PlanksOld2_2x2_1K_normal.tif
+  artifactKey: Guid(af1e0effe3ac4ca4783e8581f5d11108) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/TexturesCom_Wood_PlanksOld2_2x2_1K_normal.tif using Guid(af1e0effe3ac4ca4783e8581f5d11108) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ce61df47c2daa8598a575ea38d6553ee') in 0.221518 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 542.984870 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Textures/AirTotem_Texture.psd
+  artifactKey: Guid(68f0ba290b2bbae409ddd0be99ab3be0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Textures/AirTotem_Texture.psd using Guid(68f0ba290b2bbae409ddd0be99ab3be0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1fa1282cced8675777e835967c18db39') in 3.828872 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000049 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Particles/Textures/ParticleFlamesSheet.png
+  artifactKey: Guid(4e505ad81f5b19c4cb6f445d36463955) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Particles/Textures/ParticleFlamesSheet.png using Guid(4e505ad81f5b19c4cb6f445d36463955) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'abd7422818e40b7673d4092c4b3b5458') in 0.737823 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000048 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Particles/Textures/ParticleCloudWhite.png
+  artifactKey: Guid(5b303ff28ad9368468a2edd759cf458d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Particles/Textures/ParticleCloudWhite.png using Guid(5b303ff28ad9368468a2edd759cf458d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7dd85be583b794106e85639deba2c2e2') in 0.959072 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000032 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/MarbleTiles/TexturesCom_Marble_TilesWeave_1K_height.tif
+  artifactKey: Guid(b641146440a9f5640b452a655b256214) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/MarbleTiles/TexturesCom_Marble_TilesWeave_1K_height.tif using Guid(b641146440a9f5640b452a655b256214) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '455e5d2625e2cf48096a56caa3f3a6fc') in 1.019075 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000053 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Historic environment/Torch_2/Texture/Holder/Holder_met.png
+  artifactKey: Guid(758f8ca86dd9441578499dc0c30ad0c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Historic environment/Torch_2/Texture/Holder/Holder_met.png using Guid(758f8ca86dd9441578499dc0c30ad0c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '35c04c1175260d8c85b023e87da04a84') in 0.749411 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/WoodWall/TexturesCom_Wood_LogWall3_1.8x1.8_1K_height.tif
+  artifactKey: Guid(82d8dc33325429e4d89f4a9d711ac03b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/WoodWall/TexturesCom_Wood_LogWall3_1.8x1.8_1K_height.tif using Guid(82d8dc33325429e4d89f4a9d711ac03b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bd5cd0678e02711f77262e86c7d03545') in 0.166614 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000039 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Particles/Textures/ParticleBack.png
+  artifactKey: Guid(5ba564d402a64a5428390a75248dc820) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Particles/Textures/ParticleBack.png using Guid(5ba564d402a64a5428390a75248dc820) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e026481a04e94cabede6ef80e07e9335') in 0.113836 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000037 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Particles/Textures/ParticleSecond.png
+  artifactKey: Guid(fd93a25dbf8ff6c44a93037f42540a04) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Particles/Textures/ParticleSecond.png using Guid(fd93a25dbf8ff6c44a93037f42540a04) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'dd77762acc67692a913a4051705d456d') in 0.417863 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000036 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Historic environment/Torch_2/Texture/Holder/Holder_NM.png
+  artifactKey: Guid(2d67d19087ce042ffb9557dda510e761) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Historic environment/Torch_2/Texture/Holder/Holder_NM.png using Guid(2d67d19087ce042ffb9557dda510e761) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f3de2de39227a6b101348f3a9f145bd8') in 1.140199 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000047 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/TexturesCom_Wood_PlanksOld2_2x2_1K_height.tif
+  artifactKey: Guid(ea09436608ca7ae4ea93f21150f12f9b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/TexturesCom_Wood_PlanksOld2_2x2_1K_height.tif using Guid(ea09436608ca7ae4ea93f21150f12f9b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '96e71fcae03fbb66719a7d20c82212a4') in 0.025803 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000052 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Textures/WaterTotem_Texture.psd
+  artifactKey: Guid(4f3a1a3a24224fd478487410e787a3c0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Elemental Magic Totems/Textures/WaterTotem_Texture.psd using Guid(4f3a1a3a24224fd478487410e787a3c0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4c07ab3a07608412a0321f7e7e0c0f30') in 0.218506 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000049 seconds.
+  path: Assets/Dani Level Stuff/3rdPartyPackages/Historic environment/Torch_2/Texture/Holder/Holder_texture.png
+  artifactKey: Guid(35929e1ad44284d3781ef04cd8b8037f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/3rdPartyPackages/Historic environment/Torch_2/Texture/Holder/Holder_texture.png using Guid(35929e1ad44284d3781ef04cd8b8037f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ce755da25cf596ebd0a893da6849d80f') in 0.549092 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000050 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/TexturesCom_Wood_PlanksOld2_2x2_1K_albedo.tif
+  artifactKey: Guid(d564931eb0a96124aa9b13da846877d5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/oldWoodPlank/TexturesCom_Wood_PlanksOld2_2x2_1K_albedo.tif using Guid(d564931eb0a96124aa9b13da846877d5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '01edb96f735883d6bfcf2a491fffc5a3') in 0.021531 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000022 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/MarbleTiles/TexturesCom_Marble_TilesWeave_1K_albedo.tif
+  artifactKey: Guid(732ba0290e1557f4f9487075dded8014) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/MarbleTiles/TexturesCom_Marble_TilesWeave_1K_albedo.tif using Guid(732ba0290e1557f4f9487075dded8014) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '21efa6fb8f947b27dfad8aced8f0f7ab') in 0.318626 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000055 seconds.
+  path: Assets/Dani Level Stuff/Level_Textures/WoodWall/TexturesCom_Wood_LogWall3_1.8x1.8_1K_albedo.tif
+  artifactKey: Guid(b3bd357baa3021a409b6c08e70c88d70) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Dani Level Stuff/Level_Textures/WoodWall/TexturesCom_Wood_LogWall3_1.8x1.8_1K_albedo.tif using Guid(b3bd357baa3021a409b6c08e70c88d70) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '67d8f554ebc2b8857f235f56cdc2e08d') in 0.431569 seconds 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.007014 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\Git Repo\NetcodeProject\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\Git Repo\NetcodeProject\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Native extension for Android target not found
+Refreshing native plugins compatible for Editor in 2.53 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in 43.462 seconds
+Domain Reload Profiling:
+	ReloadAssembly (43463ms)
+		BeginReloadAssembly (25473ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (723ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (94ms)
+			CreateAndSetChildDomain (16419ms)
+		EndReloadAssembly (16303ms)
+			LoadAssemblies (7140ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (6629ms)
+			ReleaseScriptCaches (5ms)
+			RebuildScriptCaches (370ms)
+			SetupLoadedEditorAssemblies (3122ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (202ms)
+				SetLoadedEditorAssemblies (3ms)
+				RefreshPlugins (3ms)
+				BeforeProcessingInitializeOnLoad (174ms)
+				ProcessInitializeOnLoadAttributes (2235ms)
+				ProcessInitializeOnLoadMethodAttributes (501ms)
+				AfterProcessingInitializeOnLoad (4ms)
+				EditorAssembliesLoaded (1ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (58ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 3.38 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 6711 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 53 unused Assets / (3.8 MB). Loaded Objects now: 7815.
+Memory consumption went from 306.0 MB to 302.2 MB.
+Total: 93.496900 ms (FindLiveObjects: 0.809800 ms CreateObjectMapping: 0.591100 ms MarkObjects: 90.971600 ms  DeleteObjects: 1.122400 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.009290 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\Git Repo\NetcodeProject\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\Git Repo\NetcodeProject\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Native extension for Android target not found
+Refreshing native plugins compatible for Editor in 2.01 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in 12.267 seconds
+Domain Reload Profiling:
+	ReloadAssembly (12269ms)
+		BeginReloadAssembly (3410ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (70ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (801ms)
+		EndReloadAssembly (7522ms)
+			LoadAssemblies (1917ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (4006ms)
+			ReleaseScriptCaches (4ms)
+			RebuildScriptCaches (128ms)
+			SetupLoadedEditorAssemblies (2030ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (81ms)
+				SetLoadedEditorAssemblies (2ms)
+				RefreshPlugins (2ms)
+				BeforeProcessingInitializeOnLoad (136ms)
+				ProcessInitializeOnLoadAttributes (1672ms)
+				ProcessInitializeOnLoadMethodAttributes (132ms)
+				AfterProcessingInitializeOnLoad (4ms)
+				EditorAssembliesLoaded (1ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (70ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 6.48 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 6711 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 53 unused Assets / (3.8 MB). Loaded Objects now: 7818.
+Memory consumption went from 306.1 MB to 302.3 MB.
+Total: 57.483600 ms (FindLiveObjects: 1.310000 ms CreateObjectMapping: 0.713100 ms MarkObjects: 53.941100 ms  DeleteObjects: 1.516200 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.008876 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\Git Repo\NetcodeProject\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\Git Repo\NetcodeProject\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Native extension for Android target not found
+Refreshing native plugins compatible for Editor in 2.16 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  7.009 seconds
+Domain Reload Profiling:
+	ReloadAssembly (7010ms)
+		BeginReloadAssembly (1928ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (23ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (1ms)
+			CreateAndSetChildDomain (649ms)
+		EndReloadAssembly (4425ms)
+			LoadAssemblies (785ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (1697ms)
+			ReleaseScriptCaches (5ms)
+			RebuildScriptCaches (129ms)
+			SetupLoadedEditorAssemblies (1512ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (64ms)
+				SetLoadedEditorAssemblies (1ms)
+				RefreshPlugins (2ms)
+				BeforeProcessingInitializeOnLoad (142ms)
+				ProcessInitializeOnLoadAttributes (1105ms)
+				ProcessInitializeOnLoadMethodAttributes (195ms)
+				AfterProcessingInitializeOnLoad (3ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (25ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 4.17 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 6711 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 53 unused Assets / (3.8 MB). Loaded Objects now: 7821.
+Memory consumption went from 306.1 MB to 302.3 MB.
+Total: 102.295900 ms (FindLiveObjects: 0.585900 ms CreateObjectMapping: 0.494700 ms MarkObjects: 99.569000 ms  DeleteObjects: 1.644300 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
