@@ -36,6 +36,7 @@ public class PlayerTeamManager : NetworkBehaviour
             return;
         }
         TeamYouText = GameObject.Find("Temp");
+        if (!TeamYouText) return;
         TeamYouText.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Score: " + _Team.Value.ToString();
 
         if (Input.GetKeyDown("p"))

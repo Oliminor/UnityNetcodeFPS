@@ -12,9 +12,19 @@ public class DamageIndicatorManagerUI : MonoBehaviour
 
     private float lerp = 1;
 
+    void Awake()
+    {
+        if (instance != this && instance != null)
+        {
+            Destroy(this.gameObject);
+        }
+
+        instance = this;
+        DontDestroyOnLoad(this);
+    }
+
     private void Start()
     {
-        instance = this;
         bloodyScreen.GetComponent<Image>().color = new Color(1, 1, 1, 0);
     }
 

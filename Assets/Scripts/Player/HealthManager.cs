@@ -14,7 +14,6 @@ public class HealthManager : NetworkBehaviour
     [SerializeField] float _HealthCooldown;
 
     private GameObject _KilledBy;
-    private bool _CanRespawn;
     private GameObject _ObjectiveManager;
     private PlayerMovement player;
 
@@ -30,6 +29,17 @@ public class HealthManager : NetworkBehaviour
     void Awake()
     {
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
+    }
+
+    private void Update()
+    {
+        if (IsOwner)
+        {
+            HUD.instance.SetHUDPercent(GetPercentHealth());
+            HUD.instance.SetPlayerHealthTextHUD(_HealthCur.Value, _HealthMax);
+
+            if (transform.position.y < -50) Respawn(true);
+        }
     }
 
     public override void OnNetworkSpawn()
@@ -60,6 +70,12 @@ public class HealthManager : NetworkBehaviour
         _HealthCur.Value = health;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void DamagePlayerServerRPC(int health)
+    {
+        _HealthCur.Value -= health;
+    }
+
     /// <summary>
     /// if the player health less than 0, do the thingy
     /// </summary>
@@ -77,6 +93,7 @@ public class HealthManager : NetworkBehaviour
 
     public void Respawn(bool AwardPoint)
     {
+        StartCoroutine(InterpolateSwitch());
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         Debug.Log("HElo there");
@@ -93,6 +110,13 @@ public class HealthManager : NetworkBehaviour
             }
     }
 
+    IEnumerator InterpolateSwitch()
+    {
+        GetComponent<BetterNetworkTransform>().Interpolate = false;
+        yield return new WaitForSeconds(0.1f);
+        GetComponent<BetterNetworkTransform>().Interpolate = true;
+    }
+
     /// <summary>
     /// Damage the player
     /// </summary>
@@ -100,20 +124,11 @@ public class HealthManager : NetworkBehaviour
     {
         int health = _HealthCur.Value;
 
-        //Debug.Log("got hit " + damage);
-
         health -= (int)damage;
 
         _KilledBy = Source;
-        //Debug.Log(_KilledBy);
 
-        SetHealthServerRPC(health);
+        if (!IsServer) DamagePlayerServerRPC((int)damage);
         SetSourcePositionServerRPC(Source.transform.position);
-
-        if (!IsServer) return;
-
-        _HealthCur.Value = health;
-        SetHealthClientRPC(0, health);
-        SetSourcePositionClientRPC(Vector3.zero, Source.transform.position);
     }
 }

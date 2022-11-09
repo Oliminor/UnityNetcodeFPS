@@ -30,7 +30,12 @@ public class NamePlateManager : NetworkBehaviour
 
     private void Start()
     {
-        if (IsOwner) playerNameText.gameObject.SetActive(false);
+        if (IsOwner)
+        {
+            playerNameText.gameObject.SetActive(false);
+            playerHealthBar.gameObject.SetActive(false);
+            LerpHealthBar.gameObject.SetActive(false);
+        }
     }
 
     void Update()

@@ -14,10 +14,15 @@ public class CrossHairManagement : MonoBehaviour
 
     private Vector3 defaultPos;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        if(instance != this && instance != null)
+        {
+            Destroy(this.gameObject);
+        }
+
         instance = this;
-        defaultPos = CrossHairBase.transform.position;
+        DontDestroyOnLoad(this);
     }
 
     // Update is called once per frame
@@ -73,5 +78,11 @@ public class CrossHairManagement : MonoBehaviour
     public void SetDefaultSpreadValue(float _spreadDefaultValue)
     {
         defaultSpreadValue = _spreadDefaultValue;
+    }
+
+    public void ActivateCrossHair(bool _bool)
+    {
+        if (_bool) CrossHairBase.gameObject.SetActive(true);
+        else CrossHairBase.gameObject.SetActive(false);
     }
 }

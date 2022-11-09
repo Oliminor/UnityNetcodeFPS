@@ -14,6 +14,7 @@ public class WeaponSpawner : NetworkBehaviour
     [SerializeField] private NetworkVariable<bool> isTemporarySpawner = new NetworkVariable<bool>(false);
 
     float dissolveLerp;
+    bool isPickUpAble = false;
 
     public void SetIndex(int _index) { index.Value = _index; }
 
@@ -49,7 +50,14 @@ public class WeaponSpawner : NetworkBehaviour
 
     private void DissolveEffect()
     {
+        StartCoroutine(PickUpDelay());
         if (dissolveMat) dissolveLerp = 1;
+    }
+
+    IEnumerator PickUpDelay()
+    {
+        yield return new WaitForSeconds(1.0f);
+        isPickUpAble = true;
     }
 
     /// <summary>
@@ -131,15 +139,19 @@ public class WeaponSpawner : NetworkBehaviour
     {
         if (isWeaponPickedUp.Value) return;
 
-        if (dissolveLerp > 0.1f) return;
+        if (!isPickUpAble) return;
 
         if (other.tag == "Player")
         {
             if (!other.GetComponent<PlayerMovement>().IsOwner) return;
             if (weapon.transform.tag == "CarriedObject")
             {
+                HUD.instance.SetPickUpText("flag");
+                HUD.instance.SetPickUpTextHUDActive(true);
+
                if (Input.GetKey(KeyCode.F))
                 {
+                    HUD.instance.SetPickUpTextHUDActive(false);
                     other.GetComponent<PlayerMovement>().GetWeaponInventory().AddObject(index.Value);
                     other.GetComponent<PlayerMovement>().GetWeaponInventory().ActivatePickedUpWeapon(index.Value - 1);
                     DeActivateSpawnerServerRPC();
@@ -157,6 +169,14 @@ public class WeaponSpawner : NetworkBehaviour
 
                 DeActivateSpawnerServerRPC();
             }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            HUD.instance.SetPickUpTextHUDActive(false);
         }
     }
 }
