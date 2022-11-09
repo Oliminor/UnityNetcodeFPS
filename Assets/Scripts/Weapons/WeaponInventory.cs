@@ -18,6 +18,7 @@ public class WeaponInventory : NetworkBehaviour
     PlayerMovement player;
 
     private bool isObjectCarried = false;
+    private bool dropDownIsAvaliable = true;
     public Animator GetAnimator() { return anim; }
 
     void Awake()
@@ -52,11 +53,18 @@ public class WeaponInventory : NetworkBehaviour
     {
         if (!player.IsOwner) return;
 
-        if (Input.GetKeyDown(KeyCode.R)) DropCurrentObject();
+        if (Input.GetKeyDown(KeyCode.F) && dropDownIsAvaliable) DropCurrentObject();
 
         if (isObjectCarried) return;
 
         ScrollBetweenWeapons();
+    }
+
+    IEnumerator DropDownDelay()
+    {
+        dropDownIsAvaliable = false;
+        yield return new WaitForSeconds(0.5f);
+        dropDownIsAvaliable = true;
     }
 
     /// <summary>
@@ -68,6 +76,7 @@ public class WeaponInventory : NetworkBehaviour
         Debug.Log(defaultWeapons[currentWeaponIndex] - 1 + "CurrentweaponIndex: " + currentWeaponIndex);
         weapons[defaultWeapons[currentWeaponIndex] - 1].GetComponent<ObjectIndex>().DropObjectServerRPC();
         defaultWeapons[currentWeaponIndex] = 0;
+        currentWeaponIndex = 0;
         isObjectCarried = false;
         ActivateWeaponServerRPC(0);
     }
@@ -186,6 +195,7 @@ public class WeaponInventory : NetworkBehaviour
     private void ActivateWeapon(int _index)
     {
         DisableAllWeapons();
+        StartCoroutine(DropDownDelay());
         weapons[_index].gameObject.SetActive(true);
 
         if (weapons[_index].gameObject.TryGetComponent(out WeaponManager _weaponManager)) _weaponManager.PickedUp();
@@ -210,17 +220,17 @@ public class WeaponInventory : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            if (defaultWeapons[0] != 0) ActivateWeaponServerRPC(0);
+            if (defaultWeapons[0] != 0) ActivateWeaponServerRPC(defaultWeapons[0] - 1);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            if (defaultWeapons[1] != 0) ActivateWeaponServerRPC(1);
+            if (defaultWeapons[1] != 0) ActivateWeaponServerRPC(defaultWeapons[1] - 1);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            if (defaultWeapons[2] != 0) ActivateWeaponServerRPC(2);
+            if (defaultWeapons[2] != 0) ActivateWeaponServerRPC(defaultWeapons[2] - 1);
         }
 
         if (Input.mouseScrollDelta.y < 0) currentWeaponIndex = SearchAvaliableWeaponDescend(currentWeaponIndex);

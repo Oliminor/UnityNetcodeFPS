@@ -21,7 +21,8 @@ public class ProjectileManager : NetworkBehaviour
     {
         previousPosition = transform.position;
         _RigidBody = GetComponent<Rigidbody>();
-        StartCoroutine(TimeBeforeDestroyed(_Life));
+        Destroy(gameObject, _Life);
+        //StartCoroutine(TimeBeforeDestroyed(_Life));
     }
 
     /// <summary>
@@ -38,20 +39,11 @@ public class ProjectileManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        _RigidBody.velocity = transform.forward * _Speed * (Time.fixedDeltaTime * 100);
+        transform.Translate(transform.forward * _Speed * Time.deltaTime, Space.World);
 
-        if (!IsOwner) return;
+        //if (!IsOwner) return;
 
         CheckBetweenTwoPositions();
-    }
-
-    /// <summary>
-    /// Set the time after the projectile destroyed
-    /// </summary>
-    IEnumerator TimeBeforeDestroyed(float _life)
-    {
-        yield return new WaitForSeconds(_life);
-        if (IsServer) gameObject.GetComponent<NetworkObject>().Despawn();
     }
 
     /// <summary>
@@ -59,8 +51,6 @@ public class ProjectileManager : NetworkBehaviour
     /// </summary>
     private void CheckBetweenTwoPositions()
     {
-        if (!IsServer) return;
-
         float distance = Vector3.Distance(previousPosition, transform.position);
         RaycastHit hit;
 
@@ -70,15 +60,13 @@ public class ProjectileManager : NetworkBehaviour
             {
                 hit.transform.gameObject.GetComponent<HealthManager>().DamagePlayer(_Damage, _Owner);
                 GameObject playerHitParticle = Instantiate(playerHitEffect.gameObject, hit.point, Quaternion.identity);
-                playerHitParticle.GetComponent<NetworkObject>().Spawn();
                 Destroy(playerHitParticle, 0.5f);
-                if (IsServer) gameObject.GetComponent<NetworkObject>().Despawn();
+                Destroy(gameObject);
                 return;
             }
             GameObject groundHitParticle = Instantiate(groundHitEffect.gameObject, hit.point, Quaternion.identity);
-            groundHitParticle.GetComponent<NetworkObject>().Spawn();
             Destroy(groundHitParticle, 0.5f);
-            if (IsServer) gameObject.GetComponent<NetworkObject>().Despawn();
+            Destroy(gameObject);
         }
         previousPosition = transform.position;
     }

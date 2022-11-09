@@ -11,11 +11,14 @@ public class WeaponManager : NetworkBehaviour
 
     [SerializeField] private Transform shotPoint;
     [SerializeField] private Transform projectile;
+    [SerializeField] private Transform reloadEffect;
     [SerializeField] private GameObject muzzleEffect;
     [SerializeField] private int objectPoolSize;
     [SerializeField] private RuntimeAnimatorController animController;
     [SerializeField] private Vector3 rotation;
 
+    [SerializeField] private int _MaxAmmoNumber;
+    [SerializeField] private float _ReloadTime;
     [SerializeField] private float _ZoomSizeFOV;
     [SerializeField] private float _ProjectileDamage;
     [SerializeField] private float _ProjectileSpeed;
@@ -29,17 +32,28 @@ public class WeaponManager : NetworkBehaviour
     private float fireRateCoolDown;
     private float defaultFOV = 60;
     private float lerpFOV;
+    private int currentAmmoNumber;
 
     private List<GameObject> objectPool = new();
     private PlayerMovement player;
 
     bool isWeaponPickedUp = false;
+    bool isRealoading = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        reloadEffect.gameObject.SetActive(false);
+        currentAmmoNumber = _MaxAmmoNumber;
         GenerateObjectPool();
         PickedUp();
+    }
+
+    private void OnDisable()
+    {
+        isRealoading = false;
+        reloadEffect.gameObject.SetActive(false);
+        HUD.instance.StopRealoding();
     }
 
     // Update is called once per frame
@@ -50,6 +64,7 @@ public class WeaponManager : NetworkBehaviour
         if (!player.IsOwner) return;
 
         CrossHairManagement.instance.SetDefaultSpreadValue(DefaultCrossHairSize());
+        HUD.instance.SetPlayerAmmoTextHUD(currentAmmoNumber, _MaxAmmoNumber);
 
         CameraZoom();
 
@@ -117,19 +132,48 @@ public class WeaponManager : NetworkBehaviour
         return _isShooting;
     }
 
-    /// <summary>
-    /// The shooting functions (Effect only at the moment)
-    /// </summary>
-    private void Shooting()
+    IEnumerator ReloadWeapon()
+    {
+        isRealoading = true;
+        yield return new WaitForSeconds(_ReloadTime);
+        isRealoading = false;
+        currentAmmoNumber = _MaxAmmoNumber;
+    }
+
+    IEnumerator ReloadWeaponEffect()
+    {
+        reloadEffect.gameObject.SetActive(true);
+        yield return new WaitForSeconds(_ReloadTime);
+        reloadEffect.gameObject.SetActive(false);
+    }
+
+        /// <summary>
+        /// The shooting functions (Effect only at the moment)
+        /// </summary>
+        private void Shooting()
     {
         fireRateCoolDown -= Time.deltaTime;
+
+        if (isRealoading) return;
+
+        if (((Input.GetKeyDown(KeyCode.R) && currentAmmoNumber < _MaxAmmoNumber) || currentAmmoNumber <= 0))
+        {
+            HUD.instance.SetHUDReloadTime(_ReloadTime);
+            StartCoroutine(ReloadWeapon());
+            StartCoroutine(ReloadWeaponEffect());
+            ReloadEffectServerRPC();
+        }
+
+        if (currentAmmoNumber <= 0) return;
 
         if (fireRateCoolDown <= 0 && IsShooting() && (!player.IsRunning() || player.IsAiming()))
         {
             netAnim.SetTrigger("fire");
             fireRateCoolDown = fireRate;
             StartCoroutine(Fire());
+            InstantiateProjectile(transform.position, transform.rotation);
             FireVoidServerRPC(transform.position, transform.rotation);
+            currentAmmoNumber--;
         }
     }
 
@@ -146,7 +190,7 @@ public class WeaponManager : NetworkBehaviour
         player = transform.root.GetComponent<PlayerMovement>();
         player.GetWeaponInventory().SetWeaponAnimatorController(animController);
         anim = player.GetWeaponInventory().GetAnimator();
-        netAnim = player.GetWeaponInventory().GetComponent<NetworkAnimator>();
+        netAnim = player.GetWeaponInventory().GetComponent<BetterNetworkAnimator>();
 
         for (int i = 0; i < objectPool.Count; i++) objectPool[i].SetActive(false);
     }
@@ -200,31 +244,53 @@ public class WeaponManager : NetworkBehaviour
         return _size;
     }
 
+    private void InstantiateProjectile(Vector3 Position, Quaternion Rotation)
+    {
+        for (int i = 0; i < _ProjectileNumber; i++)
+        {
+            GameObject _projectile = Instantiate(projectile.gameObject, Position, Rotation);
+            _projectile.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed, _ProjectileLife, transform.root.gameObject);
+            _projectile.transform.LookAt(FireDirection());
+        }
+    }
+
+    [ServerRpc]
+    private void ReloadEffectServerRPC()
+    {
+        ReloadEffectClientRPC();
+    }
+
+    [ClientRpc]
+    private void ReloadEffectClientRPC()
+    {
+        if (!player.IsOwner) StartCoroutine(ReloadWeaponEffect());
+    }
+
     /// <summary>
     /// Calls the fire on the server side
     /// </summary>
     [ServerRpc]
     private void FireVoidServerRPC(Vector3 Position, Quaternion Rotation)
     {
-        FireVoidClientRPC();
-
-        for (int i = 0; i < _ProjectileNumber; i++)
-        {
-            GameObject _projectile = Instantiate(projectile.gameObject, Position, Rotation);
-            _projectile.GetComponent<NetworkObject>().Spawn();
-            _projectile.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed, _ProjectileLife, transform.root.gameObject);
-            _projectile.transform.LookAt(FireDirection());
-        }
+        FireVoidClientRPC(Position, Rotation);
     }
 
     /// <summary>
     /// Calls the fire on the client side
     /// </summary>
     [ClientRpc]
-    private void FireVoidClientRPC()
+    private void FireVoidClientRPC(Vector3 Position, Quaternion Rotation)
     {
-        if(!player.IsOwner) StartCoroutine(Fire());
-        if (IsOwner) CrossHairManagement.instance.SetSpreadValue(DefaultCrossHairSize() * 2);
+        if (!player.IsOwner)
+        {
+            StartCoroutine(Fire());
+
+            InstantiateProjectile(Position, Rotation);
+        }
+
+        if (!IsOwner) return;
+
+        CrossHairManagement.instance.SetSpreadValue(DefaultCrossHairSize() * 2);
     }
 
     /// <summary>

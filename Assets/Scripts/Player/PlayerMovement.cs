@@ -50,6 +50,8 @@ public class PlayerMovement : NetworkBehaviour
         rb.useGravity = true;
         InputManager();
 
+        if (rb.velocity.y < -20) rb.velocity = new Vector3(rb.velocity.x, -20, rb.velocity.z);
+
         switch (playerStatus)
         {
             case PlayerStatus.GROUND:
