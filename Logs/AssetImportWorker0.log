@@ -348,6 +348,7 @@ Received Import Request.
   path: Assets/Scenes/Ollie.unity
   artifactKey: Guid(a48fa11d0ba82fe41a8fb964a4d6e84c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
 Start importing Assets/Scenes/Ollie.unity using Guid(a48fa11d0ba82fe41a8fb964a4d6e84c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'dc6e2e0ba93abd17d5a087161bfc0078') in 0.019696 seconds 
+<<<<<<< Updated upstream
 ========================================================================
 Received Import Request.
   Time since last request: 76.496296 seconds.
@@ -396,3 +397,17 @@ Received Import Request.
   path: Assets/Prefab/Spawners/Spawners.prefab
   artifactKey: Guid(f42d77b376d56464592983c844af7c8a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
 Start importing Assets/Prefab/Spawners/Spawners.prefab using Guid(f42d77b376d56464592983c844af7c8a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bb1d7ec1b549f937bbad800707af1b73') in 0.046993 seconds 
+=======
+========================================================================
+Received Import Request.
+  Time since last request: 76.496296 seconds.
+  path: Assets/Prefab/Canvas/NetworkCanvas.prefab
+  artifactKey: Guid(b7ca6ac848dd5c74da6e74a1ad9d855d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefab/Canvas/NetworkCanvas.prefab using Guid(b7ca6ac848dd5c74da6e74a1ad9d855d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c2d0d174a07f71690063434df3b2ffe7') in 0.072326 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 3.000906 seconds.
+  path: Assets/Prefab/UI/PlayerCanvas.prefab
+  artifactKey: Guid(06369de7db027e14e9191189122fb21d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefab/UI/PlayerCanvas.prefab using Guid(06369de7db027e14e9191189122fb21d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '01788e06c6963e195ae0d4d92a89ed56') in 0.021817 seconds 
+>>>>>>> Stashed changes
