@@ -80,14 +80,15 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
     }
     public void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
     {
+        //var loadAsyncOp = sceneEvent.AsyncOperation;
         switch (sceneEvent.SceneEventType) //put things in this switch case that you want to happen at specific points (for example, set the player positions on the LoadComplete case)
         {
             case SceneEventType.Load: //start loading for everyone
                 {
-                    var loadAsyncOp = sceneEvent.AsyncOperation;
+                    //var loadAsyncOp = sceneEvent.AsyncOperation;
                     if (IsServer)
                     {
-                        Debug.Log("hello");
+                        //loadAsyncOp.allowSceneActivation = true;
                     }
                     else
                     {
@@ -112,8 +113,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
                     {
                         loadedScene = sceneEvent.Scene;
                         playersLoadedInScene.Value = sceneEvent.ClientsThatCompleted.Count;
-                        
-                        
+                        //loadAsyncOp.allowSceneActivation = true;
                     }
                     else
                     {

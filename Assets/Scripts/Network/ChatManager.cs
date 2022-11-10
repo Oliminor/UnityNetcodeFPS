@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 
 public class ChatManager : NetworkBehaviour
@@ -14,11 +15,48 @@ public class ChatManager : NetworkBehaviour
     [SerializeField] public TMP_InputField chatInput;
     bool inputActive = false;
     public static ChatManager singleton;
+    private Color teamColour;
+    private string teamColorFormat;
+    GameObject objectiveManager;
+
+    private void Awake()
+    {
+        
+        teamColour = Color.gray;
+        teamColorFormat = ColorUtility.ToHtmlStringRGB(teamColour);
+    }
+    
+
+
+    private void SceneManagement_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        if(sceneName=="Ben")
+        {
+            objectiveManager = GameObject.Find("ObjectiveManager");
+            
+        }
+        
+    }
+
+    public void SceneManagement_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        if(sceneName=="Ben")
+        {
+
+            objectiveManager = GameObject.Find("ObjectiveManager");
+            var team = objectiveManager.GetComponent<PlayerTeamManager>()._Team.Value;
+            teamColour=objectiveManager.GetComponent<ObjectiveManager>().GetTeamColour(team);
+            teamColorFormat= ColorUtility.ToHtmlStringRGB(teamColour);
+
+        }        
+        
+    }
 
     private void Start()
     {
         singleton = this;
         DontDestroyOnLoad(this);
+        
         
     }
     //public override void OnNetworkSpawn()
@@ -66,22 +104,22 @@ public class ChatManager : NetworkBehaviour
     {
         if (IsClient)
         {
-            SendMessageServerRpc(playerName, message);
+            SendMessageServerRpc(playerName, message, teamColorFormat);
             chatInput.text = string.Empty;
         }
     }
 
     [ServerRpc(RequireOwnership =false)]
-    private void SendMessageServerRpc(string playerName, string message)
+    private void SendMessageServerRpc(string playerName, string message, string teamColor)
     {
-        HandleMessageClientRpc(playerName, message);
+        HandleMessageClientRpc(playerName, message, teamColor);
         Debug.Log("hello");
     }
 
     [ClientRpc]
-    private void HandleMessageClientRpc(string playerName, string message)
+    private void HandleMessageClientRpc(string playerName, string message, string teamColor)
     {
-        UpdateChat(playerName, message);
+        UpdateChat(playerName, message, teamColor);
         Debug.Log(message);
     }
 
@@ -92,9 +130,9 @@ public class ChatManager : NetworkBehaviour
         
     }
 
-    public void UpdateChat(string playerName, string message)
+    public void UpdateChat(string playerName, string message, string teamColor)
     {
-        GetComponent<ChatManager>().chatText.text += $"\n<color=#62BDE9FF>{playerName}</color> said: {message}";
+        GetComponent<ChatManager>().chatText.text += $"\n<color={teamColor}>{playerName}</color> said: {message}";
         Debug.Log("hit");
     }
 
