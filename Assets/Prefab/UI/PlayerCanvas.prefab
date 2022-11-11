@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 45790531}
   - component: {fileID: 45790533}
   - component: {fileID: 45790532}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ReloadText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 58649622}
   - component: {fileID: 58649624}
   - component: {fileID: 58649623}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BloodyScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,7 +221,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 421802172}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ReloadTimer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 874687804}
   - component: {fileID: 874687806}
   - component: {fileID: 874687805}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HealthLerp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -336,7 +336,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 957690832}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: playerHUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,7 +378,7 @@ GameObject:
   - component: {fileID: 1033898146}
   - component: {fileID: 1033898148}
   - component: {fileID: 1033898147}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HealthNumber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -517,7 +517,7 @@ GameObject:
   - component: {fileID: 1109715176}
   - component: {fileID: 1109715178}
   - component: {fileID: 1109715177}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HealthMain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -593,7 +593,7 @@ GameObject:
   - component: {fileID: 1354614163}
   - component: {fileID: 1354614165}
   - component: {fileID: 1354614164}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -667,7 +667,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1480373523}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HealthCorner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -706,7 +706,7 @@ GameObject:
   - component: {fileID: 1499933888}
   - component: {fileID: 1499933890}
   - component: {fileID: 1499933889}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -780,7 +780,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1730507091}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: AmmoCorner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -819,7 +819,7 @@ GameObject:
   - component: {fileID: 1958340608}
   - component: {fileID: 1958340610}
   - component: {fileID: 1958340609}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: AmmoNumber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -955,7 +955,7 @@ GameObject:
   - component: {fileID: 2076000713}
   - component: {fileID: 2076000715}
   - component: {fileID: 2076000714}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ReloadMain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1031,7 +1031,7 @@ GameObject:
   - component: {fileID: 3977244881037588642}
   - component: {fileID: 3977244881037588668}
   - component: {fileID: 3977244881037588643}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CrossHairTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1107,7 +1107,7 @@ GameObject:
   - component: {fileID: 3977244881328065866}
   - component: {fileID: 3977244881328065860}
   - component: {fileID: 3977244881328065867}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CrossHairRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1183,7 +1183,7 @@ GameObject:
   - component: {fileID: 3977244881354680687}
   - component: {fileID: 3977244881354680681}
   - component: {fileID: 3977244881354680680}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CrossHairLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1259,7 +1259,7 @@ GameObject:
   - component: {fileID: 3977244881475416399}
   - component: {fileID: 3977244881475416393}
   - component: {fileID: 3977244881475416392}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CrossHairBottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1339,7 +1339,7 @@ GameObject:
   - component: {fileID: 3977244882017465945}
   - component: {fileID: 3977244882017465944}
   - component: {fileID: 3977244882017465951}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1487,7 +1487,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3977244882525655090}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: StandardCrossHair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1529,7 +1529,7 @@ GameObject:
   - component: {fileID: 4536717125721343101}
   - component: {fileID: 2947703810758502335}
   - component: {fileID: 2050521346848680722}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PressButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1663,7 +1663,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8841562122509156555}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PressButtonTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}

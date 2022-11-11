@@ -51,7 +51,7 @@ public class NetworkUI : NetworkBehaviour
         //_ObjectiveManager.GetComponent<MenuManager>().SetMenuState(MENUSTATES.CLIENTSETUP);
         NetworkManager.Singleton.StartClient();
         playerName = GetPlayerNameFromInput();
-        ChatManager.singleton.playerName = playerName;
+        //ChatManager.singleton.playerName = playerName;
         NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
     }
 

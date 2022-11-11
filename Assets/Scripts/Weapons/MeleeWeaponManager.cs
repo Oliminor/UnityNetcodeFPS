@@ -65,7 +65,7 @@ public class MeleeWeaponManager : NetworkBehaviour
     {
         coolDownTimer -= Time.deltaTime;
 
-        if (Input.GetMouseButton(0) && coolDownTimer <= 0 && !player.IsRunning())
+        if (Input.GetMouseButtonDown(0) && coolDownTimer <= 0 && !player.IsRunning())
         {
             coolDownTimer = meleeRate;
 
