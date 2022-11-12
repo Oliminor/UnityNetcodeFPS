@@ -44,6 +44,9 @@ public class NamePlateManager : NetworkBehaviour
         PlayerHealthUpdate();
     }
 
+    /// <summary>
+    ///  Updates the player health bar above the head
+    /// </summary>
     private void PlayerHealthUpdate()
     {
         float scaleX = gameObject.GetComponent<HealthManager>().GetPercentHealth() / 100.0f;
@@ -52,6 +55,9 @@ public class NamePlateManager : NetworkBehaviour
         LerpHealthBar.localScale = new Vector3(Mathf.Lerp(LerpHealthBar.localScale.x, scaleX, 0.05f), 1, 1);
     }
 
+    /// <summary>
+    /// Orient the player health (and name) to the main camera)
+    /// </summary>
     private void PlayerUIOrientation()
     {
         if (playerNameText.text != playerName.Value.ToString()) SetPlayerName(playerName.Value.ToString());

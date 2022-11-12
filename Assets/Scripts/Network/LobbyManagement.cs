@@ -30,7 +30,7 @@ public class LobbyManagement : NetworkBehaviour
     {
         readyCountText = GameObject.Find("PlayersLoadedScene").GetComponent<TMP_Text>();
         readyIcon = GameObject.Find("ReadyIcon");
-        readyIcon.GetComponent<RawImage>().color = Color.red;
+        //readyIcon.GetComponent<RawImage>().color = Color.red;
         playersConnectedText = GameObject.Find("PlayersConnected").GetComponent<TMP_Text>();
         //playButtonText = GameObject.Find("PlayButtonText").GetComponent<TMP_Text>();
         readyUpButton = GameObject.Find("ReadyUp").GetComponent<Button>();

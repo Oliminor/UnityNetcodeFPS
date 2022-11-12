@@ -294,7 +294,8 @@ public class ObjectiveManager : NetworkBehaviour
 
         GameObject Player = NetworkManager.Singleton.ConnectedClients[ClientID].PlayerObject.transform.gameObject;
 
-        Player.transform.GetChild(2).transform.GetChild(0).GetComponent<WeaponInventory>().ChangeStartingWeapon(_TeamWeapons[Team]);
+        Player.transform.GetChild(2).transform.GetChild(0).GetComponent<WeaponInventory>().ChangeDefaultWeapon(_TeamWeapons[Team]);
+        Debug.Log("Change default weapon: " + _TeamWeapons[Team]);
 
         Player.GetComponent<PlayerTeamManager>()._Team.Value = (TEAMS)Team;
 
