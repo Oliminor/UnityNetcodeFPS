@@ -123,10 +123,6 @@ public class LobbyManagement : NetworkBehaviour
         foreach (var client in connectedClients)
         {
             ClientReadyClientRpc(client.Key, client.Value);
-            if (!NetworkManager.Singleton.ConnectedClients.ContainsKey(client.Key))
-            {
-                allPlayersJoinedLobby = false;
-            }
         }
         CheckIfPlayersAreReady();
     }
