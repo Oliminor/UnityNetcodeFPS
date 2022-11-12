@@ -161,7 +161,7 @@ public class WeaponManager : NetworkBehaviour
             HUD.instance.SetHUDReloadTime(_ReloadTime);
             StartCoroutine(ReloadWeapon());
             StartCoroutine(ReloadWeaponEffect());
-            ReloadEffectServerRPC();
+            if (IsOwner) ReloadEffectServerRPC();
         }
 
         if (currentAmmoNumber <= 0) return;
@@ -172,7 +172,7 @@ public class WeaponManager : NetworkBehaviour
             fireRateCoolDown = fireRate;
             StartCoroutine(Fire());
             InstantiateProjectile(transform.position, transform.rotation);
-            FireVoidServerRPC(transform.position, transform.rotation);
+            if (IsOwner) FireVoidServerRPC(transform.position, transform.rotation);
             currentAmmoNumber--;
         }
     }

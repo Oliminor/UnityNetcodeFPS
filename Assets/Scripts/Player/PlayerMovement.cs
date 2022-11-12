@@ -12,6 +12,7 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] Transform playerCamera;
     [SerializeField] Transform cameraPos;
     [SerializeField] WeaponInventory weaponInv;
+    [SerializeField] Customization custom;
 
     [SerializeField] LayerMask whatIsGround;
 
@@ -47,6 +48,9 @@ public class PlayerMovement : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) return;
+
+        if (custom.GetComponent<Customization>().GetIsCustomizationIsOn()) return;
+
         rb.useGravity = true;
         InputManager();
 
@@ -72,6 +76,8 @@ public class PlayerMovement : NetworkBehaviour
     void FixedUpdate()
     {
         if (!IsOwner) return;
+
+        if (custom.GetComponent<Customization>().GetIsCustomizationIsOn()) return;
 
         Direction();
 

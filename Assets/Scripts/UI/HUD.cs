@@ -25,6 +25,13 @@ public class HUD : MonoBehaviour
     private Vector2 reloadHUDDefaultPos;
 
     public void SetHUDPercent(float _percent) { percent = _percent; }
+
+    public void SwitchHUDOnOff(bool _Bool)
+    {
+        if (_Bool) for (int i = 0; i < transform.childCount; i++) transform.GetChild(i).gameObject.SetActive(true);
+        else for (int i = 0; i < transform.childCount; i++) transform.GetChild(i).gameObject.SetActive(false);
+    }
+
     public void SetHUDReloadTime(float _reloadTime) 
     {
         maxReloadTime = _reloadTime;
@@ -36,13 +43,15 @@ public class HUD : MonoBehaviour
 
     void Awake()
     {
-        if (instance != this && instance != null)
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
         {
             Destroy(this.gameObject);
         }
-
-        instance = this;
-        DontDestroyOnLoad(this);
     }
 
     private void Start()

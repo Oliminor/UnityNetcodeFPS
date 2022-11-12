@@ -143,6 +143,10 @@ public class HealthManager : NetworkBehaviour
         _KilledBy = Source;
 
         if (!IsServer) DamagePlayerServerRPC((int)damage);
+
         SetSourcePositionServerRPC(Source.transform.position);
+
+        if (IsHost) _HealthCur.Value -= (int)damage;
+
     }
 }

@@ -6,6 +6,7 @@ using Unity.Netcode;
 
 public class PlayerTeamManager : NetworkBehaviour
 {
+    [SerializeField] MeshRenderer playerModel;
 
     public NetworkVariable<TEAMS> _Team = new NetworkVariable<TEAMS>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private GameObject _NetworkManager;
@@ -28,11 +29,10 @@ public class PlayerTeamManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-
         _NetworkManager = GameObject.Find("ObjectiveManager");
         if (!IsOwner)
         {
-            transform.GetChild(1).gameObject.GetComponent<Renderer>().material.color = _NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value);
+           if (_NetworkManager) SetTeamColor(_NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value));
             return;
         }
         TeamYouText = GameObject.Find("Temp");
@@ -45,6 +45,14 @@ public class PlayerTeamManager : NetworkBehaviour
             if (_Team.Value == TEAMS.RED) ChangeTeam(1);
             else ChangeTeam(0);
         }
+    }
+
+    /// <summary>
+    /// Set the team color
+    /// </summary>
+    private void SetTeamColor(Color _color)
+    {
+        playerModel.materials[1].SetColor("_Color", _color);
     }
 
     public void ChangeTeam(int NewTeam)

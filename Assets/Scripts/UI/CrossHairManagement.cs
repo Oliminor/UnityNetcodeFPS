@@ -16,13 +16,15 @@ public class CrossHairManagement : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        if(instance != this && instance != null)
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
         {
             Destroy(this.gameObject);
         }
-
-        instance = this;
-        DontDestroyOnLoad(this);
     }
 
     // Update is called once per frame

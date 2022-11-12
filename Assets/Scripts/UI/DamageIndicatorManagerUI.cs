@@ -14,13 +14,15 @@ public class DamageIndicatorManagerUI : MonoBehaviour
 
     void Awake()
     {
-        if (instance != this && instance != null)
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
         {
             Destroy(this.gameObject);
         }
-
-        instance = this;
-        DontDestroyOnLoad(this);
     }
 
     private void Start()
