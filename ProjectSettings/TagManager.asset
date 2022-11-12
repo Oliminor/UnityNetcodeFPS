@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CarriedObject
   - Objective
+  - CameraButton
   layers:
   - Default
   - TransparentFX
