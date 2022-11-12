@@ -1953,18 +1953,6 @@ MonoBehaviour:
     LoadSceneTimeOut: 120
     SpawnTimeout: 1
     EnableNetworkLogs: 1
---- !u!114 &1936440769 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7198583814776902453, guid: 2bcf8ce9c8bc1674791a87a86ba4f57b,
-    type: 3}
-  m_PrefabInstance: {fileID: 7198583812917096180}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1941668391
 GameObject:
   m_ObjectHideFlags: 0
@@ -2102,18 +2090,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2111492619 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7198583814599621887, guid: 2bcf8ce9c8bc1674791a87a86ba4f57b,
-    type: 3}
-  m_PrefabInstance: {fileID: 7198583812917096180}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1090955259356516491
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2209,12 +2185,12 @@ PrefabInstance:
         type: 3}
       propertyPath: _ScoreText.Array.data[0]
       value: 
-      objectReference: {fileID: 1936440769}
+      objectReference: {fileID: 0}
     - target: {fileID: 3438880962905502144, guid: aad0b21ab084fb941aeeabe7891d3c47,
         type: 3}
       propertyPath: _ScoreText.Array.data[1]
       value: 
-      objectReference: {fileID: 2111492619}
+      objectReference: {fileID: 0}
     - target: {fileID: 3438880962905502150, guid: aad0b21ab084fb941aeeabe7891d3c47,
         type: 3}
       propertyPath: m_RootOrder
@@ -2280,7 +2256,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ObjectiveManager
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5343296863699175231, guid: aad0b21ab084fb941aeeabe7891d3c47, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aad0b21ab084fb941aeeabe7891d3c47, type: 3}
 --- !u!1001 &4141099008846616776
 PrefabInstance:

@@ -23,7 +23,6 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
     private void Start()
     {
         singleton = this;
-
         sceneNames = SceneNamesForEasySwapping();
         
         foreach(string scene in sceneNames)

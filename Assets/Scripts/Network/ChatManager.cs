@@ -17,40 +17,17 @@ public class ChatManager : NetworkBehaviour
     public static ChatManager singleton;
     private Color teamColour;
     private string teamColorFormat;
-    GameObject objectiveManager;
+    
 
     private void Awake()
     {
         
         teamColour = Color.gray;
         teamColorFormat = ColorUtility.ToHtmlStringRGB(teamColour);
+
     }
     
 
-
-    private void SceneManagement_OnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
-    {
-        if(sceneName=="Ben")
-        {
-            objectiveManager = GameObject.Find("ObjectiveManager");
-            
-        }
-        
-    }
-
-    public void SceneManagement_OnLoadEventCompleted(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
-    {
-        if(sceneName=="Ben")
-        {
-
-            objectiveManager = GameObject.Find("ObjectiveManager");
-            var team = objectiveManager.GetComponent<PlayerTeamManager>()._Team.Value;
-            teamColour=objectiveManager.GetComponent<ObjectiveManager>().GetTeamColour(team);
-            teamColorFormat= ColorUtility.ToHtmlStringRGB(teamColour);
-
-        }        
-        
-    }
 
     private void Start()
     {
@@ -132,8 +109,15 @@ public class ChatManager : NetworkBehaviour
 
     public void UpdateChat(string playerName, string message, string teamColor)
     {
-        GetComponent<ChatManager>().chatText.text += $"\n<color={teamColor}>{playerName}</color> said: {message}";
+        GetComponent<ChatManager>().chatText.text += $"\n<color=#{teamColor}>{playerName}</color> said: {message}";
         Debug.Log("hit");
+    }
+    
+    public void SetTeamChatColour(Color color)
+    {
+        teamColour = color;
+        teamColorFormat = ColorUtility.ToHtmlStringRGB(teamColour);
+
     }
 
 }

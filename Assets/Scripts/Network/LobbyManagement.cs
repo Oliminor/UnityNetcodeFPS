@@ -47,12 +47,33 @@ public class LobbyManagement : NetworkBehaviour
         {
             isMinimumPlayerReqMet = false;
             NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+            NetworkManager.OnClientDisconnectCallback += OnClientDisonnectCallback;
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (!connectedClients.ContainsKey(client))
+                {
+                    connectedClients.Add(client, false);
+                }
+                UpdateReadyClientsInts();
+            }
+
 
         }
 
         base.OnNetworkSpawn();
     }
 
+    private void OnClientDisonnectCallback(ulong Id)
+    {
+        if (IsServer)
+        {
+            if (connectedClients.ContainsKey(Id))
+            {
+                connectedClients.Remove(Id);
+            }
+            UpdateReadyClientsInts();
+        }
+    }
 
     private void OnClientConnectedCallback(ulong Id)
     {
@@ -153,14 +174,6 @@ public class LobbyManagement : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    private void SceneChangeServerRpc()
-    {
-        if (IsServer)
-        {
-            ProjectNetworkSceneManager.singleton.SwitchScenes();
-        }
-    }
 
     public void PlayerIsNowReady()
     {
@@ -197,13 +210,6 @@ public class LobbyManagement : NetworkBehaviour
             UpdateReadyClientsInts();
         }
     }
-    private void Update()
-    {
-        //Debug.Log("all clients are ready?:" + areAllPlayersReady);
-        //Debug.Log("minimum player count met?:" + isMinimumPlayerReqMet);
-        //Debug.Log("number of connected clients:" + connectedClients.Count);
-        //Debug.Log("number of ready clients:" + readyClients);
-        //Debug.Log("number of dictionary entrys:" + connectedClients.Count);
 
-    }
 }
+

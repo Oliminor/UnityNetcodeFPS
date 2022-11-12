@@ -49,7 +49,7 @@ public class NetworkUI : NetworkBehaviour
         ChatManager.singleton.playerName = playerName;
         //ObjectiveManager.instance.StartNewGame();
         NetworkManager.Singleton.SceneManager.OnSceneEvent += ProjectNetworkSceneManager.singleton.SceneManager_OnSceneEvent;
-        NetworkManager.Singleton.SceneManager.OnLoadEventCompleted +=ChatManager.singleton.SceneManagement_OnLoadEventCompleted;
+       
     }
 
     public void StartClient()
