@@ -6521,7 +6521,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 136
-  jumpForce: 14
+  jumpForce: 15
   accelerationSpeed: 80
   aimSpeed: 2
   JogSpeed: 7
