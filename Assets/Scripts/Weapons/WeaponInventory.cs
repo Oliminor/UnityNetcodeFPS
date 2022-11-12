@@ -42,7 +42,7 @@ public class WeaponInventory : NetworkBehaviour
     {
         if (player.IsOwner)
         {
-            ActivateWeaponServerRPC(0);
+            ActivateWeaponServerRPC(defaultWeapons[0] - 1);
         }
     }
 
@@ -82,7 +82,7 @@ public class WeaponInventory : NetworkBehaviour
         defaultWeapons[currentWeaponIndex] = 0;
         currentWeaponIndex = 0;
         isObjectCarried = false;
-        ActivateWeaponServerRPC(0);
+        ActivateWeaponServerRPC(defaultWeapons[0] - 1);
     }
 
     /// <summary>

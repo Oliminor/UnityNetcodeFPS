@@ -594,7 +594,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 622910041}
   m_HandleRect: {fileID: 622910040}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4788,18 +4788,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ModeList:
   - Mode: 0
-    TimeLimit: 10
+    TimeLimit: 500
     ScoreLimit: 10
     FFA: 0
-    Team1Weapons: 0
-    Team2Weapons: 0
+    Team1Weapons: 1
+    Team2Weapons: 1
     RoundLimit: 1
   - Mode: 1
-    TimeLimit: 10
+    TimeLimit: 500
     ScoreLimit: 10
     FFA: 0
-    Team1Weapons: 0
-    Team2Weapons: 0
+    Team1Weapons: 4
+    Team2Weapons: 4
     RoundLimit: 1
   _Scoreboard: {fileID: 498032639}
   _CurrentMode:

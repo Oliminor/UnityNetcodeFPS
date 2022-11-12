@@ -32,6 +32,7 @@ public class PlayerTeamManager : NetworkBehaviour
         _NetworkManager = GameObject.Find("ObjectiveManager");
         if (!IsOwner)
         {
+            Debug.Log("Color Change called");
            if (_NetworkManager) SetTeamColor(_NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value));
             return;
         }
@@ -53,6 +54,7 @@ public class PlayerTeamManager : NetworkBehaviour
     private void SetTeamColor(Color _color)
     {
         playerModel.materials[1].SetColor("_Color", _color);
+        ChatManager.singleton.SetTeamChatColour(_color);
     }
 
     public void ChangeTeam(int NewTeam)

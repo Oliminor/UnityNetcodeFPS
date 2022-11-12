@@ -11777,7 +11777,7 @@ PrefabInstance:
     - target: {fileID: 2445161834697184421, guid: 5e2c69cad86ccdd40b22608bfabd7d46,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3072903102903848479, guid: 5e2c69cad86ccdd40b22608bfabd7d46,
         type: 3}
@@ -11934,6 +11934,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cyborg_Weapon
       objectReference: {fileID: 0}
+    - target: {fileID: 7484525781483434150, guid: 8161be08461a24041bdc8c7366d58017,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7824353612383054364, guid: 8161be08461a24041bdc8c7366d58017,
         type: 3}
       propertyPath: m_RootOrder
@@ -12012,7 +12017,7 @@ PrefabInstance:
     - target: {fileID: 8306951095173680226, guid: e9cef01821697fa468dcfdf83bcd84fa,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8648011547008751320, guid: e9cef01821697fa468dcfdf83bcd84fa,
         type: 3}
