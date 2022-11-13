@@ -38,7 +38,7 @@ public class HealthManager : NetworkBehaviour
             HUD.instance.SetHUDPercent(GetPercentHealth());
             HUD.instance.SetPlayerHealthTextHUD(_HealthCur.Value, _HealthMax);
 
-            if (transform.position.y < -50) Respawn(true);
+            if (transform.position.y < -50) Respawn(false);
         }
     }
 
@@ -111,7 +111,9 @@ public class HealthManager : NetworkBehaviour
         {
             if (_KilledBy.GetComponent<PlayerTeamManager>().GetTeam() == TEAMS.BLUE)
             {
-                GetComponent<PlayerTeamManager>().ChangeTeam(1);
+                Debug.Log("Changing team here you idiot");
+                //GetComponent<PlayerTeamManager>().ChangeTeam((int)TEAMS.BLUE);
+                _ObjectiveManager.GetComponent<ObjectiveManager>().SetPlayerToTeamServerRPC((int)TEAMS.BLUE);
             }
             _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
         }

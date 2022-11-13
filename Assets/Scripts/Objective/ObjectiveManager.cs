@@ -147,6 +147,7 @@ public class ObjectiveManager : NetworkBehaviour
 
     void AssignTeams()
     {
+        int TooInfect = Random.Range(0, NetworkManager.Singleton.ConnectedClients.Count);
         if (!IsServer) return;
         for(int i = 0; i < NetworkManager.Singleton.ConnectedClients.Count; i++)
         {
@@ -154,11 +155,22 @@ public class ObjectiveManager : NetworkBehaviour
             
             switch (_CurrentMode) 
             {
-                case (MODES.DEATHMATCH | MODES.KINGOFTHEHILL):
+                case (MODES.DEATHMATCH):
+                    Player.GetComponent<PlayerTeamManager>().ChangeTeam((i + 1) % 2);
+                    break;
+                case (MODES.KINGOFTHEHILL):
                     Player.GetComponent<PlayerTeamManager>().ChangeTeam((i + 1) % 2);
                     break;
                 case (MODES.INFECTION):
-                    Player.GetComponent<PlayerTeamManager>().ChangeTeam(0);
+                    if (i == TooInfect)
+                    {
+                        Player.GetComponent<PlayerTeamManager>().ChangeTeam(1);
+                    }
+                    else
+                    {
+                        Player.GetComponent<PlayerTeamManager>().ChangeTeam(0);
+                    }
+                    
                     break;
             }
 
@@ -174,15 +186,10 @@ public class ObjectiveManager : NetworkBehaviour
             _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 4] = PlayerDeaths;
         }
 
-        if (_CurrentMode == MODES.INFECTION)
-        {
-            NetworkManager.Singleton.ConnectedClients[(ulong)Random.Range(0, NetworkManager.Singleton.ConnectedClients.Count)].PlayerObject.GetComponent<PlayerTeamManager>().ChangeTeam(1);
-        }
     }
 
     public void EndGame()
     {
-        _KingOfTheHill.SetActive(false);
 
         _GameInProgress = false;
 
@@ -194,7 +201,8 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     public void StartNewGameServerRPC(GameModeData ModeData)
     {
-
+        SetGameModeSettings(ModeData);
+        AssignTeams();
         StartNewGameClientRPC(ModeData);
         StartNewGameServerRPC();
         
@@ -221,12 +229,15 @@ public class ObjectiveManager : NetworkBehaviour
         switch (_CurrentMode) 
         {
             case (MODES.DEATHMATCH):
+                _KingOfTheHill.SetActive(false);
                 Debug.Log("Starting deathmatch");
                 break;
             case (MODES.KINGOFTHEHILL):
+                _KingOfTheHill.SetActive(true);
                 Debug.Log("Starting King of the hill");
                 break;
             case (MODES.INFECTION):
+                _KingOfTheHill.SetActive(false);
                 Debug.Log("Starting Infection");
                 break;
         }
@@ -243,7 +254,7 @@ public class ObjectiveManager : NetworkBehaviour
             _KingOfTheHill.transform.position = _HillLocations[0].transform.position;
 
         }
-        AssignTeams();
+        
         for (int i = 0; i < _Teams.Length; i++)
         {
             Debug.Log("Setting team to 0 points" + i);
@@ -293,6 +304,8 @@ public class ObjectiveManager : NetworkBehaviour
         if (!NetworkManager.ConnectedClients.ContainsKey(ClientID)) return;
 
         GameObject Player = NetworkManager.Singleton.ConnectedClients[ClientID].PlayerObject.transform.gameObject;
+
+        Debug.Log("The weapon that Team " + Team + " Should spawn with is " + _TeamWeapons[Team]);
 
         Player.transform.GetChild(2).transform.GetChild(0).GetComponent<WeaponInventory>().ChangeDefaultWeapon(_TeamWeapons[Team]);
         Debug.Log("Change default weapon: " + _TeamWeapons[Team]);
