@@ -41,7 +41,7 @@ public class ProjectileManager : NetworkBehaviour
     {
         transform.Translate(transform.forward * _Speed * Time.deltaTime, Space.World);
 
-        //if (!IsOwner) return;
+        if (!IsOwner) return;
 
         CheckBetweenTwoPositions();
     }
