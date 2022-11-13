@@ -11,7 +11,7 @@ public class WeaponInventory : NetworkBehaviour
 
     private Animator anim;
     int currentWeaponIndex;
-    NetworkVariable<int> serverIndex = new NetworkVariable<int>(-1);
+    [SerializeField] NetworkVariable<int> serverIndex = new NetworkVariable<int>(-1);
 
     PlayerMovement player;
 
@@ -30,6 +30,7 @@ public class WeaponInventory : NetworkBehaviour
     /// </summary>
     public override void OnNetworkSpawn()
     {
+        Debug.Log("WeaponInventory OnNetworkSpawn");
         // Calls ActivateWeaponClientRPC, when the serverIndex changes
         serverIndex.OnValueChanged += ActivateWeaponClientRPC;
         if (serverIndex.Value != -1)
@@ -42,6 +43,7 @@ public class WeaponInventory : NetworkBehaviour
     {
         if (player.IsOwner)
         {
+            Debug.Log("WeaponInventory Start");
             ActivateWeaponServerRPC(defaultWeapons[0] - 1);
         }
     }
@@ -60,12 +62,13 @@ public class WeaponInventory : NetworkBehaviour
     [ClientRpc]
     public void ChangeDefaultWeaponClientRPC(int _index)
     {
-        Debug.Log("ChangeDefaultWeaponCLientRPC index: " + _index);
+        Debug.Log("ChangeDefaultWeaponClientRPC: " + IsClient + IsServer + IsHost + IsOwner + player.IsOwner + " ClientID: " + OwnerClientId + " index: " + _index);
 
         defaultWeapons[0] = _index;
         currentWeaponIndex = 0;
-        ActivateWeaponServerRPC(defaultWeapons[0] - 1);
+        if (IsOwner) ActivateWeaponServerRPC(defaultWeapons[currentWeaponIndex] - 1);
     }
+
 
     IEnumerator DropDownDelay()
     {
@@ -107,11 +110,9 @@ public class WeaponInventory : NetworkBehaviour
     /// </summary>
     public void ResetInventory()
     {
-        for (int i = 0; i < defaultWeapons.Length; i++) defaultWeapons[i] = 0;
+        for (int i = 1; i < defaultWeapons.Length; i++) defaultWeapons[i] = 0;
 
-        defaultWeapons[0] = 1;
-
-        ActivateWeaponServerRPC(0);
+        ActivateWeaponServerRPC(defaultWeapons[0] - 1);
     }
 
     /// <summary>
@@ -183,7 +184,7 @@ public class WeaponInventory : NetworkBehaviour
     [ClientRpc]
     private void ActivateWeaponClientRPC(int _PrevIndex, int _NewIndex)
     {
-        Debug.Log("Weapon scroll: " + _PrevIndex + " " + _NewIndex);
+        Debug.Log("Weapon scroll: " + _PrevIndex + " " + _NewIndex + " OwnerID: " + OwnerClientId);
         ActivateWeapon(_NewIndex);
     }
 

@@ -59,7 +59,7 @@ public class PlayerTeamManager : NetworkBehaviour
 
     public void ChangeTeam(int NewTeam)
     {
-        if (!IsOwner || !IsServer) return;
+        //if (!IsOwner || !IsServer) return;
         _NetworkManager = GameObject.Find("ObjectiveManager");
         _NetworkManager.GetComponent<ObjectiveManager>().SetPlayerToTeamServerRPC(NewTeam);
         //_Team.Value = (TEAMS)NewTeam;

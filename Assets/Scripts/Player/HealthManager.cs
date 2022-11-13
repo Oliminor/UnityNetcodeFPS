@@ -74,6 +74,7 @@ public class HealthManager : NetworkBehaviour
     private void DamagePlayerServerRPC(int health)
     {
         _HealthCur.Value -= health;
+        if (_HealthCur.Value < 0) _HealthCur.Value = 0;
     }
 
     /// <summary>
@@ -129,7 +130,7 @@ public class HealthManager : NetworkBehaviour
     IEnumerator InterpolateSwitch()
     {
         GetComponent<BetterNetworkTransform>().Interpolate = false;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
         GetComponent<BetterNetworkTransform>().Interpolate = true;
     }
 
@@ -138,17 +139,18 @@ public class HealthManager : NetworkBehaviour
     /// </summary>
     public void DamagePlayer(float damage, GameObject Source)
     {
-        int health = _HealthCur.Value;
-
-        health -= (int)damage;
+        Debug.Log("DamagePlayer " + damage);
 
         _KilledBy = Source;
 
-        if (!IsServer) DamagePlayerServerRPC((int)damage);
+        if (!IsHost && IsOwner) DamagePlayerServerRPC((int)damage);
 
         SetSourcePositionServerRPC(Source.transform.position);
 
-        if (IsHost) _HealthCur.Value -= (int)damage;
-
+        if (IsHost && IsOwner)
+        {
+            _HealthCur.Value -= (int)damage;
+            if (_HealthCur.Value < 0) _HealthCur.Value = 0;
+        }
     }
 }

@@ -53,7 +53,7 @@ public class WeaponManager : NetworkBehaviour
     {
         isRealoading = false;
         reloadEffect.gameObject.SetActive(false);
-        HUD.instance.StopRealoding();
+        if (HUD.instance) HUD.instance.StopRealoding();
     }
 
     // Update is called once per frame
@@ -63,8 +63,8 @@ public class WeaponManager : NetworkBehaviour
 
         if (!player.IsOwner) return;
 
-        CrossHairManagement.instance.SetDefaultSpreadValue(DefaultCrossHairSize());
-        HUD.instance.SetPlayerAmmoTextHUD(currentAmmoNumber, _MaxAmmoNumber);
+        if (CrossHairManagement.instance) CrossHairManagement.instance.SetDefaultSpreadValue(DefaultCrossHairSize());
+        if (HUD.instance) HUD.instance.SetPlayerAmmoTextHUD(currentAmmoNumber, _MaxAmmoNumber);
 
         CameraZoom();
 

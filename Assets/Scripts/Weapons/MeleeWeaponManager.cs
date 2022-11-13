@@ -33,7 +33,7 @@ public class MeleeWeaponManager : NetworkBehaviour
 
     private void OnDisable()
     {
-        CrossHairManagement.instance.ActivateCrossHair(true);
+        if (CrossHairManagement.instance) CrossHairManagement.instance.ActivateCrossHair(true);
     }
 
     void Update()
