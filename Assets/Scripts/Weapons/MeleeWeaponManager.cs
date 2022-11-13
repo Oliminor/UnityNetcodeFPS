@@ -24,16 +24,23 @@ public class MeleeWeaponManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        player = transform.root.GetComponent<PlayerMovement>();
-        player.GetWeaponInventory().SetWeaponAnimatorController(animController);
-        anim = player.GetWeaponInventory().GetAnimator();
-        netAnim = player.GetWeaponInventory().GetComponent<BetterNetworkAnimator>();
-        CrossHairManagement.instance.ActivateCrossHair(false);
+        if (CrossHairManagement.instance && IsOwner)
+        {
+            player = transform.root.GetComponent<PlayerMovement>();
+            player.GetWeaponInventory().SetWeaponAnimatorController(animController);
+            anim = player.GetWeaponInventory().GetAnimator();
+            netAnim = player.GetWeaponInventory().GetComponent<BetterNetworkAnimator>();
+            CrossHairManagement.instance.ActivateCrossHair(false);
+        }
+            
     }
 
     private void OnDisable()
     {
-        if (CrossHairManagement.instance) CrossHairManagement.instance.ActivateCrossHair(true);
+        if (CrossHairManagement.instance && IsOwner)
+        {
+            CrossHairManagement.instance.ActivateCrossHair(true);
+        }
     }
 
     void Update()

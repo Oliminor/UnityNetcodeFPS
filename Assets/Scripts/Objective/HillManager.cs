@@ -24,6 +24,7 @@ public class HillManager : NetworkBehaviour
     {
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         _GameActive = false;
+        _TEAMSInHill = new List<TEAMS> { };
     }
 
     void Awake()

@@ -156,19 +156,19 @@ public class ObjectiveManager : NetworkBehaviour
             switch (_CurrentMode) 
             {
                 case (MODES.DEATHMATCH):
-                    Player.GetComponent<PlayerTeamManager>().ChangeTeam((i + 1) % 2);
+                    SetPlayerToTeamServerRPC((i + 1) % 2, (ulong)i);
                     break;
                 case (MODES.KINGOFTHEHILL):
-                    Player.GetComponent<PlayerTeamManager>().ChangeTeam((i + 1) % 2);
+                    SetPlayerToTeamServerRPC((i + 1) % 2, (ulong)i);
                     break;
                 case (MODES.INFECTION):
                     if (i == TooInfect)
                     {
-                        Player.GetComponent<PlayerTeamManager>().ChangeTeam(1);
+                        SetPlayerToTeamServerRPC(1, (ulong)i);
                     }
                     else
                     {
-                        Player.GetComponent<PlayerTeamManager>().ChangeTeam(0);
+                        SetPlayerToTeamServerRPC(0, (ulong)i);
                     }
                     
                     break;
@@ -300,12 +300,18 @@ public class ObjectiveManager : NetworkBehaviour
     public void SetPlayerToTeamServerRPC(int Team, ServerRpcParams serverRpcParams = default)
     {
         var ClientID = serverRpcParams.Receive.SenderClientId;
+        SetPlayerToTeamServerRPC(Team, ClientID);
+        
 
-        if (!NetworkManager.ConnectedClients.ContainsKey(ClientID)) return;
+    }
+    [ServerRpc]
+    public void SetPlayerToTeamServerRPC(int Team, ulong PlayerID)
+    {
+        if (!NetworkManager.ConnectedClients.ContainsKey(PlayerID)) return;
 
-        GameObject Player = NetworkManager.Singleton.ConnectedClients[ClientID].PlayerObject.transform.gameObject;
+        GameObject Player = NetworkManager.Singleton.ConnectedClients[PlayerID].PlayerObject.transform.gameObject;
 
-        Debug.Log("The weapon that Team " + Team + " Should spawn with is " + _TeamWeapons[Team] + " The ClientID is: " + ClientID);
+        Debug.Log("The weapon that Team " + Team + " Should spawn with is " + _TeamWeapons[Team] + " The ClientID is: " + PlayerID);
 
         Player.transform.GetChild(2).transform.GetChild(0).GetComponent<WeaponInventory>().ChangeDefaultWeaponClientRPC(_TeamWeapons[Team]);
         Debug.Log("Change default weapon: " + _TeamWeapons[Team]);
@@ -314,7 +320,6 @@ public class ObjectiveManager : NetworkBehaviour
 
         UpdateTeamDataClientRpc(_Teams[0], 0);
         UpdateTeamDataClientRpc(_Teams[1], 1);
-
     }
 
     [ServerRpc(RequireOwnership = false)]
