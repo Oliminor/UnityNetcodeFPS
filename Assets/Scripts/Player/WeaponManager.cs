@@ -251,6 +251,7 @@ public class WeaponManager : NetworkBehaviour
             GameObject _projectile = Instantiate(projectile.gameObject, Position, Rotation);
             _projectile.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed, _ProjectileLife, transform.root.gameObject);
             _projectile.transform.LookAt(FireDirection());
+            _projectile.GetComponent<NetworkObject>().Spawn();
         }
     }
 
