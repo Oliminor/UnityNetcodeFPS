@@ -45,18 +45,18 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
 
     public void SwitchScenes()
     {
+        NetworkManager.SceneManager.LoadScene("Ben", LoadSceneMode.Single);
         if (IsServer)
         {
-            NetworkManager.SceneManager.LoadScene("Ben", LoadSceneMode.Single);
             playersLoadedInScene.Value=0;
         }
         
     }
     public void ExitGameMode()
     {
+        NetworkManager.SceneManager.LoadScene("Ollie", LoadSceneMode.Single);
         if (IsServer)
         {
-            NetworkManager.SceneManager.LoadScene("Ollie", LoadSceneMode.Single);
             playersLoadedInScene.Value = 0;
         }
     }

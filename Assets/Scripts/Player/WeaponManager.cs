@@ -171,7 +171,7 @@ public class WeaponManager : NetworkBehaviour
             netAnim.SetTrigger("fire");
             fireRateCoolDown = fireRate;
             StartCoroutine(Fire());
-            InstantiateProjectileServerRPC(transform.position, transform.rotation);
+            InstantiateProjectile(transform.position, transform.rotation);
             if (IsOwner) FireVoidServerRPC(transform.position, transform.rotation);
             currentAmmoNumber--;
         }
@@ -244,15 +244,14 @@ public class WeaponManager : NetworkBehaviour
         return _size;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void InstantiateProjectileServerRPC(Vector3 Position, Quaternion Rotation, ServerRpcParams serverRpcParams = default)
+    private void InstantiateProjectile(Vector3 Position, Quaternion Rotation)
     {
         for (int i = 0; i < _ProjectileNumber; i++)
         {
             GameObject _projectile = Instantiate(projectile.gameObject, Position, Rotation);
             _projectile.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed, _ProjectileLife, transform.root.gameObject);
             _projectile.transform.LookAt(FireDirection());
-            _projectile.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
+            _projectile.GetComponent<NetworkObject>().Spawn();
         }
     }
 
@@ -287,7 +286,7 @@ public class WeaponManager : NetworkBehaviour
         {
             StartCoroutine(Fire());
 
-            InstantiateProjectileServerRPC(Position, Rotation);
+            InstantiateProjectile(Position, Rotation);
         }
 
         if (!IsOwner) return;
