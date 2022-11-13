@@ -13,14 +13,12 @@ public class ProjectileManager : NetworkBehaviour
     private float _Life;
     private GameObject _Owner;
 
-    private Rigidbody _RigidBody;
     private Vector3 previousPosition;
 
     // Start is called before the first frame update
     void Start()
     {
         previousPosition = transform.position;
-        _RigidBody = GetComponent<Rigidbody>();
         Destroy(gameObject, _Life);
         //StartCoroutine(TimeBeforeDestroyed(_Life));
     }
@@ -41,8 +39,6 @@ public class ProjectileManager : NetworkBehaviour
     {
         transform.Translate(transform.forward * _Speed * Time.deltaTime, Space.World);
 
-        if (!IsOwner) return;
-
         CheckBetweenTwoPositions();
     }
 
@@ -53,7 +49,6 @@ public class ProjectileManager : NetworkBehaviour
     {
         float distance = Vector3.Distance(previousPosition, transform.position);
         RaycastHit hit;
-
         if (Physics.Raycast(previousPosition, transform.forward, out hit, distance, whatIsSolid))
         {
             if (hit.transform.gameObject.tag == "Player")

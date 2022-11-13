@@ -7,7 +7,7 @@ public class HealthManager : NetworkBehaviour
 {
 
     //private float _HealthCur;
-    [SerializeField] NetworkVariable<int> _HealthCur = new NetworkVariable<int>(-1);
+    [SerializeField] NetworkVariable<int> _HealthCur = new NetworkVariable<int>(-1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     [SerializeField] NetworkVariable<Vector3> sourcePlayer = new NetworkVariable<Vector3>();
     [SerializeField] int _HealthMax;
     [SerializeField] int _HealthRegen;
@@ -70,11 +70,33 @@ public class HealthManager : NetworkBehaviour
         _HealthCur.Value = health;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void DamagePlayerServerRPC(int health)
+    [ClientRpc]
+    private void SetHealthClientRPC(int health)
     {
-        _HealthCur.Value -= health;
-        if (_HealthCur.Value < 0) _HealthCur.Value = 0;
+        _HealthCur.Value = health;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DamagePlayerServerRPC(int damage)
+    {
+        // _HealthCur.Value -= damage;
+        //  if (_HealthCur.Value < 0) _HealthCur.Value = 0;
+        DamagePlayerClientRPC(damage);
+    }
+
+    [ClientRpc]
+    private void DamagePlayerClientRPC(int damage)
+    {
+        if (IsOwner)
+        {
+            _HealthCur.Value -= damage;
+            if (_HealthCur.Value < 0) _HealthCur.Value = 0;
+
+            if (_HealthCur.Value <= 0)
+            {
+                Respawn(true);
+            }
+        }
     }
 
     /// <summary>
@@ -99,7 +121,8 @@ public class HealthManager : NetworkBehaviour
         GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         Debug.Log("HElo there");
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
-        SetHealthServerRPC(_HealthMax);
+        if (IsOwner) SetHealthClientRPC(_HealthMax);
+        else SetHealthServerRPC(_HealthMax);
         player.GetWeaponInventory().DropEveryWeapons();
         
         Debug.Log("HGEOIFHAFH DHOHAWIDHAW ");
@@ -143,14 +166,15 @@ public class HealthManager : NetworkBehaviour
 
         _KilledBy = Source;
 
-        if (!IsHost && IsOwner) DamagePlayerServerRPC((int)damage);
+        Debug.Log(IsServer +" "+ IsHost +" "+ IsClient +" "+ IsOwner);
+
+        if (IsClient && !IsServer && !IsHost) DamagePlayerServerRPC((int)damage);
 
         SetSourcePositionServerRPC(Source.transform.position);
 
-        if (IsHost && IsOwner)
+        if (IsHost && !IsOwner)
         {
-            _HealthCur.Value -= (int)damage;
-            if (_HealthCur.Value < 0) _HealthCur.Value = 0;
+            DamagePlayerClientRPC((int)damage);
         }
     }
 }

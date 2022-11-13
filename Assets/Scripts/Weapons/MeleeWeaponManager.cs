@@ -6,14 +6,12 @@ using Unity.Netcode.Components;
 
 public class MeleeWeaponManager : NetworkBehaviour
 {
-    [SerializeField] private RuntimeAnimatorController animController;
     [SerializeField] CapsuleCollider capsuleCol;
     [SerializeField] Transform playerHitEffect;
     [SerializeField] int damage;
     [SerializeField] float meleeRate;
 
     private Animator anim;
-    private NetworkAnimator netAnim;
     private PlayerMovement player;
     private float coolDownTimer;
 
@@ -27,9 +25,8 @@ public class MeleeWeaponManager : NetworkBehaviour
         if (CrossHairManagement.instance && IsOwner)
         {
             player = transform.root.GetComponent<PlayerMovement>();
-            player.GetWeaponInventory().SetWeaponAnimatorController(animController);
             anim = player.GetWeaponInventory().GetAnimator();
-            netAnim = player.GetWeaponInventory().GetComponent<BetterNetworkAnimator>();
+            anim.SetTrigger("meleeActivated");
             CrossHairManagement.instance.ActivateCrossHair(false);
         }
             
@@ -76,11 +73,9 @@ public class MeleeWeaponManager : NetworkBehaviour
         {
             coolDownTimer = meleeRate;
 
-            netAnim.SetTrigger("attack");
+            anim.SetTrigger("meleeAttack");
 
             if (IsClient) MeleeAttackServerRPC();
-
-            if (IsServer) MeleeAttackClientRPC();
         }
     }
 

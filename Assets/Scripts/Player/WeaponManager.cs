@@ -14,7 +14,6 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private Transform reloadEffect;
     [SerializeField] private GameObject muzzleEffect;
     [SerializeField] private int objectPoolSize;
-    [SerializeField] private RuntimeAnimatorController animController;
     [SerializeField] private Vector3 rotation;
 
     [SerializeField] private int _MaxAmmoNumber;
@@ -28,7 +27,6 @@ public class WeaponManager : NetworkBehaviour
 
 
     private Animator anim;
-    private NetworkAnimator netAnim;
     private float fireRateCoolDown;
     private float defaultFOV = 60;
     private float lerpFOV;
@@ -147,15 +145,13 @@ public class WeaponManager : NetworkBehaviour
         reloadEffect.gameObject.SetActive(false);
     }
 
-        /// <summary>
-        /// The shooting functions (Effect only at the moment)
-        /// </summary>
-        private void Shooting()
+    /// <summary>
+    /// The shooting functions (Effect only at the moment)
+    /// </summary>
+    private void Shooting()
     {
         fireRateCoolDown -= Time.deltaTime;
-
         if (isRealoading) return;
-
         if (((Input.GetKeyDown(KeyCode.R) && currentAmmoNumber < _MaxAmmoNumber) || currentAmmoNumber <= 0))
         {
             HUD.instance.SetHUDReloadTime(_ReloadTime);
@@ -163,16 +159,14 @@ public class WeaponManager : NetworkBehaviour
             StartCoroutine(ReloadWeaponEffect());
             if (IsOwner) ReloadEffectServerRPC();
         }
-
         if (currentAmmoNumber <= 0) return;
-
         if (fireRateCoolDown <= 0 && IsShooting() && (!player.IsRunning() || player.IsAiming()))
         {
-            netAnim.SetTrigger("fire");
+            anim.SetTrigger("fire");
             fireRateCoolDown = fireRate;
             StartCoroutine(Fire());
-            InstantiateProjectileServerRPC(transform.position, transform.rotation);
-            if (IsOwner) FireVoidServerRPC(transform.position, transform.rotation);
+            InstantiateProjectile(transform.position, transform.rotation);
+            //if (IsOwner) FireVoidServerRPC(transform.position, transform.rotation);
             currentAmmoNumber--;
         }
     }
@@ -188,9 +182,8 @@ public class WeaponManager : NetworkBehaviour
         transform.localRotation = Quaternion.Euler(rotation);
 
         player = transform.root.GetComponent<PlayerMovement>();
-        player.GetWeaponInventory().SetWeaponAnimatorController(animController);
         anim = player.GetWeaponInventory().GetAnimator();
-        netAnim = player.GetWeaponInventory().GetComponent<BetterNetworkAnimator>();
+        anim.SetTrigger("rangedActivated");
 
         for (int i = 0; i < objectPool.Count; i++) objectPool[i].SetActive(false);
     }
@@ -244,18 +237,13 @@ public class WeaponManager : NetworkBehaviour
         return _size;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void InstantiateProjectileServerRPC(Vector3 Position, Quaternion Rotation, ServerRpcParams serverRpcParams = default)
+    private void InstantiateProjectile(Vector3 Position, Quaternion Rotation)
     {
         for (int i = 0; i < _ProjectileNumber; i++)
         {
             GameObject _projectile = Instantiate(projectile.gameObject, Position, Rotation);
             _projectile.GetComponent<ProjectileManager>().SetProperties(_ProjectileDamage, _ProjectileSpeed, _ProjectileLife, transform.root.gameObject);
             _projectile.transform.LookAt(FireDirection());
-<<<<<<< HEAD
-            _projectile.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
-=======
->>>>>>> parent of 0d9ebb2 (WORK)
         }
     }
 
@@ -290,7 +278,7 @@ public class WeaponManager : NetworkBehaviour
         {
             StartCoroutine(Fire());
 
-            InstantiateProjectileServerRPC(Position, Rotation);
+            InstantiateProjectile(Position, Rotation);
         }
 
         if (!IsOwner) return;
