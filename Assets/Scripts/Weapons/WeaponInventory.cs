@@ -57,8 +57,11 @@ public class WeaponInventory : NetworkBehaviour
         ScrollBetweenWeapons();
     }
 
-    public void ChangeDefaultWeapon(int _index)
+    [ClientRpc]
+    public void ChangeDefaultWeaponClientRPC(int _index)
     {
+        Debug.Log("ChangeDefaultWeaponCLientRPC index: " + _index);
+
         defaultWeapons[0] = _index;
         currentWeaponIndex = 0;
         ActivateWeaponServerRPC(defaultWeapons[0] - 1);

@@ -12014,11 +12014,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: XCom_laserRifle_obj
       objectReference: {fileID: 0}
-    - target: {fileID: 8306951095173680226, guid: e9cef01821697fa468dcfdf83bcd84fa,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8648011547008751320, guid: e9cef01821697fa468dcfdf83bcd84fa,
         type: 3}
       propertyPath: m_RootOrder

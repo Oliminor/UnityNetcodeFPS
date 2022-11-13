@@ -307,7 +307,7 @@ public class ObjectiveManager : NetworkBehaviour
 
         Debug.Log("The weapon that Team " + Team + " Should spawn with is " + _TeamWeapons[Team]);
 
-        Player.transform.GetChild(2).transform.GetChild(0).GetComponent<WeaponInventory>().ChangeDefaultWeapon(_TeamWeapons[Team]);
+        Player.transform.GetChild(2).transform.GetChild(0).GetComponent<WeaponInventory>().ChangeDefaultWeaponClientRPC(_TeamWeapons[Team]);
         Debug.Log("Change default weapon: " + _TeamWeapons[Team]);
 
         Player.GetComponent<PlayerTeamManager>()._Team.Value = (TEAMS)Team;
