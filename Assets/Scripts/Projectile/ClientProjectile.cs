@@ -4,34 +4,50 @@ using UnityEngine;
 
 public class ClientProjectile : MonoBehaviour
 {
-    private float _Speed;
+    [SerializeField] LayerMask whatIsSolid;
+    [SerializeField] Transform groundHitEffect;
+    [SerializeField] Transform playerHitEffect;
 
-    private Rigidbody _RigidBody;
+    private float _Speed;
+    private float _Life;
+
     private Vector3 previousPosition;
 
-    public void SetSpeed(float _speed) { _Speed = _speed; }
+    public void SetProperties(float Speed, float Life)
+    {
+        _Speed = Speed;
+        _Life = Life;
+    }
 
     void Start()
     {
         previousPosition = transform.position;
-        _RigidBody = GetComponent<Rigidbody>();
+        Destroy(gameObject, _Life);
     }
 
     void Update()
     {
-        _RigidBody.velocity = transform.forward * _Speed * (Time.deltaTime * 100);
+        transform.Translate(transform.forward * _Speed * Time.deltaTime, Space.World);
 
         CheckBetweenTwoPositions();
     }
 
     private void CheckBetweenTwoPositions()
     {
-        if (Physics.Linecast(transform.position, previousPosition, out RaycastHit hit))
+        float distance = Vector3.Distance(previousPosition, transform.position);
+        RaycastHit hit;
+        if (Physics.Raycast(previousPosition, transform.forward, out hit, distance, whatIsSolid))
         {
             if (hit.transform.gameObject.tag == "Player")
             {
+                GameObject playerHitParticle = Instantiate(playerHitEffect.gameObject, hit.point, Quaternion.identity);
+                Destroy(playerHitParticle, 0.5f);
                 Destroy(gameObject);
+                return;
             }
+            GameObject groundHitParticle = Instantiate(groundHitEffect.gameObject, hit.point, Quaternion.identity);
+            Destroy(groundHitParticle, 0.5f);
+            Destroy(gameObject);
         }
         previousPosition = transform.position;
     }

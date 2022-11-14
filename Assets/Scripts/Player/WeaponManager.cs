@@ -11,6 +11,7 @@ public class WeaponManager : NetworkBehaviour
 
     [SerializeField] private Transform shotPoint;
     [SerializeField] private Transform projectile;
+    [SerializeField] private Transform dummyProjectile;
     [SerializeField] private Transform reloadEffect;
     [SerializeField] private GameObject muzzleEffect;
     [SerializeField] private int objectPoolSize;
@@ -166,7 +167,7 @@ public class WeaponManager : NetworkBehaviour
             fireRateCoolDown = fireRate;
             StartCoroutine(Fire());
             InstantiateProjectile(transform.position, transform.rotation);
-            //if (IsOwner) FireVoidServerRPC(transform.position, transform.rotation);
+            if (IsOwner) FireVoidServerRPC(transform.position, transform.rotation);
             currentAmmoNumber--;
         }
     }
@@ -247,6 +248,16 @@ public class WeaponManager : NetworkBehaviour
         }
     }
 
+    private void InstantiateDummyProjectile(Vector3 Position, Quaternion Rotation)
+    {
+        for (int i = 0; i < _ProjectileNumber; i++)
+        {
+            GameObject _projectile = Instantiate(dummyProjectile.gameObject, Position, Rotation);
+            _projectile.GetComponent<ClientProjectile>().SetProperties( _ProjectileSpeed, _ProjectileLife);
+            _projectile.transform.LookAt(FireDirection());
+        }
+    }
+
     [ServerRpc]
     private void ReloadEffectServerRPC()
     {
@@ -278,7 +289,7 @@ public class WeaponManager : NetworkBehaviour
         {
             StartCoroutine(Fire());
 
-            InstantiateProjectile(Position, Rotation);
+            InstantiateDummyProjectile(Position, Rotation);
         }
 
         if (!IsOwner) return;

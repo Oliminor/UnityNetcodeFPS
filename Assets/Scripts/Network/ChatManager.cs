@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
@@ -13,6 +14,7 @@ public class ChatManager : NetworkBehaviour
     [SerializeField] public string playerName;
     [SerializeField] public TextMeshProUGUI chatText;
     [SerializeField] public TMP_InputField chatInput;
+    [SerializeField] private Scrollbar scrollBar;
     bool inputActive = false;
     public static ChatManager singleton;
     private Color teamColour;
@@ -110,6 +112,7 @@ public class ChatManager : NetworkBehaviour
     public void UpdateChat(string playerName, string message, string teamColor)
     {
         GetComponent<ChatManager>().chatText.text += $"\n<color=#{teamColor}>{playerName}</color> said: {message}";
+        Invoke("SetChatToBottom", 0.1f);
         Debug.Log("hit");
     }
     
@@ -120,4 +123,11 @@ public class ChatManager : NetworkBehaviour
 
     }
 
+    private void SetChatToBottom()
+    {
+        if (scrollBar.value != 0)
+        {
+            scrollBar.value = 0;
+        }
+    }
 }

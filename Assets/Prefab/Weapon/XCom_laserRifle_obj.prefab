@@ -102,11 +102,12 @@ MonoBehaviour:
   shotPoint: {fileID: 8125061263401457938}
   projectile: {fileID: 4115888716068934635, guid: 7a02bce57a17e834fad137f2d919f59d,
     type: 3}
+  dummyProjectile: {fileID: 4115888716068934635, guid: 57a64c7968cc8ed4bb9e304f952705c9,
+    type: 3}
   reloadEffect: {fileID: 2693580115136550375}
   muzzleEffect: {fileID: 4279155088673816091, guid: 10992e6700505164c8870ebbb000d1a4,
     type: 3}
   objectPoolSize: 5
-  animController: {fileID: 9100000, guid: 34025cbc3b55d604a9244cbaeb20e47a, type: 2}
   rotation: {x: 0, y: 0, z: 0}
   _MaxAmmoNumber: 8
   _ReloadTime: 1.2

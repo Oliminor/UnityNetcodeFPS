@@ -20,7 +20,6 @@ public class ProjectileManager : NetworkBehaviour
     {
         previousPosition = transform.position;
         Destroy(gameObject, _Life);
-        //StartCoroutine(TimeBeforeDestroyed(_Life));
     }
 
     /// <summary>

@@ -47,7 +47,7 @@ public class MeleeWeaponManager : NetworkBehaviour
         MeleeAttack();
         HUD.instance.SetPlayerAmmoTextHUD(0, 0);
 
-        anim.SetFloat("speed", player.GetAnimSpeed());
+        if (anim) anim.SetFloat("speed", player.GetAnimSpeed());
     }
 
     [ServerRpc]
