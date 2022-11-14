@@ -4628,6 +4628,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1528592353}
   m_CullTransparentMesh: 1
+--- !u!114 &1562922943 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9145859164560782215, guid: 72ca02ea3d451f241a9c988b040596cc,
+    type: 3}
+  m_PrefabInstance: {fileID: 1873010237}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6960e84d07fb87f47956e7a81d71c4e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1588422827
 GameObject:
   m_ObjectHideFlags: 0
@@ -5854,6 +5866,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 9145859164560782212, guid: 72ca02ea3d451f241a9c988b040596cc,
+        type: 3}
+      propertyPath: NetworkConfig.NetworkTransport
+      value: 
+      objectReference: {fileID: 1562922943}
     - target: {fileID: 9145859164560782213, guid: 72ca02ea3d451f241a9c988b040596cc,
         type: 3}
       propertyPath: m_RootOrder
@@ -5917,7 +5934,7 @@ PrefabInstance:
     - target: {fileID: 9145859164560782215, guid: 72ca02ea3d451f241a9c988b040596cc,
         type: 3}
       propertyPath: ConnectionData.Address
-      value: 127.0.0.1
+      value: 81.107.192.106
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ca02ea3d451f241a9c988b040596cc, type: 3}
