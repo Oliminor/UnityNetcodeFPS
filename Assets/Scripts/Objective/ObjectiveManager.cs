@@ -9,13 +9,14 @@ using TMPro;
 
 public enum TEAMS { RED, BLUE, GREEN, YELLOW };
 
-public enum MODES { DEATHMATCH, KINGOFTHEHILL, INFECTION};
+public enum MODES { DEATHMATCH, KINGOFTHEHILL, INFECTION, ONEFLAG};
 
 [System.Serializable]
 public struct TEAMDATA : INetworkSerializable, System.IEquatable<TEAMDATA> {
 
     public Color Colour;
     public int TeamScore;
+    public int TeamCount;
     public FixedString128Bytes TeamName;
     public int[] PlayerData;
 
@@ -23,6 +24,7 @@ public struct TEAMDATA : INetworkSerializable, System.IEquatable<TEAMDATA> {
     {
         serializer.SerializeValue(ref Colour);
         serializer.SerializeValue(ref TeamScore);
+        serializer.SerializeValue(ref TeamCount);
         serializer.SerializeValue(ref TeamName);
         serializer.SerializeValue(ref PlayerData);
 
@@ -50,11 +52,15 @@ public class ObjectiveManager : NetworkBehaviour
 
     [SerializeField] private GameObject _KingOfTheHill;
     [SerializeField] private List<GameObject> _HillLocations;
+    [SerializeField] private GameObject _FlagSpawn;
+    [SerializeField] private GameObject _FlagDest;
+
     //[SerializeField] private NetworkVariable<int> _KingOfTheHillActive = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private bool _GameInProgress;
     private GameObject _SceneManager;
-    [SerializeField] private GameObject _Scoreboard;
+    private GameObject _Scoreboard;
+
     //public static ObjectiveManager instance;
 
     public GameObject TeamScoreText;
@@ -115,6 +121,7 @@ public class ObjectiveManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         //Debug.Log("Game in Progress" + _GameInProgress);
         if (!_GameInProgress) return;
         if (!IsServer) return;
@@ -122,27 +129,71 @@ public class ObjectiveManager : NetworkBehaviour
         foreach(TEAMDATA TeamData in _Teams)
         {
             //Debug.Log("Max score" + _MaxScore);
-            UpdateScoreboard();
+            
             if (TeamData.TeamScore >= _MaxScore && IsServer)
             {
                 EndGame();
             }
-            if (_TimeSinceMove <= 0)
-            {
-                _TimeSinceMove = (float)(_TimeLimit * 0.25);
-                MoveHillServerRPC();
-            }
-            if (_Time.Value > _TimeLimit)
-            {
-                EndGame();
-            }
+            
         }
+
+        if (_Time.Value > _TimeLimit)
+        {
+            EndGame();
+        }
+
+        switch (_CurrentMode)
+        {
+            case (MODES.DEATHMATCH):
+                break;
+            case (MODES.KINGOFTHEHILL):
+                if (_TimeSinceMove <= 0)
+                {
+                    _TimeSinceMove = (float)(_TimeLimit * 0.5);
+                    MoveHillServerRPC();
+                }
+                break;
+            case (MODES.INFECTION):
+                if (_Teams[0].TeamCount <= 0 && _Time.Value > 10)
+                {
+                    EndGame();
+                } 
+                break;
+            case (MODES.ONEFLAG):
+                break;
+        }
+
+        UpdateScoreboardClientRPC();
+
         _Time.Value += Time.deltaTime;
         _TimeSinceMove -= Time.deltaTime;
     }
 
-    void UpdateScoreboard()
+    [ClientRpc]
+    void UpdateScoreboardClientRPC()
     {
+        _Scoreboard = GameObject.Find("ScoreBoard");
+        if (_Scoreboard)
+        {
+            Debug.Log("I AM UPDATING THE SCOREBOARD");
+            Transform RedTeam = _Scoreboard.transform.GetChild(0);
+            RedTeam.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("{0} Team", "Red");
+            RedTeam.GetChild(1).GetComponent<TextMeshProUGUI>().text = string.Format("Score: {0}", _Teams[0].TeamScore);
+            int j = 0;
+            for(int i = 0; i < _Teams[0].TeamCount; i++)
+            {
+                j = i * 5;
+                RedTeam.GetChild(2).GetChild(j).GetComponent<TextMeshProUGUI>().text = _Teams[0].PlayerData[j].ToString();
+                RedTeam.GetChild(2).GetChild(j + 1).GetComponent<TextMeshProUGUI>().text = _Teams[0].PlayerData[j + 1].ToString();
+                RedTeam.GetChild(2).GetChild(j + 2).GetComponent<TextMeshProUGUI>().text = _Teams[0].PlayerData[j + 2].ToString();
+            }
+
+            Transform BlueTeam = _Scoreboard.transform.GetChild(1);
+            BlueTeam.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("{0} Team", "Blue");
+            BlueTeam.GetChild(1).GetComponent<TextMeshProUGUI>().text = string.Format("Score: {0}", _Teams[1].TeamScore);
+        }
+        
+
     }
 
     void AssignTeams()
@@ -170,7 +221,10 @@ public class ObjectiveManager : NetworkBehaviour
                     {
                         SetPlayerToTeamServerRPC(0, (ulong)i);
                     }
-                    
+
+                    break;
+                case (MODES.ONEFLAG):
+                    SetPlayerToTeamServerRPC((i + 1) % 2, (ulong)i);
                     break;
             }
 
@@ -226,10 +280,13 @@ public class ObjectiveManager : NetworkBehaviour
         _GameInProgress = true;
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
         NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
+        _KingOfTheHill.SetActive(false);
+        _FlagSpawn.SetActive(false);
+        _FlagDest.SetActive(false);
         switch (_CurrentMode) 
         {
             case (MODES.DEATHMATCH):
-                _KingOfTheHill.SetActive(false);
+                
                 Debug.Log("Starting deathmatch");
                 break;
             case (MODES.KINGOFTHEHILL):
@@ -237,8 +294,11 @@ public class ObjectiveManager : NetworkBehaviour
                 Debug.Log("Starting King of the hill");
                 break;
             case (MODES.INFECTION):
-                _KingOfTheHill.SetActive(false);
                 Debug.Log("Starting Infection");
+                break;
+            case (MODES.ONEFLAG):
+                _FlagSpawn.SetActive(true);
+                _FlagDest.SetActive(true);
                 break;
         }
     }
@@ -291,6 +351,14 @@ public class ObjectiveManager : NetworkBehaviour
         _KingOfTheHill.transform.position = _HillLocations[Random.Range(0, _HillLocations.Count)].transform.position;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void FlagCapturedServerRPC()
+    {
+        Debug.Log("FLAG RETRIED");
+        AddScoreToTeamServerRPC(1, 1);
+        _FlagSpawn.GetComponent<WeaponSpawner>().ActivateSpawnerServerRPC();
+    }
+
     public Color GetTeamColour(TEAMS Team)
     {
         return _Teams[(int)Team].Colour;
@@ -315,7 +383,11 @@ public class ObjectiveManager : NetworkBehaviour
 
         Player.transform.GetChild(2).transform.GetChild(0).GetComponent<WeaponInventory>().ChangeDefaultWeaponClientRPC(_TeamWeapons[Team]);
         Debug.Log("Change default weapon: " + _TeamWeapons[Team]);
-
+        if (_Teams[(int)Player.GetComponent<PlayerTeamManager>()._Team.Value].TeamCount > 0)
+        {
+            _Teams[(int)Player.GetComponent<PlayerTeamManager>()._Team.Value].TeamCount--;
+        }
+        _Teams[Team].TeamCount++;
         Player.GetComponent<PlayerTeamManager>()._Team.Value = (TEAMS)Team;
 
         UpdateTeamDataClientRpc(_Teams[0], 0);
@@ -323,9 +395,10 @@ public class ObjectiveManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void AddScoreToTeamServerRPC(int Score, int Team)
+    public void AddScoreToTeamServerRPC(int Score, int Team, ServerRpcParams serverRpcParams = default)
     {
         _Teams[Team].TeamScore += Score;
+        _Teams[Team].PlayerData[((int)serverRpcParams.Receive.SenderClientId) * 5] += Score;
         UpdateTeamDataClientRpc(_Teams[Team], Team);
     }
 

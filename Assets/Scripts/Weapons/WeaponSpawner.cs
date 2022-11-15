@@ -106,7 +106,7 @@ public class WeaponSpawner : NetworkBehaviour
     /// Activate the spawner on the server side
     /// </summary>
     [ServerRpc(RequireOwnership = false)]
-    private void ActivateSpawnerServerRPC()
+    public void ActivateSpawnerServerRPC()
     {
         if (isTemporarySpawner.Value)
         {

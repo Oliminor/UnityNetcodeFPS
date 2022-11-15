@@ -10,15 +10,14 @@ public class PlayerTeamManager : NetworkBehaviour
 
     public NetworkVariable<TEAMS> _Team = new NetworkVariable<TEAMS>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private GameObject _NetworkManager;
+    private TextMeshProUGUI _TeamDisplay;
 
     public GameObject TeamYouText;
-
-    private 
 
     // Start is called before the first frame update
     void Start()
     {
-
+        //_TeamDisplay = GameObject.Find("TeamText").GetComponent<TextMeshProUGUI>();
     }
 
     void Awake()
@@ -30,22 +29,16 @@ public class PlayerTeamManager : NetworkBehaviour
     void Update()
     {
         _NetworkManager = GameObject.Find("ObjectiveManager");
+        if (!_NetworkManager) return;
+
         if (!IsOwner)
         {
             Debug.Log("Color Change called");
-           if (_NetworkManager) SetTeamColor(_NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value));
+            SetTeamColor(_NetworkManager.GetComponent<ObjectiveManager>().GetTeamColour(_Team.Value));
             return;
         }
-        TeamYouText = GameObject.Find("Temp");
-        if (!TeamYouText) return;
-        TeamYouText.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Score: " + _Team.Value.ToString();
+        
 
-        if (Input.GetKeyDown("p"))
-        {
-            //_NetworkManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, 1);
-            if (_Team.Value == TEAMS.RED) ChangeTeam(1);
-            else ChangeTeam(0);
-        }
     }
 
     /// <summary>

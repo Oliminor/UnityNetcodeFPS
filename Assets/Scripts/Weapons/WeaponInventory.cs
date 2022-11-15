@@ -91,6 +91,15 @@ public class WeaponInventory : NetworkBehaviour
         ActivateWeaponServerRPC(defaultWeapons[0] - 1);
     }
 
+    public void DestroyCurrentObject()
+    {
+        if (currentWeaponIndex == 0) return;
+        defaultWeapons[currentWeaponIndex] = 0;
+        currentWeaponIndex = 0;
+        isObjectCarried = false;
+        ActivateWeaponServerRPC(defaultWeapons[0] - 1);
+    }
+
     /// <summary>
     /// Drops every weapon to the ground (but the default one)
     /// </summary>

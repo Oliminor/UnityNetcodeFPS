@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using TMPro;
 
 public class HealthManager : NetworkBehaviour
 {
@@ -13,7 +14,10 @@ public class HealthManager : NetworkBehaviour
     [SerializeField] int _HealthRegen;
     [SerializeField] float _HealthCooldown;
 
-    private GameObject _KilledBy;
+    private TextMeshProUGUI _RespawnCounter;
+    private bool _Respawning;
+    private float _RespawningCountDown;
+    private int _KilledByTeamID;
     private GameObject _ObjectiveManager;
     private PlayerMovement player;
 
@@ -23,7 +27,8 @@ public class HealthManager : NetworkBehaviour
     {
         player = GetComponent<PlayerMovement>();
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
-        _KilledBy = gameObject;
+        _KilledByTeamID = 0;
+        _RespawnCounter = GameObject.Find("RespawnText").GetComponent<TextMeshProUGUI>();
     }
 
     void Awake()
@@ -35,6 +40,10 @@ public class HealthManager : NetworkBehaviour
     {
         if (IsOwner)
         {
+            if (_Respawning)
+            {
+                Respawn(false);
+            }
             HUD.instance.SetHUDPercent(GetPercentHealth());
             HUD.instance.SetPlayerHealthTextHUD(_HealthCur.Value, _HealthMax);
 
@@ -73,22 +82,27 @@ public class HealthManager : NetworkBehaviour
     [ClientRpc]
     private void SetHealthClientRPC(int health)
     {
-        _HealthCur.Value = health;
+        if (IsOwner)
+        {
+            _HealthCur.Value = health;
+        }
+        
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DamagePlayerServerRPC(int damage)
+    private void DamagePlayerServerRPC(int damage, int ID)
     {
         // _HealthCur.Value -= damage;
         //  if (_HealthCur.Value < 0) _HealthCur.Value = 0;
-        DamagePlayerClientRPC(damage);
+        DamagePlayerClientRPC(damage, ID);
     }
 
     [ClientRpc]
-    private void DamagePlayerClientRPC(int damage)
+    private void DamagePlayerClientRPC(int damage, int Team)
     {
         if (IsOwner)
         {
+            _KilledByTeamID = Team;
             _HealthCur.Value -= damage;
             if (_HealthCur.Value < 0) _HealthCur.Value = 0;
 
@@ -116,32 +130,53 @@ public class HealthManager : NetworkBehaviour
 
     public void Respawn(bool AwardPoint)
     {
-        StartCoroutine(InterpolateSwitch());
-        GetComponent<Rigidbody>().velocity = Vector3.zero;
-        GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-        Debug.Log("HElo there");
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
-        if (IsOwner) SetHealthClientRPC(_HealthMax);
-        else SetHealthServerRPC(_HealthMax);
-        player.GetWeaponInventory().DropEveryWeapons();
-        
-        Debug.Log("HGEOIFHAFH DHOHAWIDHAW ");
-        _ObjectiveManager.GetComponent<RespawnManager>().GetRespawnPointServerRPC();
-        if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && _KilledBy.GetComponent<PlayerTeamManager>().GetTeam() != GetComponent<PlayerTeamManager>().GetTeam() && AwardPoint)
+        if (!_Respawning)
         {
-            _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
-        }
-        if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.INFECTION && AwardPoint)
-        {
-            if (_KilledBy.GetComponent<PlayerTeamManager>().GetTeam() == TEAMS.BLUE)
+
+            _RespawnCounter.gameObject.SetActive(true);
+            _Respawning = true;
+            _RespawningCountDown = 5;
+            if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && AwardPoint)
             {
-                Debug.Log("Changing team here you idiot");
-                //GetComponent<PlayerTeamManager>().ChangeTeam((int)TEAMS.BLUE);
-                _ObjectiveManager.GetComponent<ObjectiveManager>().SetPlayerToTeamServerRPC((int)TEAMS.BLUE);
+                _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, _KilledByTeamID);
             }
-            _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_KilledBy.GetComponent<PlayerTeamManager>().GetTeam());
+            if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.INFECTION)
+            {
+                if ((TEAMS)_KilledByTeamID == TEAMS.BLUE)
+                {
+                    _ObjectiveManager.GetComponent<ObjectiveManager>().SetPlayerToTeamServerRPC((int)TEAMS.BLUE);
+                }
+                _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, _KilledByTeamID);
+            }
+            transform.position = new Vector3(0, 100, 0);
+            player.GetWeaponInventory().ResetInventory();
+            return;
         }
-        player.GetWeaponInventory().ResetInventory();
+        else if(_RespawningCountDown > 0)
+        {
+            _RespawnCounter.text = "Respawning in: " + (int)_RespawningCountDown;
+            _RespawningCountDown -= Time.deltaTime;
+            //GetComponentInChildren<WeaponInventory>().ActivateWeaponServerRPC(-1);
+            return;
+        }
+        else
+        {
+            _RespawnCounter.gameObject.SetActive(false);
+            StartCoroutine(InterpolateSwitch());
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            Debug.Log("HElo there");
+
+            _HealthCur.Value = _HealthMax;
+            player.GetWeaponInventory().DropEveryWeapons();
+
+            Debug.Log("HGEOIFHAFH DHOHAWIDHAW ");
+            _ObjectiveManager.GetComponent<RespawnManager>().GetRespawnPointServerRPC();
+            
+            _Respawning = false;
+        }
+        
     }
 
     [ClientRpc]
@@ -162,19 +197,20 @@ public class HealthManager : NetworkBehaviour
     /// </summary>
     public void DamagePlayer(float damage, GameObject Source)
     {
+        if (_Respawning) return;
         Debug.Log("DamagePlayer " + damage);
-
-        _KilledBy = Source;
 
         Debug.Log(IsServer +" "+ IsHost +" "+ IsClient +" "+ IsOwner);
 
-        if (IsClient && !IsServer && !IsHost) DamagePlayerServerRPC((int)damage);
+        if (IsClient && !IsServer && !IsHost) DamagePlayerServerRPC((int)damage, (int)Source.GetComponent<PlayerTeamManager>().GetTeam());
 
         SetSourcePositionServerRPC(Source.transform.position);
 
+        //DamagePlayerServerRPC((int)damage, (int)GetComponent<PlayerTeamManager>().GetTeam());
+
         if (IsHost && !IsOwner)
         {
-            DamagePlayerClientRPC((int)damage);
+            DamagePlayerClientRPC((int)damage, (int)Source.GetComponent<PlayerTeamManager>().GetTeam());
         }
     }
 }
