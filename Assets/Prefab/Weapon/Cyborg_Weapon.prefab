@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 864da9491dbbf2e41afbd23951dfd642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireRate: 0.4
+  fireRate: 0.1
   shotPoint: {fileID: 1505022683}
   projectile: {fileID: 4115888716068934635, guid: 7a02bce57a17e834fad137f2d919f59d,
     type: 3}
@@ -192,14 +192,14 @@ MonoBehaviour:
     type: 3}
   objectPoolSize: 5
   rotation: {x: 0, y: 0, z: 0}
-  _MaxAmmoNumber: 24
-  _ReloadTime: 1.5
+  _MaxAmmoNumber: 30
+  _ReloadTime: 1.8
   _ZoomSizeFOV: 45
-  _ProjectileDamage: 35
+  _ProjectileDamage: 15
   _ProjectileSpeed: 600
   _ProjectileLife: 3
   _ProjectileNumber: 1
-  _ProjectileSpread: 50
+  _ProjectileSpread: 35
 --- !u!1001 &2227006550940165803
 PrefabInstance:
   m_ObjectHideFlags: 0

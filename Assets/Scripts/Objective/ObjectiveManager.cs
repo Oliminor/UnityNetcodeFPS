@@ -18,7 +18,6 @@ public struct TEAMDATA : INetworkSerializable, System.IEquatable<TEAMDATA> {
     public int TeamScore;
     public int TeamCount;
     public FixedString128Bytes TeamName;
-    public int[] PlayerData;
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
@@ -26,7 +25,6 @@ public struct TEAMDATA : INetworkSerializable, System.IEquatable<TEAMDATA> {
         serializer.SerializeValue(ref TeamScore);
         serializer.SerializeValue(ref TeamCount);
         serializer.SerializeValue(ref TeamName);
-        serializer.SerializeValue(ref PlayerData);
 
     }
 
@@ -46,15 +44,16 @@ public class ObjectiveManager : NetworkBehaviour
     private float _TimeLimit = 0;
     private int _MaxScore;
     private int[] _TeamWeapons;
+    private int[] _TeamMaxHealth;
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
     [SerializeField] GameObject _PlayerForAI;
 
+    [SerializeField] private GameObject _Spawners;
     [SerializeField] private GameObject _KingOfTheHill;
     [SerializeField] private List<GameObject> _HillLocations;
     [SerializeField] private GameObject _FlagSpawn;
     [SerializeField] private GameObject _FlagDest;
-
     //[SerializeField] private NetworkVariable<int> _KingOfTheHillActive = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private bool _GameInProgress;
@@ -77,6 +76,7 @@ public class ObjectiveManager : NetworkBehaviour
     private void Awake()
     {
         _TeamWeapons = new int[4];
+        _TeamMaxHealth = new int[4];
         NetworkManager.SceneManager.OnLoadEventCompleted += SceneManagement_OnLoadEventCompleted;
 
         //NetworkManager.SceneManager.OnUnload += SceneManagement_OnUnload;
@@ -86,6 +86,7 @@ public class ObjectiveManager : NetworkBehaviour
         _Bots = new List<GameObject> { };
        // instance = this;
         _GameInProgress = false;
+        _TeamMaxHealth = new int[4];
         _SceneManager = GameObject.Find("SceneManager");
         if (!IsServer) return;
         StartNewGameServerRPC(_SceneManager.GetComponent<GameModeManager>().GetCurrentMode());
@@ -149,15 +150,15 @@ public class ObjectiveManager : NetworkBehaviour
             case (MODES.KINGOFTHEHILL):
                 if (_TimeSinceMove <= 0)
                 {
-                    _TimeSinceMove = (float)(_TimeLimit * 0.5);
+                    _TimeSinceMove = (float)(_TimeLimit * 0.2);
                     MoveHillServerRPC();
                 }
                 break;
             case (MODES.INFECTION):
-                if (_Teams[0].TeamCount <= 0 && _Time.Value > 10)
+                if (_Teams[1].TeamScore == NetworkManager.ConnectedClientsList.Count - 1)
                 {
                     EndGame();
-                } 
+                }
                 break;
             case (MODES.ONEFLAG):
                 break;
@@ -183,9 +184,6 @@ public class ObjectiveManager : NetworkBehaviour
             for(int i = 0; i < _Teams[0].TeamCount; i++)
             {
                 j = i * 5;
-                RedTeam.GetChild(2).GetChild(j).GetComponent<TextMeshProUGUI>().text = _Teams[0].PlayerData[j].ToString();
-                RedTeam.GetChild(2).GetChild(j + 1).GetComponent<TextMeshProUGUI>().text = _Teams[0].PlayerData[j + 1].ToString();
-                RedTeam.GetChild(2).GetChild(j + 2).GetComponent<TextMeshProUGUI>().text = _Teams[0].PlayerData[j + 2].ToString();
             }
 
             Transform BlueTeam = _Scoreboard.transform.GetChild(1);
@@ -227,17 +225,7 @@ public class ObjectiveManager : NetworkBehaviour
                     SetPlayerToTeamServerRPC((i + 1) % 2, (ulong)i);
                     break;
             }
-
-            int PlayerID = i;
-            TEAMS PlayerTeam = Player.GetComponent<PlayerTeamManager>().GetTeam();
-            int PlayerScore = 0;
-            int PlayerKills = 0;
-            int PlayerDeaths = 0;
-            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 0] = PlayerID;
-            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 1] = (int)PlayerTeam;
-            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 2] = PlayerScore;
-            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 3] = PlayerKills;
-            _Teams[(int)PlayerTeam].PlayerData[(i * 5) + 4] = PlayerDeaths;
+            Player.GetComponent<PlayerStats>().ResetStatsServerRPC();
         }
 
     }
@@ -248,6 +236,7 @@ public class ObjectiveManager : NetworkBehaviour
         _GameInProgress = false;
 
         Debug.Log("GameOver");
+        _SceneManager.GetComponent<GameModeManager>()._InLobby.Value = true;
 
         _SceneManager.GetComponent<ProjectNetworkSceneManager>().ExitGameMode();
     }
@@ -255,6 +244,7 @@ public class ObjectiveManager : NetworkBehaviour
     [ServerRpc]
     public void StartNewGameServerRPC(GameModeData ModeData)
     {
+        _SceneManager.GetComponent<GameModeManager>()._InLobby.Value = false;
         SetGameModeSettings(ModeData);
         AssignTeams();
         StartNewGameClientRPC(ModeData);
@@ -269,6 +259,12 @@ public class ObjectiveManager : NetworkBehaviour
         _TimeLimit = ModeData.TimeLimit;
         _TeamWeapons[0] = ModeData.Team1Weapons;
         _TeamWeapons[1] = ModeData.Team2Weapons;
+        _TeamMaxHealth[0] = ModeData.Team1MaxHealth;
+        _TeamMaxHealth[1] = ModeData.Team2MaxHealth;
+        if (!ModeData.HasWeapons)
+        {
+            _Spawners.transform.position = new Vector3(0, -1000, 0);
+        }
     }
 
     [ClientRpc]
@@ -279,9 +275,11 @@ public class ObjectiveManager : NetworkBehaviour
         SetGameModeSettings(ModeData);
         _GameInProgress = true;
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
+        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().NewGameClientRPC();
         NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
+        NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerStats>().ResetStatsServerRPC();
         _KingOfTheHill.SetActive(false);
-        _FlagSpawn.SetActive(false);
+        //_FlagSpawn.SetActive(false);
         _FlagDest.SetActive(false);
         switch (_CurrentMode) 
         {
@@ -297,7 +295,7 @@ public class ObjectiveManager : NetworkBehaviour
                 Debug.Log("Starting Infection");
                 break;
             case (MODES.ONEFLAG):
-                _FlagSpawn.SetActive(true);
+              //  _FlagSpawn.SetActive(true);
                 _FlagDest.SetActive(true);
                 break;
         }
@@ -382,11 +380,8 @@ public class ObjectiveManager : NetworkBehaviour
         Debug.Log("The weapon that Team " + Team + " Should spawn with is " + _TeamWeapons[Team] + " The ClientID is: " + PlayerID);
 
         Player.transform.GetChild(2).transform.GetChild(0).GetComponent<WeaponInventory>().ChangeDefaultWeaponClientRPC(_TeamWeapons[Team]);
+        Player.GetComponent<HealthManager>().SetMaxHealthClientRPC(_TeamMaxHealth[Team]);
         Debug.Log("Change default weapon: " + _TeamWeapons[Team]);
-        if (_Teams[(int)Player.GetComponent<PlayerTeamManager>()._Team.Value].TeamCount > 0)
-        {
-            _Teams[(int)Player.GetComponent<PlayerTeamManager>()._Team.Value].TeamCount--;
-        }
         _Teams[Team].TeamCount++;
         Player.GetComponent<PlayerTeamManager>()._Team.Value = (TEAMS)Team;
 
@@ -398,7 +393,7 @@ public class ObjectiveManager : NetworkBehaviour
     public void AddScoreToTeamServerRPC(int Score, int Team, ServerRpcParams serverRpcParams = default)
     {
         _Teams[Team].TeamScore += Score;
-        _Teams[Team].PlayerData[((int)serverRpcParams.Receive.SenderClientId) * 5] += Score;
+       // NetworkManager.ConnectedClients[serverRpcParams.Receive.SenderClientId].PlayerObject.GetComponent<PlayerStats>().AddScoreServerRPC(1);
         UpdateTeamDataClientRpc(_Teams[Team], Team);
     }
 

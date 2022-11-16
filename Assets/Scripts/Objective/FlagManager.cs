@@ -26,6 +26,7 @@ public class FlagManager : MonoBehaviour
             {
                 other.transform.GetChild(2).GetChild(0).GetComponent<WeaponInventory>().DestroyCurrentObject();
                 _ObjectiveManager = GameObject.Find("ObjectiveManager");
+                other.gameObject.GetComponent<PlayerStats>().AddScoreServerRPC(1);
                 _ObjectiveManager.GetComponent<ObjectiveManager>().FlagCapturedServerRPC();
             }
         }

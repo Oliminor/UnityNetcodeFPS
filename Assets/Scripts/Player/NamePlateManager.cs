@@ -15,6 +15,7 @@ public class NamePlateManager : NetworkBehaviour
     private NetworkVariable<FixedString64Bytes> playerName = new NetworkVariable<FixedString64Bytes>("" ,NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     public void SetPlayerName(string name) { playerNameText.text = name; }
+    public FixedString64Bytes GetPlayerName() { return playerName.Value; }
 
     private void OnValueChanged(FixedString64Bytes oldValue, FixedString64Bytes newValue) { SetPlayerName(playerName.Value.ToString()); }
 

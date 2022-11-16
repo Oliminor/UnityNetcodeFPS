@@ -110,13 +110,13 @@ MonoBehaviour:
   objectPoolSize: 5
   rotation: {x: 0, y: 0, z: 0}
   _MaxAmmoNumber: 8
-  _ReloadTime: 1.2
+  _ReloadTime: 2
   _ZoomSizeFOV: 60
-  _ProjectileDamage: 10
+  _ProjectileDamage: 15
   _ProjectileSpeed: 100
   _ProjectileLife: 3
-  _ProjectileNumber: 15
-  _ProjectileSpread: 150
+  _ProjectileNumber: 10
+  _ProjectileSpread: 65
 --- !u!1 &9181307520287530174
 GameObject:
   m_ObjectHideFlags: 0

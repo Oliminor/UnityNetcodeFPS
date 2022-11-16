@@ -6453,11 +6453,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 776ecd5539b1d9947b2d9e9648625d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Stats:
-    m_InternalValue:
-      Kills: 0
-      Deaths: 0
-      Score: 0
+  _ScoreBoardStats: {fileID: 8075339977873175798, guid: 24acc8a38efd8a54695b88899a7c6096,
+    type: 3}
+  _ScoreBoard: {fileID: 7381113190664584267, guid: c346618398c0fae4781217c1cbca7c4f,
+    type: 3}
 --- !u!114 &-1413904455278662062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12512,6 +12511,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1770150130}
     m_Modifications:
+    - target: {fileID: 7406133633248539140, guid: 29371a910605b0843b47b324f0630df0,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8125061263401457938, guid: 29371a910605b0843b47b324f0630df0,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -12526,6 +12530,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Sniper
+      objectReference: {fileID: 0}
+    - target: {fileID: 8306951095173680226, guid: 29371a910605b0843b47b324f0630df0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8648011547008751320, guid: 29371a910605b0843b47b324f0630df0,
         type: 3}

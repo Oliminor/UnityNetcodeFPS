@@ -18,6 +18,7 @@ public class HealthManager : NetworkBehaviour
     private bool _Respawning;
     private float _RespawningCountDown;
     private int _KilledByTeamID;
+    private int _KilledByID;
     private GameObject _ObjectiveManager;
     private PlayerMovement player;
 
@@ -58,6 +59,12 @@ public class HealthManager : NetworkBehaviour
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
     }
 
+    [ClientRpc]
+    public void SetMaxHealthClientRPC(int NewMaxHealth)
+    {
+        _HealthMax = NewMaxHealth;
+    }
+
     [ServerRpc(RequireOwnership = false)]
     private void SetSourcePositionServerRPC(Vector3 _sourcePlayer)
     {
@@ -90,19 +97,20 @@ public class HealthManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DamagePlayerServerRPC(int damage, int ID)
+    private void DamagePlayerServerRPC(int damage, int ID, int PlayerID)
     {
         // _HealthCur.Value -= damage;
         //  if (_HealthCur.Value < 0) _HealthCur.Value = 0;
-        DamagePlayerClientRPC(damage, ID);
+        DamagePlayerClientRPC(damage, ID, PlayerID);
     }
 
     [ClientRpc]
-    private void DamagePlayerClientRPC(int damage, int Team)
+    private void DamagePlayerClientRPC(int damage, int Team, int PlayerID)
     {
         if (IsOwner)
         {
             _KilledByTeamID = Team;
+            _KilledByID = PlayerID;
             _HealthCur.Value -= damage;
             if (_HealthCur.Value < 0) _HealthCur.Value = 0;
 
@@ -128,15 +136,29 @@ public class HealthManager : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void NewGameClientRPC()
+    {
+        _RespawningCountDown = 0;
+        _Respawning = false;
+    }
+
     public void Respawn(bool AwardPoint)
     {
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
         if (!_Respawning)
         {
-
+            player.GetWeaponInventory().DropEveryWeapons();
+            player.GetWeaponInventory().ResetInventory();
             _RespawnCounter.gameObject.SetActive(true);
             _Respawning = true;
             _RespawningCountDown = 5;
+            if (AwardPoint)
+            {
+                GetComponent<PlayerStats>().AddDeathsServerRPC(1);
+                AwardKillPointServerRPC(_KilledByID);
+            }
+            
             if (_ObjectiveManager.GetComponent<ObjectiveManager>().GetMode() == MODES.DEATHMATCH && AwardPoint)
             {
                 _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, _KilledByTeamID);
@@ -146,11 +168,12 @@ public class HealthManager : NetworkBehaviour
                 if ((TEAMS)_KilledByTeamID == TEAMS.BLUE)
                 {
                     _ObjectiveManager.GetComponent<ObjectiveManager>().SetPlayerToTeamServerRPC((int)TEAMS.BLUE);
+                    AwardPointsServerRPC(_KilledByID, 10);
                 }
                 _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, _KilledByTeamID);
             }
             transform.position = new Vector3(0, 100, 0);
-            player.GetWeaponInventory().ResetInventory();
+            
             return;
         }
         else if(_RespawningCountDown > 0)
@@ -179,6 +202,18 @@ public class HealthManager : NetworkBehaviour
         
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void AwardKillPointServerRPC(int ClientID)
+    {
+        NetworkManager.ConnectedClients[(ulong)ClientID].PlayerObject.GetComponent<PlayerStats>().AddKillsServerRPC(1);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void AwardPointsServerRPC(int ClientID, int Amount)
+    {
+        NetworkManager.ConnectedClients[(ulong)ClientID].PlayerObject.GetComponent<PlayerStats>().AddScoreServerRPC(Amount);
+    }
+
     [ClientRpc]
     public void SetPositionClientRPC(Vector3 NewPosition, ClientRpcParams clientRpcParams = default)
     {
@@ -202,7 +237,7 @@ public class HealthManager : NetworkBehaviour
 
         Debug.Log(IsServer +" "+ IsHost +" "+ IsClient +" "+ IsOwner);
 
-        if (IsClient && !IsServer && !IsHost) DamagePlayerServerRPC((int)damage, (int)Source.GetComponent<PlayerTeamManager>().GetTeam());
+        if (IsClient && !IsServer && !IsHost) DamagePlayerServerRPC((int)damage, (int)Source.GetComponent<PlayerTeamManager>().GetTeam(), (int)Source.GetComponent<NetworkObject>().OwnerClientId);
 
         SetSourcePositionServerRPC(Source.transform.position);
 
@@ -210,7 +245,7 @@ public class HealthManager : NetworkBehaviour
 
         if (IsHost && !IsOwner)
         {
-            DamagePlayerClientRPC((int)damage, (int)Source.GetComponent<PlayerTeamManager>().GetTeam());
+            DamagePlayerClientRPC((int)damage, (int)Source.GetComponent<PlayerTeamManager>().GetTeam(), (int)Source.GetComponent<NetworkObject>().OwnerClientId);
         }
     }
 }

@@ -83,9 +83,9 @@ public class HillManager : NetworkBehaviour
                     _PointCountdown = 1;
                     Debug.Log("Point Award");
                     _ObjectiveManager.GetComponent<ObjectiveManager>().AddScoreToTeamServerRPC(1, (int)_ControllingTeam);
-                    foreach (GameObject Player in _PlayersInHill) 
+                    foreach(GameObject Player in _PlayersInHill)
                     {
-                        Player.GetComponent<PlayerStats>()._Stats.Value.AddScore(1);
+                        Player.GetComponent<PlayerStats>().AddScoreServerRPC(1);
                     }
                 }
                 _PointCountdown -= Time.deltaTime;

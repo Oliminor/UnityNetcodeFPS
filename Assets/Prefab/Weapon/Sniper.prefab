@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectIndex: 5
-  spawner: {fileID: 6004201581527224027, guid: 457c40415648ca74bb5669d6522e1978, type: 3}
+  spawner: {fileID: 6004201581527224027, guid: cbd0c18935ab5944ba07448d9789d30c, type: 3}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
@@ -109,14 +109,14 @@ MonoBehaviour:
     type: 3}
   objectPoolSize: 5
   rotation: {x: 0, y: 0, z: 0}
-  _MaxAmmoNumber: 3
+  _MaxAmmoNumber: 2
   _ReloadTime: 2
   _ZoomSizeFOV: 30
-  _ProjectileDamage: 100
+  _ProjectileDamage: 150
   _ProjectileSpeed: 1500
   _ProjectileLife: 3
   _ProjectileNumber: 1
-  _ProjectileSpread: 10
+  _ProjectileSpread: 0
 --- !u!1001 &286551998293270854
 PrefabInstance:
   m_ObjectHideFlags: 0
