@@ -864,7 +864,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 622910041}
   m_HandleRect: {fileID: 622910040}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4705,6 +4705,7 @@ MonoBehaviour:
   chatText: {fileID: 701201680}
   chatInput: {fileID: 1880681813}
   scrollBar: {fileID: 206903137}
+  inputFieldObject: {fileID: 1880681809}
 --- !u!1 &1274088772
 GameObject:
   m_ObjectHideFlags: 0
@@ -7470,7 +7471,7 @@ PrefabInstance:
     - target: {fileID: 9145859164560782215, guid: 72ca02ea3d451f241a9c988b040596cc,
         type: 3}
       propertyPath: ConnectionData.Address
-      value: 81.107.192.106
+      value: 127.0.0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ca02ea3d451f241a9c988b040596cc, type: 3}
@@ -7565,7 +7566,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -7622,19 +7623,7 @@ MonoBehaviour:
       m_Calls: []
   m_OnDeselect:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ChatManager, Assembly-CSharp
-        m_MethodName: Send
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnTextSelection:
     m_PersistentCalls:
       m_Calls: []

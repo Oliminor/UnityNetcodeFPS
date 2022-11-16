@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -16,6 +17,7 @@ public class ChatManager : NetworkBehaviour
     [SerializeField] public TMP_InputField chatInput;
     [SerializeField] private Scrollbar scrollBar;
     bool inputActive = false;
+    [SerializeField] private GameObject inputFieldObject;
     public static ChatManager singleton;
     private Color teamColour;
     private string teamColorFormat;
@@ -26,6 +28,7 @@ public class ChatManager : NetworkBehaviour
         
         teamColour = Color.gray;
         teamColorFormat = ColorUtility.ToHtmlStringRGB(teamColour);
+        inputFieldObject.SetActive(false);
 
     }
     
@@ -35,6 +38,7 @@ public class ChatManager : NetworkBehaviour
     {
         singleton = this;
         DontDestroyOnLoad(this);
+ 
         
         
     }
@@ -63,14 +67,17 @@ public class ChatManager : NetworkBehaviour
                 
                 if (inputActive == false)
                 {
-                    
+                    inputFieldObject.SetActive(true);
                     chatInput.ActivateInputField();
+                    //chatInput.Select();
                     inputActive = true;
                 }
                 else
                 {
-                    chatInput.DeactivateInputField();
+                    inputFieldObject.SetActive(false);
+                    //chatInput.DeactivateInputField();
                     Send(chatInput.text);
+                    chatInput.text = string.Empty;
                     inputActive = false;
 
                 }
@@ -84,7 +91,7 @@ public class ChatManager : NetworkBehaviour
         if (IsClient)
         {
             SendMessageServerRpc(playerName, message, teamColorFormat);
-            chatInput.text = string.Empty;
+           
         }
     }
 
@@ -129,5 +136,9 @@ public class ChatManager : NetworkBehaviour
         {
             scrollBar.value = 0;
         }
+    }
+    public bool GetIsChatActive() 
+    { 
+        return inputActive; 
     }
 }

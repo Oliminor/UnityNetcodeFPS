@@ -42,7 +42,7 @@ public class Customization : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) return;
-
+        if (ChatManager.singleton.GetIsChatActive()) return;
         if (Input.GetKeyDown(KeyCode.T)) ChangeCamera();
     }
 

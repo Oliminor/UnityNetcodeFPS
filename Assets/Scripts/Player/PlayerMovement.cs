@@ -48,7 +48,7 @@ public class PlayerMovement : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) return;
-
+        if (ChatManager.singleton.GetIsChatActive()) return;
         if (custom.GetComponent<Customization>().GetIsCustomizationIsOn()) return;
 
         rb.useGravity = true;
@@ -76,7 +76,7 @@ public class PlayerMovement : NetworkBehaviour
     void FixedUpdate()
     {
         if (!IsOwner) return;
-
+        if (ChatManager.singleton.GetIsChatActive()) return;
         if (custom.GetComponent<Customization>().GetIsCustomizationIsOn()) return;
 
         Direction();
