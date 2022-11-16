@@ -32,6 +32,7 @@ public struct PlayerStatData : INetworkSerializable
 public class PlayerStats : NetworkBehaviour
 {
     [SerializeField] private GameObject _ScoreBoardStats;
+    private GameObject _ObjectiveManager;
     private GameObject _ScoreBoard;
     private bool _SearchForScoreBoard = true;
 
@@ -48,17 +49,48 @@ public class PlayerStats : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (_ScoreBoardStats.transform.localScale != new Vector3(1, 1, 1)) _ScoreBoardStats.transform.localScale = new Vector3(1, 1, 1);
     }
 
     public void UpdateScoreBoard()
     {
+        _ObjectiveManager = GameObject.Find("ObjectiveManager");
+        Color Colour = Color.white;
+        if (IsOwner)
+        {
+            Colour = Color.green;
+        }
+        else if(GetComponent<PlayerTeamManager>().GetTeam() == TEAMS.RED)
+        {
+            Colour = Color.red;
+        }
+        else
+        {
+            Colour = Color.blue;
+        }
         _ScoreBoard = GameObject.Find("ScoreBoard");
         _ScoreBoardStats.transform.SetParent(_ScoreBoard.transform.GetChild((int)GetComponent<PlayerTeamManager>().GetTeam()).GetChild(2));
-        _ScoreBoardStats.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = GetComponent<NamePlateManager>().GetPlayerName().ToString();
-        _ScoreBoardStats.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = _Stats.Value.Score.ToString();
-        _ScoreBoardStats.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = _Stats.Value.Kills.ToString();
-        _ScoreBoardStats.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = _Stats.Value.Deaths.ToString();
+        UpdateText(_ScoreBoardStats.transform.GetChild(0).GetComponent<TextMeshProUGUI>(), GetComponent<NamePlateManager>().GetPlayerName().ToString(), Colour);
+        UpdateText(_ScoreBoardStats.transform.GetChild(1).GetComponent<TextMeshProUGUI>(), _Stats.Value.Score.ToString(), Colour);
+        UpdateText(_ScoreBoardStats.transform.GetChild(2).GetComponent<TextMeshProUGUI>(), _Stats.Value.Kills.ToString(), Colour);
+        UpdateText(_ScoreBoardStats.transform.GetChild(3).GetComponent<TextMeshProUGUI>(), _Stats.Value.Deaths.ToString(), Colour);
+
+        if (_ObjectiveManager)
+        {
+            UpdateText(_ScoreBoard.transform.GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>(), _ObjectiveManager.GetComponent<ObjectiveManager>().GetDescription(), Color.yellow);
+        }
+        
+    }
+
+    private void UpdateText(TextMeshProUGUI Text, string String, Color Colour)
+    {
+        Text.color = Colour;
+        Text.text = String;
+    }
+
+    void OnDestroy()
+    {
+        Destroy(_ScoreBoardStats);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -67,7 +99,7 @@ public class PlayerStats : NetworkBehaviour
         _Stats.Value = new PlayerStatData { };
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void AddScoreServerRPC(int Score)
     {
         _Stats.Value = new PlayerStatData

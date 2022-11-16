@@ -20,6 +20,7 @@ public class HealthManager : NetworkBehaviour
     private int _KilledByTeamID;
     private int _KilledByID;
     private GameObject _ObjectiveManager;
+    private GameObject _GameModeManager;
     private PlayerMovement player;
 
     public float GetPercentHealth() { return (float)_HealthCur.Value / _HealthMax * 100.0f; }
@@ -28,6 +29,7 @@ public class HealthManager : NetworkBehaviour
     {
         player = GetComponent<PlayerMovement>();
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
+        _GameModeManager = GameObject.Find("SceneManager");
         _KilledByTeamID = 0;
         _RespawnCounter = GameObject.Find("RespawnText").GetComponent<TextMeshProUGUI>();
     }
@@ -57,6 +59,7 @@ public class HealthManager : NetworkBehaviour
         _HealthCur.OnValueChanged += SetHealthClientRPC;
         sourcePlayer.OnValueChanged += SetSourcePositionClientRPC;
         _ObjectiveManager = GameObject.Find("ObjectiveManager");
+        _GameModeManager = GameObject.Find("SceneManager");
     }
 
     [ClientRpc]
@@ -152,7 +155,7 @@ public class HealthManager : NetworkBehaviour
             player.GetWeaponInventory().ResetInventory();
             _RespawnCounter.gameObject.SetActive(true);
             _Respawning = true;
-            _RespawningCountDown = 5;
+            _RespawningCountDown = 10;
             if (AwardPoint)
             {
                 GetComponent<PlayerStats>().AddDeathsServerRPC(1);
@@ -180,6 +183,7 @@ public class HealthManager : NetworkBehaviour
         {
             _RespawnCounter.text = "Respawning in: " + (int)_RespawningCountDown;
             _RespawningCountDown -= Time.deltaTime;
+            _GameModeManager.GetComponent<GameModeManager>()._ViewScoreboard = true;
             //GetComponentInChildren<WeaponInventory>().ActivateWeaponServerRPC(-1);
             return;
         }
@@ -196,7 +200,7 @@ public class HealthManager : NetworkBehaviour
 
             Debug.Log("HGEOIFHAFH DHOHAWIDHAW ");
             _ObjectiveManager.GetComponent<RespawnManager>().GetRespawnPointServerRPC();
-            
+            _GameModeManager.GetComponent<GameModeManager>()._ViewScoreboard = false;
             _Respawning = false;
         }
         

@@ -45,6 +45,7 @@ public class ObjectiveManager : NetworkBehaviour
     private int _MaxScore;
     private int[] _TeamWeapons;
     private int[] _TeamMaxHealth;
+    private NetworkVariable<FixedString512Bytes> _Desc = new NetworkVariable<FixedString512Bytes>();
 
     [SerializeField] List<TextMeshProUGUI> _ScoreText;
     [SerializeField] GameObject _PlayerForAI;
@@ -54,6 +55,7 @@ public class ObjectiveManager : NetworkBehaviour
     [SerializeField] private List<GameObject> _HillLocations;
     [SerializeField] private GameObject _FlagSpawn;
     [SerializeField] private GameObject _FlagDest;
+
     //[SerializeField] private NetworkVariable<int> _KingOfTheHillActive = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private bool _GameInProgress;
@@ -155,7 +157,7 @@ public class ObjectiveManager : NetworkBehaviour
                 }
                 break;
             case (MODES.INFECTION):
-                if (_Teams[1].TeamScore == NetworkManager.ConnectedClientsList.Count - 1)
+                if (_Teams[1].TeamScore == NetworkManager.ConnectedClientsList.Count - 1 && _Time.Value >= 10)
                 {
                     EndGame();
                 }
@@ -164,70 +166,43 @@ public class ObjectiveManager : NetworkBehaviour
                 break;
         }
 
-        UpdateScoreboardClientRPC();
-
         _Time.Value += Time.deltaTime;
         _TimeSinceMove -= Time.deltaTime;
     }
 
-    [ClientRpc]
-    void UpdateScoreboardClientRPC()
-    {
-        _Scoreboard = GameObject.Find("ScoreBoard");
-        if (_Scoreboard)
-        {
-            Debug.Log("I AM UPDATING THE SCOREBOARD");
-            Transform RedTeam = _Scoreboard.transform.GetChild(0);
-            RedTeam.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("{0} Team", "Red");
-            RedTeam.GetChild(1).GetComponent<TextMeshProUGUI>().text = string.Format("Score: {0}", _Teams[0].TeamScore);
-            int j = 0;
-            for(int i = 0; i < _Teams[0].TeamCount; i++)
-            {
-                j = i * 5;
-            }
-
-            Transform BlueTeam = _Scoreboard.transform.GetChild(1);
-            BlueTeam.GetChild(0).GetComponent<TextMeshProUGUI>().text = string.Format("{0} Team", "Blue");
-            BlueTeam.GetChild(1).GetComponent<TextMeshProUGUI>().text = string.Format("Score: {0}", _Teams[1].TeamScore);
-        }
-        
-
-    }
-
-    void AssignTeams()
+    [ServerRpc]
+    void AssignTeamsServerRPC()
     {
         int TooInfect = Random.Range(0, NetworkManager.Singleton.ConnectedClients.Count);
         if (!IsServer) return;
-        for(int i = 0; i < NetworkManager.Singleton.ConnectedClients.Count; i++)
+        //for(int i = 0; i < NetworkManager.Singleton.ConnectedClients.Count; i++)
+        int i = 0;
+        foreach(NetworkClient PlayerClient in NetworkManager.ConnectedClientsList)
         {
-            NetworkObject Player = NetworkManager.Singleton.ConnectedClients[(ulong)i].PlayerObject;
+            NetworkObject Player = PlayerClient.PlayerObject;
             
             switch (_CurrentMode) 
             {
                 case (MODES.DEATHMATCH):
-                    SetPlayerToTeamServerRPC((i + 1) % 2, (ulong)i);
+                    SetPlayerToTeamServerRPC((i + 1) % 2, PlayerClient.ClientId);
                     break;
                 case (MODES.KINGOFTHEHILL):
-                    SetPlayerToTeamServerRPC((i + 1) % 2, (ulong)i);
+                    SetPlayerToTeamServerRPC((i + 1) % 2, PlayerClient.ClientId);
                     break;
                 case (MODES.INFECTION):
-                    if (i == TooInfect)
+                    SetPlayerToTeamServerRPC(0, PlayerClient.ClientId);
+                    if(TooInfect == i)
                     {
-                        SetPlayerToTeamServerRPC(1, (ulong)i);
+                        SetPlayerToTeamServerRPC(1, PlayerClient.ClientId);
                     }
-                    else
-                    {
-                        SetPlayerToTeamServerRPC(0, (ulong)i);
-                    }
-
                     break;
                 case (MODES.ONEFLAG):
-                    SetPlayerToTeamServerRPC((i + 1) % 2, (ulong)i);
+                    SetPlayerToTeamServerRPC((i + 1) % 2, PlayerClient.ClientId);
                     break;
             }
             Player.GetComponent<PlayerStats>().ResetStatsServerRPC();
+            i++;
         }
-
     }
 
     public void EndGame()
@@ -246,7 +221,7 @@ public class ObjectiveManager : NetworkBehaviour
     {
         _SceneManager.GetComponent<GameModeManager>()._InLobby.Value = false;
         SetGameModeSettings(ModeData);
-        AssignTeams();
+        AssignTeamsServerRPC();
         StartNewGameClientRPC(ModeData);
         StartNewGameServerRPC();
         
@@ -261,6 +236,26 @@ public class ObjectiveManager : NetworkBehaviour
         _TeamWeapons[1] = ModeData.Team2Weapons;
         _TeamMaxHealth[0] = ModeData.Team1MaxHealth;
         _TeamMaxHealth[1] = ModeData.Team2MaxHealth;
+        if (IsServer)
+        {
+            switch (_CurrentMode)
+            {
+                case (MODES.DEATHMATCH):
+                    _Desc.Value = "Kill The Enemy Team To Win";
+                    break;
+                case (MODES.KINGOFTHEHILL):
+                    _Desc.Value = "Capture And Hold The Hill To Win";
+                    break;
+                case (MODES.INFECTION):
+                    _Desc.Value = "Red Team Surive For 120 Seconds\nBlue Team Must Kill And Convert Red Team To Win";
+                    break;
+                case (MODES.ONEFLAG):
+                    _Desc.Value = "Red Team Must Defend The Flag(Yellow Square)\nBlue Team Must Take The Flag Too The Red Square";
+                    break;
+            }
+            Debug.Log("Objective: " + _Desc.Value);
+        }
+        
         if (!ModeData.HasWeapons)
         {
             _Spawners.transform.position = new Vector3(0, -1000, 0);
@@ -275,8 +270,6 @@ public class ObjectiveManager : NetworkBehaviour
         SetGameModeSettings(ModeData);
         _GameInProgress = true;
         //GetComponent<MenuManager>().SetMenuState(MENUSTATES.INGAME);
-        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().NewGameClientRPC();
-        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
         NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerStats>().ResetStatsServerRPC();
         _KingOfTheHill.SetActive(false);
         //_FlagSpawn.SetActive(false);
@@ -299,6 +292,8 @@ public class ObjectiveManager : NetworkBehaviour
                 _FlagDest.SetActive(true);
                 break;
         }
+        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().NewGameClientRPC();
+        NetworkManager.LocalClient.PlayerObject.GetComponent<HealthManager>().Respawn(false);
     }
 
     [ServerRpc]
@@ -340,6 +335,13 @@ public class ObjectiveManager : NetworkBehaviour
             Destroy(Bot);
         }
         _Bots.Clear();
+    }
+
+    public string GetDescription()
+    {
+        FixedString512Bytes BString = _Desc.Value;
+        string String = BString.ConvertToString();
+        return String;
     }
 
     [ServerRpc]
