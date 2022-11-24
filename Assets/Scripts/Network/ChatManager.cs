@@ -75,7 +75,6 @@ public class ChatManager : NetworkBehaviour
                 else
                 {
                     inputFieldObject.SetActive(false);
-                    //chatInput.DeactivateInputField();
                     Send(chatInput.text);
                     chatInput.text = string.Empty;
                     inputActive = false;
@@ -85,7 +84,7 @@ public class ChatManager : NetworkBehaviour
         }
     }
 
-    //Called from the InputField
+    //send message on pressing enter
     public void Send(string message)
     {
         if (IsClient)
@@ -96,27 +95,21 @@ public class ChatManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership =false)]
-    private void SendMessageServerRpc(string playerName, string message, string teamColor)
+    private void SendMessageServerRpc(string playerName, string message, string teamColor)//pass message along with senders name and team colour to server
     {
         HandleMessageClientRpc(playerName, message, teamColor);
         Debug.Log("hello");
     }
 
     [ClientRpc]
-    private void HandleMessageClientRpc(string playerName, string message, string teamColor)
+    private void HandleMessageClientRpc(string playerName, string message, string teamColor)// ^^ but from server to clients
     {
         UpdateChat(playerName, message, teamColor);
         Debug.Log(message);
     }
 
-    [ServerRpc]
-    private void ChangeOwnershipServerRpc(ulong clientID)
-    {
-            gameObject.GetComponent<NetworkObject>().ChangeOwnership(clientID);
-        
-    }
 
-    public void UpdateChat(string playerName, string message, string teamColor)
+    public void UpdateChat(string playerName, string message, string teamColor) //update the chat log with message and some formatting
     {
         GetComponent<ChatManager>().chatText.text += $"\n<color=#{teamColor}>{playerName}</color> said: {message}";
         Invoke("SetChatToBottom", 0.1f);

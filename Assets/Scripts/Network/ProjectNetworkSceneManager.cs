@@ -60,6 +60,10 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
             playersLoadedInScene.Value = 0;
         }
     }
+
+    //the majority of the following does nothing, from the Unity Docs and was to 'follow along' and learn the event system
+
+
     private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true) //currently seems useless, but will see
     {
         string sceneEventAction;
@@ -183,12 +187,12 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
             CheckLoadStatus(status);
 
         }
-        base.OnNetworkSpawn();
+        base.OnNetworkSpawn(); 
     }
 
     //END OF SERVER VALIDATION THINGZZZZZZZZZZZZ
 
-    private List<string> SceneNamesForEasySwapping() //absolutely not my code in the slightest
+    private List<string> SceneNamesForEasySwapping() //absolutely not my code in the slightest, was using regex to form strings based off the scene build index, made testing easier but has no application in the final build
     {
         var regex = new Regex(@"([^/]*/)*([\w\d\-]*)\.unity");
         for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
