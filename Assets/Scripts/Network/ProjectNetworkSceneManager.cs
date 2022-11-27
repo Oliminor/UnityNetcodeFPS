@@ -61,7 +61,7 @@ public class ProjectNetworkSceneManager : NetworkBehaviour
         }
     }
 
-    //the majority of the following does nothing, from the Unity Docs and was to 'follow along' and learn the event system
+    //FROM THIS POINT ONWARDS the majority of the following does nothing, from the Unity Docs and was to 'follow along' and learn the event system- things like 'UnloadScene' have little use with single loading (which automatically unloads scene) 
 
 
     private void CheckLoadStatus(SceneEventProgressStatus loadStatus, bool isLoading = true) //currently seems useless, but will see
